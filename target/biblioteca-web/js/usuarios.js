@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarUsuarios();
 });
 
+let correoUsuario = '';
+
 function cargarUsuarios() {
     showLoading(true);
     hideError();
@@ -42,6 +44,7 @@ function mostrarUsuarios(usuarios) {
             <td>${usuario.correo || 'N/A'}</td>
             <td>${usuario.tipo || 'N/A'}</td>
             <td>${usuario.detalles || 'N/A'}</td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="asignarCorreo('${usuario.correo}')">Modificar</button></td>
         `;
         tbody.appendChild(row);
     });
@@ -60,5 +63,20 @@ function showError(message) {
 
 function hideError() {
     document.querySelector('.error').style.display = 'none';
+}
+
+document.getElementById('modificarUsuarioForm').addEventListener('click', function(event) {
+    event.preventDefault();
+    const zona = document.getElementById('zona').value;
+    const estado = document.getElementById('estadoU').value;
+
+    console.log('Correo asignado:', correoUsuario);
+    console.log('Zona ingresada:', zona);
+    console.log('Estado seleccionado:', estado);
+});
+
+function asignarCorreo(correo) {
+    correoUsuario = correo;
+    console.log('Correo asignado para modificación:', correoUsuario);
 }
 
