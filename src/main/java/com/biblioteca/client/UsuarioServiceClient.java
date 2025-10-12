@@ -65,7 +65,9 @@ public class UsuarioServiceClient {
                 DtUsuario[] usuarios = usuarioService.obtenerUsuarios();
                 List<DtUsuario> lista = new ArrayList<>();
                 for (DtUsuario usuario : usuarios) {
-                    lista.add(usuario);
+                    if (usuario instanceof DtLector) {
+                        lista.add(usuario); // en este caso, solo nos interesan mostrar lectores
+                    }
                 }
                 System.out.println("✅ Usuarios obtenidos del backend: " + lista.size() + " elementos");
                 return lista;
