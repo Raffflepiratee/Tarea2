@@ -39,7 +39,7 @@
                 </thead>
                 <tbody id="usuariosTableBody">
                     <tr>
-                        <td colspan="4" class="text-center">Cargando usuarios...</td>
+                        <td colspan="5" class="text-center">Cargando usuarios...</td>
                     </tr>
                 </tbody>
             </table>
@@ -64,14 +64,14 @@
                                     <option value="ARCHIVO_GENERAL">ARCHIVO_GENERAL</option>
                                 </select>
                             </div>
-                            <!-- <div class="mb-3">
+                            <div class="mb-3">
                                 <label for="estadoU" class="col-form-label">Estado:</label>
                                 <select class="form-select" id="estadoU">
-                                    <option value="seleccionar" disabled selected>Seleccionar</option>
-                                    <option value="activo">Activo</option>
-                                    <option value="suspendido">Suspendido</option>
+                                    <option value="" disabled selected hidden>-- Seleccionar --</option>
+                                    <option value="ACTIVO">Activo</option>
+                                    <option value="SUSPENDIDO">Suspendido</option>
                                 </select>
-                            </div> -->
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">

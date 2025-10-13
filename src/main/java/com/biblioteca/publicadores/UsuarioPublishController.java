@@ -9,6 +9,7 @@ import jakarta.jws.soap.SOAPBinding.ParameterStyle;
 import jakarta.jws.soap.SOAPBinding.Style;
 
 import com.biblioteca.datatypes.DtUsuario;
+import com.biblioteca.datatypes.EstadosU;
 
 @WebService(targetNamespace = "http://publicadores/")
 @SOAPBinding(style = Style.RPC, parameterStyle = ParameterStyle.WRAPPED)
@@ -22,4 +23,7 @@ public interface UsuarioPublishController {
 
     @WebMethod
     void cambiarZonaLector(String correo, String zona);
+
+    @WebMethod
+    void cambiarEstadoLector(String correo, EstadosU estado);
 }

@@ -11,6 +11,9 @@ import jakarta.xml.ws.WebServiceException;
 import com.biblioteca.datatypes.DtUsuario;
 import com.biblioteca.datatypes.DtLector;
 import com.biblioteca.datatypes.DtBibliotecario;
+import com.biblioteca.datatypes.Zonas;
+import com.biblioteca.datatypes.EstadosU;
+
 import com.biblioteca.publicadores.UsuarioPublishController;
 
 /**
@@ -100,6 +103,20 @@ public class UsuarioServiceClient {
             } catch (Exception e) {
                 System.err.println("Error al cambiar zona de lector: " + e.getMessage());
                 throw new RuntimeException("Error al cambiar zona de lector", e);
+            }
+        } else {
+            throw new RuntimeException("Servicio de usuarios no disponible. El backend SOAP no está conectado.");
+        }
+    }
+
+    public void cambiarEstadoLector(String correo, EstadosU estado){
+        if (usuarioService != null){
+            try{
+                usuarioService.cambiarEstadoLector(correo, estado);
+                System.out.println("Estado cambiado del usuario " + correo + " a " + estado);
+            } catch (Exception e) {
+                System.err.println("Error al cambiar estado de lector: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar estado de lector", e);
             }
         } else {
             throw new RuntimeException("Servicio de usuarios no disponible. El backend SOAP no está conectado.");

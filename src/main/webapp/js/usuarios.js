@@ -39,12 +39,16 @@ function mostrarUsuarios(usuarios) {
     
     usuarios.forEach(usuario => {
         const row = document.createElement('tr');
+        // Escapar comillas en zona/estado para insertar en onclick
+        const zonaVal = usuario.zona ? usuario.zona.replace(/'/g, "\\'") : '';
+        const estadoVal = usuario.estado ? usuario.estado.replace(/'/g, "\\'") : '';
+
         row.innerHTML = `
             <td>${usuario.nombre || 'N/A'}</td>
             <td>${usuario.correo || 'N/A'}</td>
             <td>${usuario.tipo || 'N/A'}</td>
             <td>${usuario.detalles || 'N/A'}</td>
-            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="asignarCorreo('${usuario.correo}')">Modificar</button></td>
+            <td><button type="button" class="btn btn-primary" onclick="asignarCorreo('${usuario.correo}','${zonaVal}','${estadoVal}')">Modificar</button></td>
         `;
         tbody.appendChild(row);
     });
@@ -68,19 +72,29 @@ function hideError() {
 document.getElementById('modificarUsuarioForm').addEventListener('click', function(event) {
     event.preventDefault();
     const zona = document.getElementById('zona').value;
-    
+    const estadoRaw = document.getElementById('estadoU').value;
 
-    console.log('Zona ingresada:', zona);
-    // console.log('Estado seleccionado:', estado);
+    // Validar que se haya seleccionado un estado
+    if (!estadoRaw) {
+        showError('Seleccione un estado para el usuario antes de guardar.');
+        return;
+    }
 
-    const body =  new URLSearchParams({ correo: correoUsuario, zona: zona });
+    // Mapear el valor del select al enum esperado por el servidor (mayúsculas)
+    const estado = estadoRaw.toUpperCase();
 
+    // console.log('Zona ingresada:', zona);
+    // console.log('Estado seleccionado (raw):', estadoRaw);
+    // console.log('Estado enviado (enum):', estado);
+
+    const body =  new URLSearchParams({ correo: correoUsuario, zona: zona, estado: estado });
+    // console.log('Preparing to send update with correoUsuario=', correoUsuario);
+    console.log('Request body:', body.toString());
 
     fetch('/biblioteca-web/usuarios?action=update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
         body:body.toString()
-        // body: JSON.stringify({ correo: correoUsuario, zona: zona/*, estado*/})
     })
     .then(response => {
         if (!response.ok) {
@@ -99,8 +113,26 @@ document.getElementById('modificarUsuarioForm').addEventListener('click', functi
     });
 });
 
-function asignarCorreo(correo) {
+function asignarCorreo(correo, zona, estado) {
     correoUsuario = correo;
     console.log('Correo asignado para modificación:', correoUsuario);
+
+    // Preseleccionar la zona si está disponible
+    if (zona) {
+        const zonaSelect = document.getElementById('zona');
+        zonaSelect.value = zona;
+    }
+
+    // Preseleccionar el estado si está disponible
+    if (estado) {
+        const estadoSelect = document.getElementById('estadoU');
+        // estado ya viene en mayúsculas desde el servidor (ACTIVO/SUSPENDIDO)
+        estadoSelect.value = estado;
+    }
+
+    // Abrir modal (en caso que el llamado no venga del data-bs-toggle)
+    const modalEl = document.getElementById('exampleModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
 }
 
