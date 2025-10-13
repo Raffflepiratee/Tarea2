@@ -62,6 +62,23 @@ public class UsuarioServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        String action = request.getParameter("action");
+
+        try {
+            switch (action != null ? action : "update") {
+                case "update":
+                    cambiarZonaLector(request, response);
+                    break;
+                default:
+                    cambiarZonaLector(request, response);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
+        }
     }
 
     private void listarUsuarios(HttpServletRequest request, HttpServletResponse response)
@@ -116,5 +133,24 @@ public class UsuarioServlet extends HttpServlet {
                 .replace("\"", "\\\"")
                 .replace("\n", "\\n")
                 .replace("\r", "\\r");
+    }
+
+    private void cambiarZonaLector(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+
+        String correo = request.getParameter("correo");
+        String zona = request.getParameter("zona");
+
+        
+        if (correo == null || zona == null) {
+            throw new IllegalArgumentException("Correo: " + correo + "\nZona: " + zona);
+        }
+
+
+        usuarioClient.cambiarZonaLector(correo, zona);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"status\": \"success\"}");
     }
 }

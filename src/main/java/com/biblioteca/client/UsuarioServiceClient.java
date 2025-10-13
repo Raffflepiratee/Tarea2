@@ -23,19 +23,19 @@ public class UsuarioServiceClient {
     
     public UsuarioServiceClient() {
         try {
-            System.out.println("🔄 Intentando conectar a: " + USUARIO_SERVICE_URL);
+            System.out.println("Intentando conectar a: " + USUARIO_SERVICE_URL);
             URL url = URI.create(USUARIO_SERVICE_URL).toURL();
-            System.out.println("🔄 URL creada: " + url);
+            System.out.println("URL creada: " + url);
             Service service = Service.create(url, 
                 new javax.xml.namespace.QName("http://publicadores/", "UsuarioPublishControllerService"));
-            System.out.println("🔄 Service creado");
+            System.out.println("Service creado");
             usuarioService = service.getPort(UsuarioPublishController.class);
-            System.out.println("✅ Conectado al servicio de usuarios en " + USUARIO_SERVICE_URL);
+            System.out.println("Conectado al servicio de usuarios en " + USUARIO_SERVICE_URL);
         } catch (Exception e) {
-            System.err.println("⚠️ No se pudo conectar con el servicio de usuarios, usando datos de prueba");
-            System.err.println("⚠️ Error: " + e.getClass().getName() + " - " + e.getMessage());
+            System.err.println("No se pudo conectar con el servicio de usuarios, usando datos de prueba");
+            System.err.println("Error: " + e.getClass().getName() + " - " + e.getMessage());
             e.printStackTrace();
-            usuarioService = null; // Usar datos mock
+            usuarioService = null; 
         }
     }
     
@@ -46,13 +46,13 @@ public class UsuarioServiceClient {
         if (usuarioService != null) {
             try {
                 usuarioService.agregarUsuario(usuario);
-                System.out.println("✅ Usuario agregado al backend: " + usuario);
+                System.out.println("Usuario agregado al backend: " + usuario);
             } catch (WebServiceException e) {
                 System.err.println("Error al agregar usuario: " + e.getMessage());
                 throw new RuntimeException("Error al agregar usuario", e);
             }
         } else {
-            System.out.println("✅ Usuario agregado (modo prueba): " + usuario);
+            System.out.println("Usuario agregado (modo prueba): " + usuario);
         }
     }
     
@@ -69,10 +69,10 @@ public class UsuarioServiceClient {
                         lista.add(usuario); // en este caso, solo nos interesan mostrar lectores
                     }
                 }
-                System.out.println("✅ Usuarios obtenidos del backend: " + lista.size() + " elementos");
+                System.out.println("Usuarios obtenidos del backend: " + lista.size() + " elementos");
                 return lista;
             } catch (WebServiceException e) {
-                System.err.println("❌ Error al obtener usuarios del backend: " + e.getMessage());
+                System.err.println("Error al obtener usuarios del backend: " + e.getMessage());
                 throw new RuntimeException("Error al obtener usuarios del backend", e);
             }
         } else {
@@ -89,6 +89,20 @@ public class UsuarioServiceClient {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public void cambiarZonaLector(String correo,String zona){
+        if (usuarioService != null){
+            try{
+                usuarioService.cambiarZonaLector(correo, zona);
+                System.out.println("Zona cambiada del usuario " + correo + " a " + zona);
+            } catch (Exception e) {
+                System.err.println("Error al cambiar zona de lector: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar zona de lector", e);
+            }
+        } else {
+            throw new RuntimeException("Servicio de usuarios no disponible. El backend SOAP no está conectado.");
         }
     }
 }

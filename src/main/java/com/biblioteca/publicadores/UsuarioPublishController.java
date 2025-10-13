@@ -19,4 +19,7 @@ public interface UsuarioPublishController {
 
     @WebMethod
     DtUsuario[] obtenerUsuarios();
+
+    @WebMethod
+    void cambiarZonaLector(String correo, String zona);
 }

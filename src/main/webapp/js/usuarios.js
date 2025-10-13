@@ -33,7 +33,7 @@ function mostrarUsuarios(usuarios) {
     tbody.innerHTML = '';
     
     if (!usuarios || usuarios.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center">No hay usuarios registrados</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center">No hay usuarios registrados</td></tr>';
         return;
     }
     
@@ -68,17 +68,26 @@ function hideError() {
 document.getElementById('modificarUsuarioForm').addEventListener('click', function(event) {
     event.preventDefault();
     const zona = document.getElementById('zona').value;
-    const estado = document.getElementById('estadoU').value;
+    
 
     console.log('Zona ingresada:', zona);
-    console.log('Estado seleccionado:', estado);
+    // console.log('Estado seleccionado:', estado);
+
+    const body =  new URLSearchParams({ correo: correoUsuario, zona: zona });
+
 
     fetch('/biblioteca-web/usuarios?action=update', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ correo: correoUsuario, zona, estado })
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+        body:body.toString()
+        // body: JSON.stringify({ correo: correoUsuario, zona: zona/*, estado*/})
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error('Server error: ' + text); });
+        }
+        return response.json();
+    })
     .then(data => {
         console.log('Usuario actualizado:', data);
         bootstrap.Modal.getInstance(document.getElementById('exampleModal')).hide();

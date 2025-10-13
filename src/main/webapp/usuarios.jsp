@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!-- <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%> -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -56,16 +56,22 @@
                         <form>
                             <div class="mb-3">
                                 <label for="nombre" class="col-form-label">Zona:</label>
-                                <input type="text" class="form-control" id="zona">
+                                <select class="form-control" id="zona">
+                                    <option value="BIBLIOTECA_CENTRAL">BIBLIOTECA_CENTRAL</option>
+                                    <option value="SUCURSAL_ESTE">SUCURSAL_ESTE</option>
+                                    <option value="SUCURSAL_OESTE">SUCURSAL_OESTE</option>
+                                    <option value="BIBLIOTECA_INFANTIL">BIBLIOTECA_INFANTIL</option>
+                                    <option value="ARCHIVO_GENERAL">ARCHIVO_GENERAL</option>
+                                </select>
                             </div>
-                            <div class="mb-3">
+                            <!-- <div class="mb-3">
                                 <label for="estadoU" class="col-form-label">Estado:</label>
                                 <select class="form-select" id="estadoU">
                                     <option value="seleccionar" disabled selected>Seleccionar</option>
                                     <option value="activo">Activo</option>
                                     <option value="suspendido">Suspendido</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </form>
                     </div>
                     <div class="modal-footer">
