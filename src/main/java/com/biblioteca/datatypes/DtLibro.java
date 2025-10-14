@@ -6,6 +6,11 @@ public class DtLibro extends DtMaterial {
     private String titulo;
     private int cantPag;
 
+    // No-arg constructor required by JAXB
+    public DtLibro() {
+        super();
+    }
+
     // Mostrar informacion
     public DtLibro(int idMaterial, Date fechaRegistro, String titulo, int cantPag) {
         super(idMaterial, fechaRegistro);

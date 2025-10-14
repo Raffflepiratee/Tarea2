@@ -1,5 +1,6 @@
 package com.biblioteca.client;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -23,34 +24,36 @@ public class MaterialServiceClient {
     
     public MaterialServiceClient() {
         try {
-            URL url = new URL(MATERIAL_SERVICE_URL);
+            System.out.println("Intentando conectar a: " + MATERIAL_SERVICE_URL);
+
+            URL url = URI.create(MATERIAL_SERVICE_URL).toURL();
             Service service = Service.create(url, 
                 new javax.xml.namespace.QName("http://publicadores/", "MaterialPublishControllerService"));
             materialService = service.getPort(MaterialPublishController.class);
-            System.out.println("✅ Conectado al servicio de materiales");
+            System.out.println("Conectado al servicio de materiales en " + MATERIAL_SERVICE_URL);
         } catch (Exception e) {
-            System.err.println("⚠️ No se pudo conectar con el servicio de materiales, usando datos de prueba: " + e.getMessage());
+            System.err.println("No se pudo conectar con el servicio de materiales, usando datos de prueba. Error: " + e.getClass().getName() + " - " + e.getMessage());
+            e.printStackTrace();
             materialService = null; // Usar datos mock
         }
     }
-    
-    /**
-     * Agrega un nuevo material
-     */
-    public void agregarMaterial(DtMaterial material) {
+
+    public void agregarDtMaterial(DtMaterial material) {
         if (materialService != null) {
             try {
-                materialService.agregarMaterial(material);
-                System.out.println("✅ Material agregado al backend: " + material);
+                materialService.agregarDtMaterial(material);
+                System.out.println("✅ Material agregado: " + material);
             } catch (WebServiceException e) {
                 System.err.println("Error al agregar material: " + e.getMessage());
                 throw new RuntimeException("Error al agregar material", e);
             }
         } else {
-            System.out.println("✅ Material agregado (modo prueba): " + material);
+            // Simular agregado
+            System.out.println("📚 Simulando agregado de material: " + material);
         }
     }
-    
+
+
     /**
      * Obtiene todos los materiales
      */
@@ -114,5 +117,7 @@ public class MaterialServiceClient {
             return false;
         }
     }
+
+
 }
 

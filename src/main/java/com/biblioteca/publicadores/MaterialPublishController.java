@@ -11,12 +11,12 @@ import jakarta.jws.soap.SOAPBinding.Style;
 
 import com.biblioteca.datatypes.DtMaterial;
 
-@WebService
+@WebService(targetNamespace = "http://publicadores/")
 @SOAPBinding(style = Style.RPC, parameterStyle = ParameterStyle.WRAPPED)
 public interface MaterialPublishController {
 
     @WebMethod
-    void agregarMaterial(DtMaterial material);
+    void agregarDtMaterial(DtMaterial material);
 
     @WebMethod
     DtMaterial[] obtenerMateriales();

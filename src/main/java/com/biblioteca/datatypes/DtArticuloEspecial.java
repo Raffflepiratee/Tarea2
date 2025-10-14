@@ -8,6 +8,11 @@ public class DtArticuloEspecial extends DtMaterial {
     private float peso;
     private float dimFisica;
 
+    // No-arg constructor required by JAXB
+    public DtArticuloEspecial() {
+        super();
+    }
+
     // Mostrar informacion
     public DtArticuloEspecial(int idMaterial, Date fechaRegistro, String descripcion, float peso, float dimFisica) {
         super(idMaterial, fechaRegistro);

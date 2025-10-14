@@ -3,7 +3,7 @@ package com.biblioteca.servlets;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+// import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +19,7 @@ import com.biblioteca.datatypes.DtLector;
 import com.biblioteca.datatypes.DtBibliotecario;
 import com.biblioteca.datatypes.EstadosU;
 import com.biblioteca.datatypes.Zonas;
-import com.fasterxml.jackson.databind.ObjectMapper;
+// import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Servlet para manejar operaciones de Usuarios
@@ -28,13 +28,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class UsuarioServlet extends HttpServlet {
     
     private UsuarioServiceClient usuarioClient;
-    private ObjectMapper objectMapper;
+    // private ObjectMapper objectMapper;
     
     @Override
     public void init() throws ServletException {
         super.init();
         usuarioClient = new UsuarioServiceClient();
-        objectMapper = new ObjectMapper();
+        // objectMapper = new ObjectMapper();
     }
     
     @Override
