@@ -23,26 +23,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @WebServlet("/agregarMaterial")
 public class agregarMaterialServlet extends HttpServlet {
-    
+
     private MaterialServiceClient materialClient;
     private ObjectMapper objectMapper;
-    
+
     @Override
     public void init() throws ServletException {
         super.init();
         materialClient = new MaterialServiceClient();
         objectMapper = new ObjectMapper();
     }
-    
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String tipoMaterial = request.getParameter("tipoMaterial");
         response.setContentType("application/json;charset=UTF-8");
         try {
@@ -72,12 +72,13 @@ public class agregarMaterialServlet extends HttpServlet {
                     fechaReg = new SimpleDateFormat("yyyy-MM-dd").parse(fechaRegStr);
                 } catch (ParseException pe) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    response.getWriter().write("{\"error\": \"Invalid date format for fechaRegistro: '" + fechaRegStr + "'\"}");
+                    response.getWriter()
+                            .write("{\"error\": \"Invalid date format for fechaRegistro: '" + fechaRegStr + "'\"}");
                     return;
                 }
 
                 DtLibro libro = new DtLibro(fechaReg, titulo, cantPag);
-                agregarDtMaterial(libro);
+                agregarMaterial(libro);
 
             } else {
                 String fechaRegStr = request.getParameter("fechaRegistro");
@@ -96,7 +97,8 @@ public class agregarMaterialServlet extends HttpServlet {
                     fechaReg = new SimpleDateFormat("yyyy-MM-dd").parse(fechaRegStr);
                 } catch (ParseException pe) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    response.getWriter().write("{\"error\": \"Invalid date format for fechaRegistro: '" + fechaRegStr + "'\"}");
+                    response.getWriter()
+                            .write("{\"error\": \"Invalid date format for fechaRegistro: '" + fechaRegStr + "'\"}");
                     return;
                 }
 
@@ -118,7 +120,7 @@ public class agregarMaterialServlet extends HttpServlet {
                 }
 
                 DtArticuloEspecial articulo = new DtArticuloEspecial(fechaReg, descripcion, peso, dimFisica);
-                agregarDtMaterial(articulo);
+                agregarMaterial(articulo);
 
             }
             // on success, return a simple JSON ok
@@ -130,11 +132,10 @@ public class agregarMaterialServlet extends HttpServlet {
         }
     }
 
-    private void agregarDtMaterial(DtMaterial material){
+    private void agregarMaterial(DtMaterial material) {
         System.out.println(" Agregando material en 135 Servlet: " + material + "\n");
         MaterialServiceClient client = new MaterialServiceClient();
-        client.agregarDtMaterial(material);
+        client.agregarMaterial(material);
     }
 
 }
-
