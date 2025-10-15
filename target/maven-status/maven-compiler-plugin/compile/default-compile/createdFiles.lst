@@ -9,8 +9,8 @@ com\biblioteca\servlets\UsuarioServlet.class
 com\biblioteca\datatypes\EstadosU.class
 com\biblioteca\publicadores\UsuarioPublishController.class
 com\biblioteca\datatypes\DtLector.class
-com\biblioteca\servlets\MaterialServlet.class
 com\biblioteca\datatypes\DtLibro.class
+com\biblioteca\servlets\agregarMaterialServlet.class
 com\biblioteca\datatypes\DtPrestamo.class
 com\biblioteca\servlets\PrestamoServlet.class
 com\biblioteca\datatypes\DtMaterial.class
