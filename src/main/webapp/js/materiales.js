@@ -1,12 +1,33 @@
+document.addEventListener("DOMContentLoaded", function() {
+    const tipoMaterialSelect = document.getElementById("tipoMaterial");
+    tipoMaterialSelect.addEventListener("change", function() {
+        mostrarCampos(this.value);
+    });
+});
+
+function mostrarCampos(tipo){
+    const libro = document.getElementById('camposLibro');
+    const articulo = document.getElementById('camposArticulo');
+
+    if (tipo === 'LIBRO') {
+        libro.style.display = 'block';
+        articulo.style.display = 'none';
+    } else if (tipo === 'ARTICULO') {
+        libro.style.display = 'none';
+        articulo.style.display = 'block';
+    } else {
+        libro.style.display = 'none';
+        articulo.style.display = 'none';
+    }
+}
+
 document.getElementById('registrarMaterial').addEventListener('click', function(event) {
     event.preventDefault();
     const tipo = document.getElementById('tipoMaterial').value;
 
     const body =  new URLSearchParams();
-    // servlet expects parameter name 'tipoMaterial'
     body.append('tipoMaterial', tipo);
 
-    // include fechaRegistro so server won't receive null
     const hoy = new Date();
     const yyyy = hoy.getFullYear();
     const mm = String(hoy.getMonth() + 1).padStart(2, '0');
@@ -16,28 +37,25 @@ document.getElementById('registrarMaterial').addEventListener('click', function(
 
     
     if (tipo=='ARTICULO'){
-    const descArticulo= document.getElementById('descArticulo').value;
-    const peso = document.getElementById('peso').value;
-    const dimFisica = document.getElementById('dimFisica').value;
+        const descArticulo= document.getElementById('descArticulo').value;
+        const peso = document.getElementById('peso').value;
+        const dimFisica = document.getElementById('dimFisica').value;
 
-    // servlet expects 'descripcion', 'peso', 'dimFisica'
-    body.append('descripcion', descArticulo);
-    body.append('peso', peso);
-    body.append('dimFisica', dimFisica);
-
+        body.append('descripcion', descArticulo);
+        body.append('peso', peso);
+        body.append('dimFisica', dimFisica);
     } else if (tipo == 'LIBRO') {
-    const titulo = document.getElementById('tituloLibro').value;
-    const cantPag = document.getElementById('cantPaginas').value;
-    // servlet expects 'titulo' and 'cantPag'
-    body.append('titulo', titulo);
-    body.append('cantPag',cantPag);
+        const titulo = document.getElementById('tituloLibro').value;
+        const cantPag = document.getElementById('cantPaginas').value;
+
+        body.append('titulo', titulo);
+        body.append('cantPag',cantPag);
     } else {
         showError('Tipo de material no válido');
         return;
     }
+
     console.log('Request body:', body.toString());
-
-
 
     fetch('/biblioteca-web/agregarMaterial', {
         method: 'POST',
@@ -52,7 +70,11 @@ document.getElementById('registrarMaterial').addEventListener('click', function(
     })
     .then(data => {
         console.log('Material registrado:', data);
-        // attempt to hide modal if it exists and has a Bootstrap instance
+
+        document.getElementById('agregarMaterialForm').reset();
+        mostrarCampos('');
+        mostrarMensaje("Material agregado correctamente", "success");
+
         const modalEl = document.getElementById('exampleModal');
         if (modalEl) {
             const modalInstance = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -60,14 +82,25 @@ document.getElementById('registrarMaterial').addEventListener('click', function(
                 modalInstance.hide();
             }
         }
-        // cargarMateriales();
     })
     .catch(error => {
         console.error('Error al agregar:', error);
+        mostrarMensaje("Error de conexión: " + error.message, "danger");
     });
 });
 
 function showError(message) {
     document.getElementById('errorMessage').textContent = message;
     document.querySelector('.error').style.display = 'block';
+}
+
+function mostrarMensaje(texto, tipo) {
+    const mensaje = document.getElementById("mensajeResultado");
+    mensaje.textContent = texto;
+    mensaje.className = "alert alert-" + tipo;
+    mensaje.classList.remove("d-none");
+
+    setTimeout(() => {
+        mensaje.classList.add("d-none");
+    }, 3000);
 }
