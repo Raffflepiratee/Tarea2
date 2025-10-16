@@ -16,6 +16,20 @@
         <button id="Boton" type="submit">Listar Materiales</button>
         
     </form>
+    <div id="results">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID Material</th>
+                    <th>Fecha de Registro</th>
+                    <th>Tipo</th>
+                    <th>Detalles</th>
+                </tr>
+            </thead>
+            <tbody id="materialesBody">
+            </tbody>
+        </table>
+    </div>
     <script src="${pageContext.request.contextPath}/js/listarMaterialesPorRango.js"></script>
 </body>
 </html>

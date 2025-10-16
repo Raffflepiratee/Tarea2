@@ -70,6 +70,7 @@ public class listarMaterialesPorRangoServlet extends HttpServlet {
         List<DtMaterial> materiales = client.obtenerMaterialesPorRango(fechaInicio, fechaFin);
 
         StringBuilder json = new StringBuilder("[");
+        java.text.SimpleDateFormat salidaFecha = new java.text.SimpleDateFormat("dd/MM/yyyy");
 
         for (int i = 0; i < materiales.size(); i++) {
             String idMaterialstr = "";
@@ -80,7 +81,7 @@ public class listarMaterialesPorRangoServlet extends HttpServlet {
             if (dtmat instanceof DtLibro) {
                 DtLibro libro = (DtLibro) dtmat;
                 idMaterialstr = String.valueOf(libro.getIdMaterial());
-                fechaRegstr = String.valueOf(libro.getFechaRegistro());
+                fechaRegstr = libro.getFechaRegistro() != null ? salidaFecha.format(libro.getFechaRegistro()) : "";
                 tipo = "Libro";
                 detalles = "Título: " + libro.getTitulo() + "\n Páginas: " + libro.getCantPag();
                 System.out.println("Id Material" + libro.getIdMaterial() + "Libro: " + libro.getTitulo() + ", Páginas: "
@@ -88,7 +89,8 @@ public class listarMaterialesPorRangoServlet extends HttpServlet {
             } else if (dtmat instanceof DtArticuloEspecial) {
                 DtArticuloEspecial articulo = (DtArticuloEspecial) dtmat;
                 idMaterialstr = String.valueOf(articulo.getIdMaterial());
-                fechaRegstr = String.valueOf(articulo.getFechaRegistro());
+                fechaRegstr = articulo.getFechaRegistro() != null ? salidaFecha.format(articulo.getFechaRegistro())
+                        : "";
                 tipo = "Artículo Especial";
                 detalles = "Descripción: " + articulo.getDescripcion() + "\n Peso: " + articulo.getPeso()
                         + "\n DimFisica: " + articulo.getDimFisica();
@@ -105,7 +107,7 @@ public class listarMaterialesPorRangoServlet extends HttpServlet {
                     .append("\"ID Material\":\"").append(escaparJson(idMaterialstr)).append("\",")
                     .append("\"Fecha de Registro\":\"").append(escaparJson(fechaRegstr)).append("\",")
                     .append("\"Tipo\":\"").append(escaparJson(tipo)).append("\",")
-                    .append("\"Detalles\":\"").append(escaparJson(detalles)).append("\",")
+                    .append("\"Detalles\":\"").append(escaparJson(detalles)).append("\"")
                     .append("}");
         }
 
