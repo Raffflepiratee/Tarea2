@@ -123,7 +123,6 @@ public class agregarMaterialServlet extends HttpServlet {
                 agregarMaterial(articulo);
 
             }
-            // on success, return a simple JSON ok
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("{\"status\": \"Success\"}");
         } catch (Exception e) {

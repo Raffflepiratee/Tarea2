@@ -51,7 +51,7 @@
                     </select>
                 </div>
 
-                <div><!-- Información del libro -->
+                <div id="camposLibro" style="display: none;"><!-- Información del libro -->
                     <div class="mb-3">
                         <label for="tituloLibro" class="form-label">Título del libro</label>
                         <input type="text" class="form-control" id="tituloLibro" required>
@@ -63,7 +63,7 @@
                 </div>
                 
 
-                <div><!-- Información del material especial -->
+                <div id="camposArticulo" style="display: none;"><!-- Información del material especial -->
                     <div class="mb-3">
                         <label for="descArticulo" class="form-label">Descripción del artículo</label>
                         <input type="text" class="form-control" id="descArticulo" required>
@@ -76,12 +76,13 @@
                         <label for="dimFisica" class="form-label">Dimensión Física</label>
                         <input type="text" class="form-control" id="dimFisica" name="dimFisica" required>
                     </div>
-                 </div>
+                </div>
 
                 <button type="submit" class="btn btn-primary" id="registrarMaterial">Guardar Material</button>
             </form>
         </div>
-
+        <br><br>
+        <div id="mensajeResultado" class="error alert alert-dange" role="alert"></div>
 
         
     </div>
