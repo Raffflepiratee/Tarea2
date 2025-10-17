@@ -73,13 +73,7 @@ public class MaterialServiceClient {
                 throw new RuntimeException("Error al obtener materiales", e);
             }
         } else {
-            // Datos de prueba
-            List<DtMaterial> materiales = new ArrayList<>();
-            materiales.add(new DtMaterial(1, new Date()));
-            materiales.add(new DtMaterial(2, new Date()));
-            materiales.add(new DtMaterial(3, new Date()));
-            System.out.println("📋 Retornando materiales de prueba: " + materiales.size() + " elementos");
-            return materiales;
+            throw new RuntimeException("Servicio de materiales no disponible. El backend SOAP no está conectado.");
         }
     }
 

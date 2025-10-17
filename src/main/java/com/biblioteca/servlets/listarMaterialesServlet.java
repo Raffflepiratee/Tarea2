@@ -18,8 +18,8 @@ import com.biblioteca.datatypes.DtMaterial;
 import com.biblioteca.datatypes.DtArticuloEspecial;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebServlet("/listarMaterialesPorRango")
-public class listarMaterialesPorRangoServlet extends HttpServlet {
+@WebServlet("/listarMateriales")
+public class listarMaterialesServlet extends HttpServlet {
 
     private MaterialServiceClient materialClient;
     private ObjectMapper objectMapper;
@@ -34,42 +34,20 @@ public class listarMaterialesPorRangoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        listarTodosLosMateriales(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String fechaInicioStr = request.getParameter("fechaInicio");
-        Date fechaInicio;
-        try {
-            fechaInicio = new SimpleDateFormat("yyyy-MM-dd").parse(fechaInicioStr);
-        } catch (ParseException pe) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter()
-                    .write("{\"error\": \"Invalid date format for fechaRegistro: '" + fechaInicioStr + "'\"}");
-            return;
-        }
-        String fechaFinStr = request.getParameter("fechaFin");
-        Date fechaFin;
-        try {
-            fechaFin = new SimpleDateFormat("yyyy-MM-dd").parse(fechaFinStr);
-        } catch (ParseException pe) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter()
-                    .write("{\"error\": \"Invalid date format for fechaRegistro: '" + fechaFinStr + "'\"}");
-            return;
-        }
-        listarMaterialesPorRango(request, response, fechaInicio, fechaFin);
     }
 
-    private void listarMaterialesPorRango(HttpServletRequest request, HttpServletResponse response, Date fechaInicio,
-            Date fechaFin) throws IOException {
+    private void listarTodosLosMateriales(HttpServletRequest request, HttpServletResponse response) throws IOException {
         MaterialServiceClient client = new MaterialServiceClient();
-        List<DtMaterial> materiales = client.obtenerMaterialesPorRango(fechaInicio, fechaFin);
+        List<DtMaterial> materiales = client.obtenerMateriales();
 
         StringBuilder json = new StringBuilder("[");
-        java.text.SimpleDateFormat salidaFecha = new java.text.SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat salidaFecha = new SimpleDateFormat("dd/MM/yyyy");
 
         for (int i = 0; i < materiales.size(); i++) {
             String idMaterialstr = "";
@@ -77,25 +55,21 @@ public class listarMaterialesPorRangoServlet extends HttpServlet {
             String tipo = "Material";
             String detalles = "";
             DtMaterial dtmat = materiales.get(i);
+
             if (dtmat instanceof DtLibro) {
                 DtLibro libro = (DtLibro) dtmat;
                 idMaterialstr = String.valueOf(libro.getIdMaterial());
                 fechaRegstr = libro.getFechaRegistro() != null ? salidaFecha.format(libro.getFechaRegistro()) : "";
                 tipo = "Libro";
-                detalles = "Título: " + libro.getTitulo() + "\n Páginas: " + libro.getCantPag();
-                System.out.println("Id Material" + libro.getIdMaterial() + "Libro: " + libro.getTitulo() + ", Páginas: "
-                        + libro.getCantPag());
+                detalles = "Título: " + libro.getTitulo() + "<br>Páginas: " + libro.getCantPag();
             } else if (dtmat instanceof DtArticuloEspecial) {
                 DtArticuloEspecial articulo = (DtArticuloEspecial) dtmat;
                 idMaterialstr = String.valueOf(articulo.getIdMaterial());
                 fechaRegstr = articulo.getFechaRegistro() != null ? salidaFecha.format(articulo.getFechaRegistro())
                         : "";
                 tipo = "Artículo Especial";
-                detalles = "Descripción: " + articulo.getDescripcion() + "\n Peso: " + articulo.getPeso()
-                        + "\n DimFisica: " + articulo.getDimFisica();
-                System.out.println(
-                        "Id Material" + articulo.getIdMaterial() + "Artículo Especial: " + articulo.getDescripcion()
-                                + ", Peso: " + articulo.getPeso() + ", DimFisica: " + articulo.getDimFisica());
+                detalles = "Descripción: " + articulo.getDescripcion() + "<br>Peso: " + articulo.getPeso()
+                        + "<br>DimFisica: " + articulo.getDimFisica();
             }
 
             if (i > 0) {
@@ -103,8 +77,8 @@ public class listarMaterialesPorRangoServlet extends HttpServlet {
             }
 
             json.append("{")
-                    .append("\"ID Material\":\"").append(escaparJson(idMaterialstr)).append("\",")
-                    .append("\"Fecha de Registro\":\"").append(escaparJson(fechaRegstr)).append("\",")
+                    .append("\"IDMaterial\":\"").append(escaparJson(idMaterialstr)).append("\",")
+                    .append("\"FechaRegistro\":\"").append(escaparJson(fechaRegstr)).append("\",")
                     .append("\"Tipo\":\"").append(escaparJson(tipo)).append("\",")
                     .append("\"Detalles\":\"").append(escaparJson(detalles)).append("\"")
                     .append("}");
