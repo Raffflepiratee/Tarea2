@@ -1,5 +1,6 @@
 package com.biblioteca.client;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -17,23 +18,25 @@ import com.biblioteca.publicadores.PrestamoPublishController;
  * Cliente para consumir el servicio web de Préstamos
  */
 public class PrestamoServiceClient {
-    
+
     private static final String PRESTAMO_SERVICE_URL = "http://localhost:8080/prestamos?wsdl";
     private PrestamoPublishController prestamoService;
-    
+
     public PrestamoServiceClient() {
         try {
-            URL url = new URL(PRESTAMO_SERVICE_URL);
-            Service service = Service.create(url, 
-                new javax.xml.namespace.QName("http://publicadores/", "PrestamoPublishControllerService"));
+            System.out.println("Intentando conectar a: " + PRESTAMO_SERVICE_URL);
+            URL url = URI.create(PRESTAMO_SERVICE_URL).toURL();
+            Service service = Service.create(url,
+                    new javax.xml.namespace.QName("http://publicadores/", "PrestamoPublishControllerService"));
             prestamoService = service.getPort(PrestamoPublishController.class);
             System.out.println("✅ Conectado al servicio de préstamos");
         } catch (Exception e) {
-            System.err.println("⚠️ No se pudo conectar con el servicio de préstamos, usando datos de prueba: " + e.getMessage());
+            System.err.println(
+                    "⚠️ No se pudo conectar con el servicio de préstamos, usando datos de prueba: " + e.getMessage());
             prestamoService = null; // Usar datos mock
         }
     }
-    
+
     /**
      * Agrega un nuevo préstamo
      */
@@ -51,7 +54,7 @@ public class PrestamoServiceClient {
             System.out.println("✅ Préstamo agregado (modo prueba): " + correoLector + " -> " + idMaterial);
         }
     }
-    
+
     /**
      * Obtiene todos los préstamos
      */
@@ -71,17 +74,17 @@ public class PrestamoServiceClient {
         } else {
             // Datos de prueba
             List<DtPrestamo> prestamos = new ArrayList<>();
-            prestamos.add(new DtPrestamo(1, new Date(), EstadosP.PENDIENTE, new Date(), 
-                "juan@test.com", "biblio@test.com", 1));
-            prestamos.add(new DtPrestamo(2, new Date(), EstadosP.EN_CURSO, new Date(), 
-                "maria@test.com", "biblio@test.com", 2));
-            prestamos.add(new DtPrestamo(3, new Date(), EstadosP.DEVUELTO, new Date(), 
-                "carlos@test.com", "biblio@test.com", 3));
+            prestamos.add(new DtPrestamo(1, new Date(), EstadosP.PENDIENTE, new Date(),
+                    "juan@test.com", "biblio@test.com", 1));
+            prestamos.add(new DtPrestamo(2, new Date(), EstadosP.EN_CURSO, new Date(),
+                    "maria@test.com", "biblio@test.com", 2));
+            prestamos.add(new DtPrestamo(3, new Date(), EstadosP.DEVUELTO, new Date(),
+                    "carlos@test.com", "biblio@test.com", 3));
             System.out.println("📋 Retornando préstamos de prueba: " + prestamos.size() + " elementos");
             return prestamos;
         }
     }
-    
+
     /**
      * Obtiene préstamos pendientes
      */
@@ -99,15 +102,10 @@ public class PrestamoServiceClient {
                 throw new RuntimeException("Error al obtener préstamos pendientes", e);
             }
         } else {
-            // Datos de prueba - solo pendientes
-            List<DtPrestamo> prestamos = new ArrayList<>();
-            prestamos.add(new DtPrestamo(1, new Date(), EstadosP.PENDIENTE, new Date(), 
-                "juan@test.com", "biblio@test.com", 1));
-            System.out.println("📋 Retornando préstamos pendientes de prueba: " + prestamos.size() + " elementos");
-            return prestamos;
+            throw new RuntimeException("Servicio de préstamos no disponible en modo prueba");
         }
     }
-    
+
     /**
      * Obtiene préstamos por zona
      */
@@ -124,7 +122,7 @@ public class PrestamoServiceClient {
             throw new RuntimeException("Error al obtener préstamos por zona", e);
         }
     }
-    
+
     /**
      * Obtiene préstamos por bibliotecario
      */
@@ -141,7 +139,7 @@ public class PrestamoServiceClient {
             throw new RuntimeException("Error al obtener préstamos por bibliotecario", e);
         }
     }
-    
+
     /**
      * Obtiene préstamos activos de un lector
      */
@@ -158,7 +156,7 @@ public class PrestamoServiceClient {
             throw new RuntimeException("Error al obtener préstamos activos del lector", e);
         }
     }
-    
+
     /**
      * Verifica si el servicio está disponible
      */
@@ -171,4 +169,3 @@ public class PrestamoServiceClient {
         }
     }
 }
-
