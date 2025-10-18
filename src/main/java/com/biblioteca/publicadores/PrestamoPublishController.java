@@ -13,13 +13,12 @@ import com.biblioteca.datatypes.DtPrestamo;
 import com.biblioteca.datatypes.EstadosP;
 import com.biblioteca.datatypes.Zonas;
 
-@WebService
-@SOAPBinding(style = Style.RPC, parameterStyle = ParameterStyle.WRAPPED)
+@WebService(targetNamespace = "http://publicadores/")
+@SOAPBinding(style = Style.DOCUMENT, parameterStyle = ParameterStyle.WRAPPED)
 public interface PrestamoPublishController {
 
     @WebMethod
-    void agregarPrestamo(Date fechaSoli, Date fechaDev, EstadosP estadoP,
-            String correoLector, String correoBiblio, int idMaterial);
+    void agregarPrestamo(DtPrestamo prestamo);
 
     @WebMethod
     DtPrestamo[] obtenerPrestamos();

@@ -13,6 +13,7 @@ import com.biblioteca.datatypes.DtPrestamo;
 import com.biblioteca.datatypes.EstadosP;
 import com.biblioteca.datatypes.Zonas;
 import com.biblioteca.publicadores.PrestamoPublishController;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Cliente para consumir el servicio web de Préstamos
@@ -21,6 +22,7 @@ public class PrestamoServiceClient {
 
     private static final String PRESTAMO_SERVICE_URL = "http://localhost:8080/prestamos?wsdl";
     private PrestamoPublishController prestamoService;
+    private ObjectMapper objectMapper;
 
     public PrestamoServiceClient() {
         try {
@@ -35,23 +37,33 @@ public class PrestamoServiceClient {
                     "⚠️ No se pudo conectar con el servicio de préstamos, usando datos de prueba: " + e.getMessage());
             prestamoService = null; // Usar datos mock
         }
+        objectMapper = new ObjectMapper();
     }
 
     /**
      * Agrega un nuevo préstamo
      */
-    public void agregarPrestamo(Date fechaSoli, Date fechaDev, EstadosP estadoP,
-            String correoLector, String correoBiblio, int idMaterial) {
+    public void agregarPrestamo(DtPrestamo prestamo) {
+        // Log del DtPrestamo que recibe el cliente
+        try {
+            System.out.println("PrestamoServiceClient.agregarPrestamo - DTO recibido: "
+                    + objectMapper.writeValueAsString(prestamo));
+        } catch (Exception ex) {
+            System.out.println("PrestamoServiceClient - error serializando prestamo: " + ex.getMessage());
+        }
+
         if (prestamoService != null) {
             try {
-                prestamoService.agregarPrestamo(fechaSoli, fechaDev, estadoP, correoLector, correoBiblio, idMaterial);
-                System.out.println("✅ Préstamo agregado al backend: " + correoLector + " -> " + idMaterial);
+                // si la interfaz del servicio expone agregarPrestamo(DtPrestamo)
+                prestamoService.agregarPrestamo(prestamo);
+                System.out.println("PrestamoServiceClient - llamado a webservice agregarPrestamo realizado");
             } catch (WebServiceException e) {
-                System.err.println("Error al agregar préstamo: " + e.getMessage());
+                System.err.println("PrestamoServiceClient - Error al agregar préstamo: " + e.getMessage());
                 throw new RuntimeException("Error al agregar préstamo", e);
             }
         } else {
-            System.out.println("✅ Préstamo agregado (modo prueba): " + correoLector + " -> " + idMaterial);
+            // modo prueba: loguear y simular agregado
+            System.out.println("PrestamoServiceClient - modo prueba, no hay servicio remoto. Prestamo: " + prestamo);
         }
     }
 
@@ -92,9 +104,37 @@ public class PrestamoServiceClient {
         if (prestamoService != null) {
             try {
                 DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPendientes();
+                System.out.println("PrestamoServiceClient - obtenerPrestamosPendientes raw length: "
+                        + (prestamos == null ? 0 : prestamos.length));
+                try {
+                    System.out.println("PrestamoServiceClient - obtenerPrestamosPendientes RAW JSON: "
+                            + objectMapper.writeValueAsString(prestamos));
+                } catch (Exception ex) {
+                    // ignorar si falla la serialización
+                    System.out.println("PrestamoServiceClient - ERROR " + ex);
+                }
+
                 List<DtPrestamo> lista = new ArrayList<>();
-                for (DtPrestamo prestamo : prestamos) {
-                    lista.add(prestamo);
+
+                if (prestamos != null) {
+                    for (int i = 0; i < prestamos.length; i++) {
+                        DtPrestamo prestamo = prestamos[i];
+                        try {
+                            System.out
+                                    .println("Prestamo[" + i + "] JSON: " + objectMapper.writeValueAsString(prestamo));
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] toString: " + prestamo);
+                        }
+                        try {
+                            System.out.println(
+                                    "Prestamo[" + i + "] getMaterial(): " + String.valueOf(prestamo.getMaterial()));
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] getMaterial() error: " + ex.getMessage());
+                        }
+                        lista.add(prestamo);
+                    }
+                } else {
+                    System.out.println("PrestamoServiceClient - obtenerPrestamosPendientes: prestamos es null");
                 }
                 return lista;
             } catch (WebServiceException e) {

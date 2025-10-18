@@ -47,38 +47,63 @@ public class ordenarMaterialesPorPendientesServlet extends HttpServlet {
 
     private void ordenarMaterialesPorPendientes(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        try {
+            PrestamoServiceClient prestamoClient = new PrestamoServiceClient();
+            List<DtPrestamo> prestamosPendientes = prestamoClient.obtenerPrestamosPendientes();
 
-        PrestamoServiceClient prestamoClient = new PrestamoServiceClient();
-        List<DtPrestamo> prestamosPendientes = prestamoClient.obtenerPrestamosPendientes();
-
-        StringBuilder json = new StringBuilder("[");
-
-        for (int i = 0; i < prestamosPendientes.size(); i++) {
-            String idMaterial = "";
-            String indice = String.valueOf(i);
-            String cantPrestamosStr = "";
-
-            DtPrestamo prestamo = prestamosPendientes.get(i);
-            idMaterial = String.valueOf(prestamo.getMaterial());
-            cantPrestamosStr = String.valueOf(contarPrestamosPorMaterial(prestamosPendientes, prestamo.getMaterial()));
-
-            if (i > 0) {
-                json.append(",");
+            if (prestamosPendientes == null || prestamosPendientes.isEmpty()) {
+                System.out.println("No se encontraron prestamos pendientes.");
+            } else {
+                System.out.println("Prestamos pendientes tamaño: " + prestamosPendientes.size());
             }
 
-            json.append("{")
-                    .append("\"Indice\":").append(escaparJson(indice)).append("\",")
-                    .append("\"IDMaterial\":").append(escaparJson(idMaterial)).append("\",")
-                    .append("\"PrestamosPendientes\":").append(escaparJson(cantPrestamosStr)).append("\"")
-                    .append("}");
+            StringBuilder json = new StringBuilder("[");
+
+            for (int i = 0; i < prestamosPendientes.size(); i++) {
+                String idMaterial = "";
+                String indice = String.valueOf(i);
+                String cantPrestamosStr = "";
+
+                DtPrestamo prestamo = prestamosPendientes.get(i);
+                if (prestamo == null) {
+                    System.out.println("Prestamo[" + i + "] = null");
+                    continue;
+                }
+
+                try {
+                    String prestamoJson = objectMapper.writeValueAsString(prestamo);
+                    System.out.println("Prestamo[" + i + "] JSON: " + prestamoJson);
+                } catch (Exception ex) {
+                    System.out.println("Prestamo[" + i + "] toString: " + prestamo);
+                }
+
+                System.out.println("Procesando id material: " + prestamo.getMaterial());
+                idMaterial = String.valueOf(prestamo.getMaterial());
+                cantPrestamosStr = String
+                        .valueOf(contarPrestamosPorMaterial(prestamosPendientes, prestamo.getMaterial()));
+
+                if (i > 0) {
+                    json.append(",");
+                }
+
+                json.append("{")
+                        .append("\"Indice\":\"").append(escaparJson(indice)).append("\",")
+                        .append("\"IDMaterial\":\"").append(escaparJson(idMaterial)).append("\",")
+                        .append("\"PrestamosPendientes\":\"").append(escaparJson(cantPrestamosStr)).append("\"")
+                        .append("}");
+            }
+            json.append("]");
+
+            System.out.println("JSON generado: " + json.toString());
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(json.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error al obtener prestamos pendientes: " + e.getMessage());
+            e.printStackTrace();
         }
-        json.append("]");
-
-        System.out.println("JSON generado: " + json.toString());
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(json.toString());
     }
 
     public int contarPrestamosPorMaterial(List<DtPrestamo> prestamos, int idMaterial) {
