@@ -39,48 +39,41 @@ public class PrestamoServiceClient {
 
     private static final String PRESTAMO_SERVICE_URL = "http://localhost:8080/prestamos?wsdl";
     private PrestamoPublishController prestamoService;
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     public PrestamoServiceClient() {
         try {
             System.out.println("Intentando conectar a: " + PRESTAMO_SERVICE_URL);
             URL url = URI.create(PRESTAMO_SERVICE_URL).toURL();
+            System.out.println("URL creada: " + url);
             Service service = Service.create(url,
                     new javax.xml.namespace.QName("http://publicadores/", "PrestamoPublishControllerService"));
             prestamoService = service.getPort(PrestamoPublishController.class);
-            System.out.println("✅ Conectado al servicio de préstamos");
+            System.out.println("Service creado");
+            System.out.println("Conectado al servicio de prestamo en " + PRESTAMO_SERVICE_URL);
         } catch (Exception e) {
-            System.err.println(
-                    "⚠️ No se pudo conectar con el servicio de préstamos, usando datos de prueba: " + e.getMessage());
-            prestamoService = null; // Usar datos mock
+            System.err.println("No se pudo conectar con el servicio de prestamo, usando datos de prueba. Error: "
+                    + e.getClass().getName() + " - " + e.getMessage());
+            System.err.println("Error: " + e.getClass().getName() + " - " + e.getMessage());
+            e.printStackTrace();
+            prestamoService = null;
         }
-        objectMapper = new ObjectMapper();
     }
 
     /**
      * Agrega un nuevo préstamo
      */
     public void agregarPrestamo(DtPrestamo prestamo) {
-        // Log del DtPrestamo que recibe el cliente
-        try {
-            System.out.println("PrestamoServiceClient.agregarPrestamo - DTO recibido: "
-                    + objectMapper.writeValueAsString(prestamo));
-        } catch (Exception ex) {
-            System.out.println("PrestamoServiceClient - error serializando prestamo: " + ex.getMessage());
-        }
-
         if (prestamoService != null) {
             try {
-                // si la interfaz del servicio expone agregarPrestamo(DtPrestamo)
                 prestamoService.agregarPrestamo(prestamo);
-                System.out.println("PrestamoServiceClient - llamado a webservice agregarPrestamo realizado");
+                System.out.println("Préstamo agregado al backend: " + prestamo);
             } catch (WebServiceException e) {
-                System.err.println("PrestamoServiceClient - Error al agregar préstamo: " + e.getMessage());
+                System.err.println("Error al agregar préstamo: " + e.getMessage());
                 throw new RuntimeException("Error al agregar préstamo", e);
             }
         } else {
-            // modo prueba: loguear y simular agregado
-            System.out.println("PrestamoServiceClient - modo prueba, no hay servicio remoto. Prestamo: " + prestamo);
+            System.out.println("Préstamo agregado (modo prueba): " + prestamo);
         }
     }
 
@@ -101,16 +94,7 @@ public class PrestamoServiceClient {
                 throw new RuntimeException("Error al obtener préstamos", e);
             }
         } else {
-            // Datos de prueba BORRARLO DESPUÉS
-            List<DtPrestamo> prestamos = new ArrayList<>();
-            prestamos.add(new DtPrestamo(1, new Date(), EstadosP.PENDIENTE, new Date(),
-                    "juan@test.com", "biblio@test.com", 1));
-            prestamos.add(new DtPrestamo(2, new Date(), EstadosP.EN_CURSO, new Date(),
-                    "maria@test.com", "biblio@test.com", 2));
-            prestamos.add(new DtPrestamo(3, new Date(), EstadosP.DEVUELTO, new Date(),
-                    "carlos@test.com", "biblio@test.com", 3));
-            System.out.println("📋 Retornando préstamos de prueba: " + prestamos.size() + " elementos");
-            return prestamos;
+            throw new RuntimeException("Servicio de materiales no disponible. El backend SOAP no está conectado.");
         }
     }
 
@@ -197,6 +181,70 @@ public class PrestamoServiceClient {
             // Podríamos agregar datos mock aquí si deseas
         }
         return lista;
+    }
+
+    /**
+     * Obtiene préstamos por zona
+     */
+    public List<DtPrestamo> obtenerPrestamosPorZona(Zonas zona) {
+        try {
+            DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPorZona(zona);
+            List<DtPrestamo> lista = new ArrayList<>();
+            for (DtPrestamo prestamo : prestamos) {
+                lista.add(prestamo);
+            }
+            return lista;
+        } catch (WebServiceException e) {
+            System.err.println("Error al obtener préstamos por zona: " + e.getMessage());
+            throw new RuntimeException("Error al obtener préstamos por zona", e);
+        }
+    }
+
+    /**
+     * Obtiene préstamos por bibliotecario
+     */
+    public List<DtPrestamo> obtenerPrestamosPorBibliotecario(int idEmp) {
+        try {
+            DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPorBibliotecario(idEmp);
+            List<DtPrestamo> lista = new ArrayList<>();
+            for (DtPrestamo prestamo : prestamos) {
+                lista.add(prestamo);
+            }
+            return lista;
+        } catch (WebServiceException e) {
+            System.err.println("Error al obtener préstamos por bibliotecario: " + e.getMessage());
+            throw new RuntimeException("Error al obtener préstamos por bibliotecario", e);
+        }
+    }
+
+    /**
+     * Obtiene préstamos activos de un lector
+     */
+    public List<DtPrestamo> obtenerPrestamosActivosLector(String correoLector) {
+        try {
+            DtPrestamo[] prestamos = prestamoService.obtenerPrestamosActivosLector(correoLector);
+            List<DtPrestamo> lista = new ArrayList<>();
+            for (DtPrestamo prestamo : prestamos) {
+                lista.add(prestamo);
+            }
+            return lista;
+        } catch (WebServiceException e) {
+            System.err.println("Error al obtener préstamos activos del lector: " + e.getMessage());
+            throw new RuntimeException("Error al obtener préstamos activos del lector", e);
+        }
+    }
+
+    // Auxiliares
+    /**
+     * Verifica si el servicio está disponible
+     */
+    public boolean isServiceAvailable() {
+        try {
+            prestamoService.obtenerPrestamos();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
@@ -386,68 +434,5 @@ public class PrestamoServiceClient {
             }
         }
         return null;
-    }
-
-    /**
-     * Obtiene préstamos por zona
-     */
-    public List<DtPrestamo> obtenerPrestamosPorZona(Zonas zona) {
-        try {
-            DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPorZona(zona);
-            List<DtPrestamo> lista = new ArrayList<>();
-            for (DtPrestamo prestamo : prestamos) {
-                lista.add(prestamo);
-            }
-            return lista;
-        } catch (WebServiceException e) {
-            System.err.println("Error al obtener préstamos por zona: " + e.getMessage());
-            throw new RuntimeException("Error al obtener préstamos por zona", e);
-        }
-    }
-
-    /**
-     * Obtiene préstamos por bibliotecario
-     */
-    public List<DtPrestamo> obtenerPrestamosPorBibliotecario(int idEmp) {
-        try {
-            DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPorBibliotecario(idEmp);
-            List<DtPrestamo> lista = new ArrayList<>();
-            for (DtPrestamo prestamo : prestamos) {
-                lista.add(prestamo);
-            }
-            return lista;
-        } catch (WebServiceException e) {
-            System.err.println("Error al obtener préstamos por bibliotecario: " + e.getMessage());
-            throw new RuntimeException("Error al obtener préstamos por bibliotecario", e);
-        }
-    }
-
-    /**
-     * Obtiene préstamos activos de un lector
-     */
-    public List<DtPrestamo> obtenerPrestamosActivosLector(String correoLector) {
-        try {
-            DtPrestamo[] prestamos = prestamoService.obtenerPrestamosActivosLector(correoLector);
-            List<DtPrestamo> lista = new ArrayList<>();
-            for (DtPrestamo prestamo : prestamos) {
-                lista.add(prestamo);
-            }
-            return lista;
-        } catch (WebServiceException e) {
-            System.err.println("Error al obtener préstamos activos del lector: " + e.getMessage());
-            throw new RuntimeException("Error al obtener préstamos activos del lector", e);
-        }
-    }
-
-    /**
-     * Verifica si el servicio está disponible
-     */
-    public boolean isServiceAvailable() {
-        try {
-            prestamoService.obtenerPrestamos();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 }
