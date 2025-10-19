@@ -34,12 +34,15 @@ function mostrarMaterialesConPendientes(materiales){
         return;
     }
     
-    materiales.forEach(materiales => {
+    materiales.forEach(item => {
         const row = document.createElement('tr');
+        const indice = (item.Indice !== undefined && item.Indice !== null) ? item.Indice : 'N/A';
+        const idMaterial = (item.IDMaterial !== undefined && item.IDMaterial !== null) ? item.IDMaterial : 'N/A';
+        const prestamosPendientes = (item.PrestamosPendientes !== undefined && item.PrestamosPendientes !== null) ? item.PrestamosPendientes : 'N/A';
         row.innerHTML = `
-            <td>${materiales.Indice || 'N/A'}</td>
-            <td>${materiales.IDMaterial || 'N/A'}</td>
-            <td>${materiales.PrestamosPendientes || 'N/A'}</td>
+            <td>${indice}</td>
+            <td>${idMaterial}</td>
+            <td>${prestamosPendientes}</td>
         `;
         tbody.appendChild(row);
     });

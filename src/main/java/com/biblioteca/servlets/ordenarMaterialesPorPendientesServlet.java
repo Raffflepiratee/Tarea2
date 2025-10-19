@@ -1,8 +1,11 @@
 package com.biblioteca.servlets;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,13 +19,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebServlet("/ordenarMaterialesPorPendientes")
 public class ordenarMaterialesPorPendientesServlet extends HttpServlet {
-    private PrestamoServiceClient prestamoClient;
     private ObjectMapper objectMapper;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        prestamoClient = new PrestamoServiceClient();
         objectMapper = new ObjectMapper();
     }
 
@@ -47,63 +48,38 @@ public class ordenarMaterialesPorPendientesServlet extends HttpServlet {
 
     private void ordenarMaterialesPorPendientes(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        try {
-            PrestamoServiceClient prestamoClient = new PrestamoServiceClient();
-            List<DtPrestamo> prestamosPendientes = prestamoClient.obtenerPrestamosPendientes();
 
-            if (prestamosPendientes == null || prestamosPendientes.isEmpty()) {
-                System.out.println("No se encontraron prestamos pendientes.");
-            } else {
-                System.out.println("Prestamos pendientes tamaño: " + prestamosPendientes.size());
-            }
+        PrestamoServiceClient prestamoClient = new PrestamoServiceClient();
+        List<DtPrestamo> prestamosPendientes = prestamoClient.obtenerPrestamosPendientes();
 
-            StringBuilder json = new StringBuilder("[");
-
-            for (int i = 0; i < prestamosPendientes.size(); i++) {
-                String idMaterial = "";
-                String indice = String.valueOf(i);
-                String cantPrestamosStr = "";
-
-                DtPrestamo prestamo = prestamosPendientes.get(i);
-                if (prestamo == null) {
-                    System.out.println("Prestamo[" + i + "] = null");
-                    continue;
-                }
-
-                try {
-                    String prestamoJson = objectMapper.writeValueAsString(prestamo);
-                    System.out.println("Prestamo[" + i + "] JSON: " + prestamoJson);
-                } catch (Exception ex) {
-                    System.out.println("Prestamo[" + i + "] toString: " + prestamo);
-                }
-
-                System.out.println("Procesando id material: " + prestamo.getMaterial());
-                idMaterial = String.valueOf(prestamo.getMaterial());
-                cantPrestamosStr = String
-                        .valueOf(contarPrestamosPorMaterial(prestamosPendientes, prestamo.getMaterial()));
-
-                if (i > 0) {
-                    json.append(",");
-                }
-
-                json.append("{")
-                        .append("\"Indice\":\"").append(escaparJson(indice)).append("\",")
-                        .append("\"IDMaterial\":\"").append(escaparJson(idMaterial)).append("\",")
-                        .append("\"PrestamosPendientes\":\"").append(escaparJson(cantPrestamosStr)).append("\"")
-                        .append("}");
-            }
-            json.append("]");
-
-            System.out.println("JSON generado: " + json.toString());
-
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(json.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error al obtener prestamos pendientes: " + e.getMessage());
-            e.printStackTrace();
+        // Mantener orden de aparición de materiales
+        Set<Integer> idsMateriales = new LinkedHashSet<>();
+        for (DtPrestamo p : prestamosPendientes) {
+            if (p != null)
+                idsMateriales.add(p.getMaterial());
         }
+
+        // Construir salida con Indice, IDMaterial y PrestamosPendientes (numéricos)
+        List<Map<String, Object>> salida = new java.util.ArrayList<>();
+        int indice = 1;
+        for (Integer idMat : idsMateriales) {
+            int idValue = idMat == null ? 0 : idMat.intValue();
+            int cantPrestamos = contarPrestamosPorMaterial(prestamosPendientes, idValue);
+
+            Map<String, Object> row = new HashMap<>();
+            row.put("Indice", indice);
+            row.put("IDMaterial", idValue);
+            row.put("PrestamosPendientes", cantPrestamos);
+            salida.add(row);
+            indice++;
+        }
+
+        String outJson = objectMapper.writeValueAsString(salida);
+        System.out.println("JSON generado: " + outJson);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(outJson);
     }
 
     public int contarPrestamosPorMaterial(List<DtPrestamo> prestamos, int idMaterial) {
@@ -116,12 +92,4 @@ public class ordenarMaterialesPorPendientesServlet extends HttpServlet {
         return contador;
     }
 
-    private String escaparJson(String s) {
-        if (s == null)
-            return "";
-        return s.replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r");
-    }
 }

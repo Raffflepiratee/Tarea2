@@ -10,7 +10,6 @@ import jakarta.jws.soap.SOAPBinding.ParameterStyle;
 import jakarta.jws.soap.SOAPBinding.Style;
 
 import com.biblioteca.datatypes.DtPrestamo;
-import com.biblioteca.datatypes.EstadosP;
 import com.biblioteca.datatypes.Zonas;
 
 @WebService(targetNamespace = "http://publicadores/")
