@@ -1,0 +1,142 @@
+/* Paleta:
+    #F2EFE7
+    #9ACBD0
+    #48A6A7
+    #006A71
+
+    
+*/
+
+:root{
+    --primary: #F2EFE7;
+    --secondary: #9ACBD0;
+    --accent: #48A6A7;
+    --accent-dark: #006A71;
+    --card-border:6px;
+    --radius:44px;
+    --max-width:460px;
+    --text-dark:#035a54;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+    height:100%;
+    margin:0;
+    font-family: "Inter", "Arial", sans-serif;
+    color:var(--text-dark);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 45%, var(--accent) 100%);
+}
+
+/* Header */
+.site-header{
+    background: var(--accent-dark);
+    color: var(--primary);
+    padding: 18px 0;
+    box-shadow: 0 4px 8px rgba(0,106,113,0.08);
+}
+.header-content{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.brand{
+    font-size:1.25rem;
+    font-weight:700;
+    letter-spacing:0.4px;
+}
+
+/* Main layout */
+.login-wrapper{
+    min-height: calc(100vh - 140px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+}
+
+/* Card */
+.login-card{
+    width:100%;
+    max-width:var(--max-width);
+    border-radius:var(--radius);
+    border: var(--card-border) solid var(--accent-dark);
+    padding:34px 36px;
+    /* Slightly warmer card background for better contrast against the page gradient */
+    background: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(229,233,197,0.75));
+    box-shadow: 0 18px 40px rgba(3,53,50,0.12);
+    text-align:left;
+    position:relative;
+}
+
+/* Title */
+.card-title{
+    margin:0 0 18px 0;
+    font-size:1.25rem;
+    font-weight:700;
+    color:var(--accent-dark);
+}
+
+/* Form */
+.form-label{
+    font-weight:600;
+    font-size:0.9rem;
+    margin-bottom:6px;
+    color:var(--text-dark)
+}
+.form-control{
+    width:100%;
+    padding:10px 12px;
+    font-size:1rem;
+    border-radius:8px;
+    /* border color derived from accent-dark (#006A71 -> rgb(0,106,113)) */
+    border:2px solid rgba(0,106,113,0.18);
+    background: #ffffff;
+    transition: box-shadow .15s, border-color .15s;
+}
+.form-control:focus{
+    outline:none;
+    border-color: var(--accent-dark);
+    box-shadow: 0 6px 18px rgba(0,106,113,0.10);
+}
+
+/* Placeholder color for better readability */
+.form-control::placeholder{
+    color: rgba(3,53,50,0.45);
+}
+
+/* Button */
+.btn-login{
+    /* botón con color de detalle (último de la paleta) */
+    background: var(--accent-dark);
+    color: var(--primary);
+    padding:12px 36px;
+    border-radius:26px;
+    border: none;
+    font-weight:700;
+    letter-spacing:0.4px;
+    box-shadow: 0 8px 20px rgba(0,106,113,0.18);
+    transition: background .15s, transform .08s;
+}
+.btn-login:hover{
+    background: var(--accent);
+    transform: translateY(-2px);
+}
+
+/* Accessible focus state */
+.btn-login:focus{
+    box-shadow: 0 0 0 4px rgba(0,106,113,0.12), 0 8px 20px rgba(0,106,113,0.18);
+    outline: none;
+}
+
+/* Footer */
+.page-footer{
+    padding:14px 0 28px;
+    color: rgba(3,53,50,0.8);
+}
+
+/* Responsive */
+@media (max-width:520px){
+    .login-card{ padding:24px; border-radius:28px; }
+    .brand{ font-size:1rem; }
+}
