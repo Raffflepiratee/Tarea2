@@ -9,7 +9,7 @@ function cargarUsuarios() {
     showLoading(true);
     hideError();
     
-    fetch('/biblioteca-web/usuarios?action=list')
+    fetch('/biblioteca-web/listarLectores?action=list')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al conectar con el servidor');
@@ -91,7 +91,7 @@ document.getElementById('modificarUsuarioForm').addEventListener('click', functi
     // console.log('Preparing to send update with correoUsuario=', correoUsuario);
     console.log('Request body:', body.toString());
 
-    fetch('/biblioteca-web/usuarios?action=update', {
+    fetch('/biblioteca-web/listarLectores?action=update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
         body:body.toString()

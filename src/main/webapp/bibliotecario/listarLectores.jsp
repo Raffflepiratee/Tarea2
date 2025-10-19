@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Usuarios - Biblioteca</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/css/usuarios.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/listarLectores.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1 class="mb-4">📋 Lista de Usuarios</h1>
+        <h1 class="mb-4">📋 Lista de Lectores</h1>
         
         <!-- Loading -->
         <div class="loading">
@@ -39,7 +39,7 @@
                 </thead>
                 <tbody id="usuariosTableBody">
                     <tr>
-                        <td colspan="5" class="text-center">Cargando usuarios...</td>
+                        <td colspan="5" class="text-center">Cargando lectores...</td>
                     </tr>
                 </tbody>
             </table>
@@ -84,6 +84,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/usuarios.js"></script>
+    <script src="${pageContext.request.contextPath}/js/listarLectores.js"></script>
 </body>
 </html>

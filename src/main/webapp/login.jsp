@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,7 +19,7 @@
         <section class="login-card" role="region" aria-label="Formulario de inicio de sesión">
             <h2 class="card-title">Login</h2>
 
-            <form class="login-form" action="#" method="post" novalidate>
+            <form id="loginForm" class="login-form" novalidate>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input id="email" name="email" type="email" class="form-control" placeholder="tu@ejemplo.com" required>
@@ -41,5 +42,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/login.js"></script>
 </body>
 </html>

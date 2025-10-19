@@ -1,19 +1,11 @@
-// /c:/Users/rbogl/OneDrive/Escritorio/ProgramacionAp/Tarea2/src/main/webapp/js/login.js
-// GitHub Copilot
-// Cliente JS para enviar credenciales al backend y redirigir según tipo de usuario.
-// El backend debe aceptar POST JSON en LOGIN_ENDPOINT y devolver JSON:
-// { role: "lector" | "bibliotecario", token?: "<jwt-o-session>" }
-
-const LOGIN_ENDPOINT = '/api/loginServlet'; // ajustar al endpoint real del servidor (p. ej. /LoginServlet)
-const REDIRECTS = {
-    lector: '/lector/dashboard.html',         // ajustar rutas destino
-    bibliotecario: '/bibliotecario/dashboard.html'
-};
+// Endpoint relativo al servlet de login. Ajusta si tu contexto de aplicación difiere.
+const LOGIN_ENDPOINT = 'loginServlet';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('loginForm');
     if (!form) return;
 
+    console.log("registrando submit");
     form.addEventListener('submit', handleSubmit);
 });
 
@@ -34,8 +26,8 @@ async function handleSubmit(e) {
     try {
         const res = await fetch(LOGIN_ENDPOINT, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ email, password })
         });
 
         if (!res.ok) {
@@ -50,7 +42,7 @@ async function handleSubmit(e) {
 
         const data = await res.json();
 
-        // Esperamos { role: 'lector'|'bibliotecario', token?: '...' }
+        // Esperamos { role: 'lector'|'bibliotecario', redirect?: '/ruta', token?: '...' }
         if (!data || !data.role) {
             showMessage('Respuesta inválida del servidor.', true);
             return;
@@ -61,13 +53,12 @@ async function handleSubmit(e) {
             sessionStorage.setItem('authToken', data.token);
         }
 
-        const role = data.role.toLowerCase();
-        if (role === 'lector') {
-            window.location.assign(REDIRECTS.lector);
-            return;
-        }
-        if (role === 'bibliotecario') {
-            window.location.assign(REDIRECTS.bibliotecario);
+    // Preferimos la URL de redirección que devuelva el servidor
+    // El servlet ya construye y devuelve `redirect` (incluye `contextPath`),
+    // así que confiamos en esa URL en lugar de mapas locales duplicados.
+    const redirectTo = data.redirect;
+        if (redirectTo) {
+            window.location.assign(redirectTo);
             return;
         }
 

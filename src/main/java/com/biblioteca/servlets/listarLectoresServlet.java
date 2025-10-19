@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Servlet para manejar operaciones de Usuarios
  */
-@WebServlet("/usuarios")
-public class UsuarioServlet extends HttpServlet {
+@WebServlet("/listarLectores")
+public class listarLectoresServlet extends HttpServlet {
 
     private UsuarioServiceClient usuarioClient;
     private ObjectMapper objectMapper;
@@ -46,10 +46,10 @@ public class UsuarioServlet extends HttpServlet {
         try {
             switch (action != null ? action : "list") {
                 case "list":
-                    listarUsuarios(request, response);
+                    listarLectores(request, response);
                     break;
                 default:
-                    listarUsuarios(request, response);
+                    listarLectores(request, response);
                     break;
             }
         } catch (Exception e) {
@@ -81,10 +81,10 @@ public class UsuarioServlet extends HttpServlet {
         }
     }
 
-    private void listarUsuarios(HttpServletRequest request, HttpServletResponse response)
+    private void listarLectores(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        List<DtUsuario> usuarios = usuarioClient.obtenerUsuarios();
+        List<DtUsuario> usuarios = usuarioClient.obtenerLectores();
         System.out.println("Usuarios recibidos desde el cliente: " + usuarios);
 
         // Construir JSON manualmente
