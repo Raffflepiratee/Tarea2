@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!-- <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%> -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -34,16 +34,53 @@
                         <th>Correo</th>
                         <th>Tipo</th>
                         <th>Detalles</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="usuariosTableBody">
                     <tr>
-                        <td colspan="4" class="text-center">Cargando usuarios...</td>
+                        <td colspan="5" class="text-center">Cargando usuarios...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modificar Datos</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="nombre" class="col-form-label">Zona:</label>
+                                <select class="form-control" id="zona">
+                                    <option value="BIBLIOTECA_CENTRAL">BIBLIOTECA_CENTRAL</option>
+                                    <option value="SUCURSAL_ESTE">SUCURSAL_ESTE</option>
+                                    <option value="SUCURSAL_OESTE">SUCURSAL_OESTE</option>
+                                    <option value="BIBLIOTECA_INFANTIL">BIBLIOTECA_INFANTIL</option>
+                                    <option value="ARCHIVO_GENERAL">ARCHIVO_GENERAL</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="estadoU" class="col-form-label">Estado:</label>
+                                <select class="form-select" id="estadoU">
+                                    <option value="" disabled selected hidden>-- Seleccionar --</option>
+                                    <option value="ACTIVO">Activo</option>
+                                    <option value="SUSPENDIDO">Suspendido</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="modificarUsuarioForm">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

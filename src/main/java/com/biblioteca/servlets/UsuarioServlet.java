@@ -26,23 +26,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @WebServlet("/usuarios")
 public class UsuarioServlet extends HttpServlet {
-    
+
     private UsuarioServiceClient usuarioClient;
     private ObjectMapper objectMapper;
-    
+
     @Override
     public void init() throws ServletException {
         super.init();
         usuarioClient = new UsuarioServiceClient();
         objectMapper = new ObjectMapper();
     }
-    
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String action = request.getParameter("action");
-        
+
         try {
             switch (action != null ? action : "list") {
                 case "list":
@@ -58,21 +58,20 @@ public class UsuarioServlet extends HttpServlet {
             response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
-    
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String action = request.getParameter("action");
-        
+
         try {
-            switch (action != null ? action : "add") {
-                case "add":
-                    agregarUsuario(request, response);
+            switch (action != null ? action : "update") {
+                case "update":
+                    modificarLector(request, response);
                     break;
                 default:
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    response.getWriter().write("{\"error\": \"Acción no válida\"}");
+                    modificarLector(request, response);
                     break;
             }
         } catch (Exception e) {
@@ -81,9 +80,9 @@ public class UsuarioServlet extends HttpServlet {
             response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
-    
-    private void listarUsuarios(HttpServletRequest request, HttpServletResponse response) 
-        throws IOException {
+
+    private void listarUsuarios(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
         List<DtUsuario> usuarios = usuarioClient.obtenerUsuarios();
         System.out.println("Usuarios recibidos desde el cliente: " + usuarios);
@@ -97,99 +96,110 @@ public class UsuarioServlet extends HttpServlet {
 
             String tipo = "Usuario";
             String detalles = "";
+            String zona = "";
+            String estado = "";
 
             if (u instanceof DtLector) {
                 DtLector l = (DtLector) u;
                 tipo = "Lector";
                 detalles = "Zona: " + l.getZona() + ", Dirección: " + l.getDireccion();
+                zona = l.getZona() != null ? l.getZona().toString() : "";
+                estado = l.getEstadoUsuario() != null ? l.getEstadoUsuario().toString() : "";
             } else if (u instanceof DtBibliotecario) {
                 DtBibliotecario b = (DtBibliotecario) u;
                 tipo = "Bibliotecario";
                 detalles = "ID Empleado: " + b.getIdEmp();
             }
 
-            if (i > 0) json.append(",");
+            if (i > 0)
+                json.append(",");
             json.append("{")
-                .append("\"nombre\":\"").append(escaparJson(u.getNombre())).append("\",")
-                .append("\"correo\":\"").append(escaparJson(u.getCorreo())).append("\",")
-                .append("\"tipo\":\"").append(escaparJson(tipo)).append("\",")
-                .append("\"detalles\":\"").append(escaparJson(detalles)).append("\"")
-                .append("}");
+                    .append("\"nombre\":\"").append(escaparJson(u.getNombre())).append("\",")
+                    .append("\"correo\":\"").append(escaparJson(u.getCorreo())).append("\",")
+                    .append("\"tipo\":\"").append(escaparJson(tipo)).append("\",")
+                    .append("\"detalles\":\"").append(escaparJson(detalles)).append("\",")
+                    .append("\"zona\":\"").append(escaparJson(zona)).append("\",")
+                    .append("\"estado\":\"").append(escaparJson(estado)).append("\"")
+                    .append("}");
         }
 
         json.append("]");
-        
+
         System.out.println("JSON generado: " + json.toString());
-        
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(json.toString());
-}
+    }
 
     private String escaparJson(String s) {
-        if (s == null) return "";
+        if (s == null)
+            return "";
         return s.replace("\\", "\\\\")
                 .replace("\"", "\\\"")
                 .replace("\n", "\\n")
                 .replace("\r", "\\r");
     }
 
-    
-    private void agregarUsuario(HttpServletRequest request, HttpServletResponse response) 
-            throws IOException, ParseException {
-        
-        String tipo = request.getParameter("tipo");
-        String nombre = request.getParameter("nombre");
+    private void modificarLector(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+
         String correo = request.getParameter("correo");
-        String password = request.getParameter("password");
-        
-        if (tipo == null || nombre == null || correo == null || password == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("{\"error\": \"Todos los campos son requeridos\"}");
+        String zona = request.getParameter("zona");
+        String estadoParam = request.getParameter("estado");
+
+        // System.out.println("modificarLector called with correo='" + correo + "', zona='" + zona + "', estado='" + estadoParam + "'");
+
+        // if (correo == null || correo.trim().isEmpty()) {
+        //     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        //     response.getWriter().write("{\"error\": \"Missing parameter: correo\"}");
+        //     return;
+        // }
+
+        // if (zona == null || zona.trim().isEmpty()) {
+        //     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        //     response.getWriter().write("{\"error\": \"Missing parameter: zona\"}");
+        //     return;
+        // }
+
+        // if (estadoParam == null || estadoParam.trim().isEmpty()) {
+        //     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        //     response.getWriter().write("{\"error\": \"Missing parameter: estado\"}");
+        //     return;
+        // }
+
+        EstadosU estado;
+
+        estado = EstadosU.valueOf(estadoParam);
+       
+
+
+        // System.out.println("About to call usuarioClient.cambiarZonaLector with correo='" + correo + "', zona='" + zona + "'");
+        try {
+            usuarioClient.cambiarZonaLector(correo, zona);
+            System.out.println("cambiarZonaLector succeeded for '" + correo + "'");
+        } catch (Exception e) {
+            System.err.println("Error in cambiarZonaLector: " + e.getClass().getName() + " - " + e.getMessage());
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\": \"Error changing zona: " + e.getMessage() + "\"}");
             return;
         }
-        
-        DtUsuario usuario = null;
-        
-        if ("lector".equals(tipo)) {
-            String fechaIngresoStr = request.getParameter("fechaIngreso");
-            String estadoStr = request.getParameter("estado");
-            String zonaStr = request.getParameter("zona");
-            String direccion = request.getParameter("direccion");
-            
-            if (fechaIngresoStr == null || estadoStr == null || zonaStr == null || direccion == null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("{\"error\": \"Todos los campos del lector son requeridos\"}");
-                return;
-            }
-            
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date fechaIngreso = sdf.parse(fechaIngresoStr);
-            EstadosU estado = EstadosU.valueOf(estadoStr);
-            Zonas zona = Zonas.valueOf(zonaStr);
-            
-            usuario = new DtLector(nombre, correo, password, fechaIngreso, estado, zona, direccion);
-            
-        } else if ("bibliotecario".equals(tipo)) {
-            String idEmpStr = request.getParameter("idEmp");
-            
-            if (idEmpStr != null && !idEmpStr.isEmpty()) {
-                int idEmp = Integer.parseInt(idEmpStr);
-                usuario = new DtBibliotecario(nombre, correo, password, idEmp);
-            } else {
-                usuario = new DtBibliotecario(nombre, correo, password);
-            }
-            
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("{\"error\": \"Tipo de usuario no válido\"}");
+
+        // System.out.println("About to call usuarioClient.cambiarEstadoLector with correo='" + correo + "', estado='" + estado + "'");
+        try {
+            usuarioClient.cambiarEstadoLector(correo, estado);
+            System.out.println("cambiarEstadoLector succeeded for '" + correo + "' -> " + estado);
+        } catch (Exception e) {
+            System.err.println("Error in cambiarEstadoLector: " + e.getClass().getName() + " - " + e.getMessage());
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\": \"Error changing estado: " + e.getMessage() + "\"}");
             return;
         }
-        
-        usuarioClient.agregarUsuario(usuario);
-        
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"message\": \"Usuario agregado exitosamente\"}");
+        response.getWriter().write("{\"status\": \"success\"}");
     }
 }
