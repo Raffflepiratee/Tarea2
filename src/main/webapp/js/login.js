@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('loginForm');
     if (!form) return;
 
-    console.log("registrando submit");
+    clearMessage();
+
     form.addEventListener('submit', handleSubmit);
 });
 
@@ -49,9 +50,7 @@ async function handleSubmit(e) {
         }
 
         // Guardar token si viene (opcional)
-        if (data.token) {
-            sessionStorage.setItem('authToken', data.token);
-        }
+        localStorage.setItem('tipoUsuario', data.role);
 
     // Preferimos la URL de redirección que devuelva el servidor
     // El servlet ya construye y devuelve `redirect` (incluye `contextPath`),
@@ -76,6 +75,7 @@ function showMessage(text, isError = false) {
         el = document.createElement('div');
         el.id = 'loginMessage';
         el.style.marginTop = '0.5rem';
+        el.style.textAlign = 'center';
         document.getElementById('loginForm')?.appendChild(el);
     }
     el.textContent = text;

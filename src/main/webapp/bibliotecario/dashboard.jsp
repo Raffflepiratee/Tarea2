@@ -10,8 +10,9 @@
     <nav>
         <ul>
             <li><a href="listarLectores.jsp">Listar Lectores</a></li>
-            <li><a href="agregarLector.jsp">Agregar Lector</a></li>
         </ul>
     </nav>
+
+    <script src="${pageContext.request.contextPath}/js/dashboardBiblio.js"></script>
 </body>
 </html>

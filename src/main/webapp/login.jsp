@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="d-flex justify-content-center">
-                    <button type="submit" class="btn btn-login">Iniciar Sesión</button>
+                    <button type="submit" class="btn btn-login">Ingresar</button>
                 </div>
             </form>
         </section>
