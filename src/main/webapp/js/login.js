@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('loginForm');
     if (!form) return;
 
-    clearMessage();
-
     form.addEventListener('submit', handleSubmit);
 });
 
@@ -49,7 +47,7 @@ async function handleSubmit(e) {
             return;
         }
 
-        // Guardar token si viene (opcional)
+        // Guardar rol en localStorage
         localStorage.setItem('tipoUsuario', data.role);
 
     // Preferimos la URL de redirección que devuelva el servidor

@@ -1,0 +1,65 @@
+/* Dashboard styles aligned to login.css palette */
+/* Uses variables defined in login.css (:root) */
+
+* { box-sizing: border-box; }
+
+h1 {
+  margin: 18px 0 14px;
+  font-weight: 700;
+  font-size: 1.75rem;
+  color: var(--accent-dark);
+  text-align: center;
+}
+
+.dashboard-wrapper {
+  min-height: calc(100vh - 140px);
+  padding: 24px 16px 32px;
+  display: block;
+}
+
+/* Nav bar */
+nav {
+  background: var(--accent-dark);
+  color: var(--primary);
+  border-radius: 12px;
+  padding: 10px 16px;
+  box-shadow: 0 6px 16px rgba(0,106,113,0.15);
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+nav a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: background .15s ease, color .15s ease, transform .15s ease;
+}
+nav a:hover {
+  background: var(--accent);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+nav a:active {
+  background: var(--secondary);
+}
+
+/* Utility card style (optional for future panels) */
+.dash-card {
+  background: var(--primary);
+  border: var(--card-border) solid var(--accent-dark);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 20px rgba(0,106,113,0.12);
+}
+
+@media (max-width: 520px) {
+  .dashboard-wrapper { padding: 18px 12px 24px; }
+}
