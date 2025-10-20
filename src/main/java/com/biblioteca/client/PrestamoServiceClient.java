@@ -126,7 +126,7 @@ public class PrestamoServiceClient {
                                 "PrestamoServiceClient - Proxy returned default DTOs, attempting SOAP fallback...");
                         try {
                             List<DtPrestamo> parsed = parsePrestamosFromSoapEndpoint(
-                                    PRESTAMO_SERVICE_URL.replace("?wsdl", ""));
+                                    PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamos");
                             if (parsed != null && !parsed.isEmpty()) {
                                 System.out.println(
                                         "PrestamoServiceClient - SOAP fallback parsed " + parsed.size() + " prestamos");
@@ -209,7 +209,7 @@ public class PrestamoServiceClient {
                                 "PrestamoServiceClient - Proxy returned default/unpopulated DTOs, attempting SOAP fallback parse...");
                         try {
                             List<DtPrestamo> parsed = parsePrestamosFromSoapEndpoint(
-                                    PRESTAMO_SERVICE_URL.replace("?wsdl", ""));
+                                    PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamosPendientes");
                             if (parsed != null && !parsed.isEmpty()) {
                                 System.out.println(
                                         "PrestamoServiceClient - SOAP fallback parsed " + parsed.size() + " prestamos");
@@ -310,14 +310,14 @@ public class PrestamoServiceClient {
      * construir DtPrestamo.
      * NOS SABEMOS Q HACE PERO FUNCIONA, al final vemos de cambiarlo
      */
-    private List<DtPrestamo> parsePrestamosFromSoapEndpoint(String endpointUrl) throws Exception {
+    private List<DtPrestamo> parsePrestamosFromSoapEndpoint(String endpointUrl, String metodoSoap) throws Exception {
         List<DtPrestamo> result = new ArrayList<>();
 
         String soapEnvelope = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
                 + "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:pub=\"http://publicadores/\">"
                 + "<soapenv:Header/>"
                 + "<soapenv:Body>"
-                + "<pub:obtenerPrestamosPendientes/>"
+                + "<pub:" + metodoSoap + "/>"
                 + "</soapenv:Body>"
                 + "</soapenv:Envelope>";
 
@@ -492,5 +492,89 @@ public class PrestamoServiceClient {
             }
         }
         return null;
+    }
+
+    public void cambiarEstadoPrestamo(DtPrestamo prestamo, EstadosP nuevoEstado) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarEstadoPrestamo(prestamo, nuevoEstado);
+                System.out.println("Estado de préstamo cambiado en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar estado de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar estado de préstamo", e);
+            }
+        } else {
+            System.out.println("Estado de préstamo cambiado (modo prueba): " + prestamo);
+        }
+    }
+
+    public void cambiarMaterialPrestamo(DtPrestamo prestamo, int nuevoMaterialID) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarMaterialPrestamo(prestamo, nuevoMaterialID);
+                System.out.println("Material de préstamo cambiado en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar material de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar material de préstamo", e);
+            }
+        } else {
+            System.out.println("Material de préstamo cambiado (modo prueba): " + prestamo);
+        }
+    }
+
+    public void cambiarCorreoLectorPrestamo(DtPrestamo prestamo, String nuevoCorreo) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarCorreoLectorPrestamo(prestamo, nuevoCorreo);
+                System.out.println("Correo del lector de préstamo cambiado en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar correo del lector de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar correo del lector de préstamo", e);
+            }
+        } else {
+            System.out.println("Correo del lector de préstamo cambiado (modo prueba): " + prestamo);
+        }
+    }
+
+    public void cambiarCorreoBibliotecarioPrestamo(DtPrestamo prestamo, String nuevoCorreo) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarCorreoBibliotecarioPrestamo(prestamo, nuevoCorreo);
+                System.out.println("Correo del bibliotecario de préstamo cambiado en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar correo del bibliotecario de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar correo del bibliotecario de préstamo", e);
+            }
+        } else {
+            System.out.println("Correo del bibliotecario de préstamo cambiado (modo prueba): " + prestamo);
+        }
+    }
+
+    public void cambiarFechaDevolucionPrestamo(DtPrestamo prestamo, Date nuevaFecha) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarFechaDevolucionPrestamo(prestamo, nuevaFecha);
+                System.out.println("Fecha de devolución de préstamo cambiada en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar fecha de devolución de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar fecha de devolución de préstamo", e);
+            }
+        } else {
+            System.out.println("Fecha de devolución de préstamo cambiada (modo prueba): " + prestamo);
+        }
+    }
+
+    public void cambiarFechaSolicitudPrestamo(DtPrestamo prestamo, Date nuevaFecha) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarFechaSolicitudPrestamo(prestamo, nuevaFecha);
+                System.out.println("Fecha de solicitud de préstamo cambiada en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar fecha de solicitud de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar fecha de solicitud de préstamo", e);
+            }
+        } else {
+            System.out.println("Fecha de solicitud de préstamo cambiada (modo prueba): " + prestamo);
+        }
     }
 }

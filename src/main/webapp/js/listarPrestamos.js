@@ -70,8 +70,8 @@ function hideError() {
 document.getElementById('modificarPrestamoForm').addEventListener('click', function(event) {
     event.preventDefault();
     const estadoP = document.getElementById('estadoP').value;
-    const fechaSolicitud = document.getElementById('fechaSolicitud').value;
-    const fechaDevolucion = document.getElementById('fechaDevolucion').value;
+    const fechaSolicitud = document.getElementById('fechaSoli').value;
+    const fechaDevolucion = document.getElementById('fechaDev').value;
     const correoL = document.getElementById('correoL').value;
     const idMaterial = document.getElementById('idMaterial').value;
     const correoB = document.getElementById('correoB').value;
@@ -79,15 +79,15 @@ document.getElementById('modificarPrestamoForm').addEventListener('click', funct
     const body = new URLSearchParams();
     body.append('idPrestamo', idPrestamoSeleccionado);
     body.append('estadoP', estadoP);
-    body.append('fechaSolicitud', fechaSolicitud);
-    body.append('fechaDevolucion', fechaDevolucion);
+    body.append('fechaSoli', fechaSolicitud);
+    body.append('fechaDev', fechaDevolucion);
     body.append('correoL', correoL);
     body.append('idMaterial', idMaterial);
     body.append('correoB', correoB);
 
     console.log('Datos a enviar para modificar prestamo:', body.toString());
 
-    fetch('/biblioteca-web/modificarPrestamo', {
+    fetch('/biblioteca-web/listarPrestamos', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

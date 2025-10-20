@@ -46,7 +46,13 @@ public class listarPrestamosServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        try {
+            modificarPrestamo(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
+        }
     }
 
     private void listarPrestamos(HttpServletRequest request, HttpServletResponse response)
@@ -54,6 +60,8 @@ public class listarPrestamosServlet extends HttpServlet {
         try {
             PrestamoServiceClient prestamoClient = new PrestamoServiceClient();
             List<DtPrestamo> prestamos = prestamoClient.obtenerPrestamos();
+
+            System.out.println("Prestamos obtenidos: " + prestamos.size());
 
             StringBuilder json = new StringBuilder("[");
             SimpleDateFormat salidaFecha = new SimpleDateFormat("yyyy-MM-dd");
@@ -94,6 +102,63 @@ public class listarPrestamosServlet extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(json.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+    }
+
+    private void modificarPrestamo(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String idStr = request.getParameter("idPrestamo");
+            String estadoStr = request.getParameter("estadoP");
+            String fechaSoliStr = request.getParameter("fechaSoli");
+            String fechaDevStr = request.getParameter("fechaDev");
+            String correoL = request.getParameter("correoL");
+            String idMaterialStr = request.getParameter("idMaterial");
+            String correoB = request.getParameter("correoB");
+
+            if (idStr == null || estadoStr == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\": \"ID y Estado son requeridos\"}");
+                return;
+            }
+
+            EstadosP nuevoEstado = estadoStr != null ? EstadosP.valueOf(estadoStr) : null;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date nuevaFechaSoli = (fechaSoliStr != null && !fechaSoliStr.isEmpty())
+                    ? sdf.parse(fechaSoliStr)
+                    : null;
+            Date nuevaFechaDev = (fechaDevStr != null && !fechaDevStr.isEmpty())
+                    ? sdf.parse(fechaDevStr)
+                    : null;
+            int nuevoMaterialId = Integer.parseInt(idMaterialStr);
+
+            DtPrestamo prestamo = new DtPrestamo();
+            prestamo.setIdPrestamo(Integer.parseInt(idStr));
+
+            if (nuevoEstado != null) {
+                prestamoClient.cambiarEstadoPrestamo(prestamo, nuevoEstado);
+            }
+            if (nuevaFechaSoli != null) {
+                prestamoClient.cambiarFechaSolicitudPrestamo(prestamo, nuevaFechaSoli);
+            }
+            if (nuevaFechaDev != null) {
+                prestamoClient.cambiarFechaDevolucionPrestamo(prestamo, nuevaFechaDev);
+            }
+            if (correoL != null && !correoL.isEmpty()) {
+                prestamoClient.cambiarCorreoLectorPrestamo(prestamo, correoL);
+            }
+            if (correoB != null && !correoB.isEmpty()) {
+                prestamoClient.cambiarCorreoBibliotecarioPrestamo(prestamo, correoB);
+            }
+            prestamoClient.cambiarMaterialPrestamo(prestamo, nuevoMaterialId);
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"message\": \"Préstamo modificado exitosamente\"}");
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

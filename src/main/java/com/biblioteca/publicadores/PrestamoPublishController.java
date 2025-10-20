@@ -10,6 +10,7 @@ import jakarta.jws.soap.SOAPBinding.ParameterStyle;
 import jakarta.jws.soap.SOAPBinding.Style;
 
 import com.biblioteca.datatypes.DtPrestamo;
+import com.biblioteca.datatypes.EstadosP;
 import com.biblioteca.datatypes.Zonas;
 
 @WebService(targetNamespace = "http://publicadores/")
@@ -33,4 +34,22 @@ public interface PrestamoPublishController {
 
     @WebMethod
     DtPrestamo[] obtenerPrestamosActivosLector(String correoLector);
+
+    @WebMethod
+    void cambiarEstadoPrestamo(DtPrestamo prestamo, EstadosP nuevoEstado);
+
+    @WebMethod
+    void cambiarMaterialPrestamo(DtPrestamo prestamo, int nuevoMaterialID);
+
+    @WebMethod
+    void cambiarCorreoLectorPrestamo(DtPrestamo prestamo, String nuevoCorreo);
+
+    @WebMethod
+    void cambiarCorreoBibliotecarioPrestamo(DtPrestamo prestamo, String nuevoCorreo);
+
+    @WebMethod
+    void cambiarFechaDevolucionPrestamo(DtPrestamo prestamo, Date nuevaFecha);
+
+    @WebMethod
+    void cambiarFechaSolicitudPrestamo(DtPrestamo prestamo, Date nuevaFecha);
 }

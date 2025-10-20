@@ -85,6 +85,10 @@ public class DtPrestamo {
     }
 
     // quiero todos los setter
+    public void setIdPrestamo(int idPrestamo) {
+        this.idPrestamo = idPrestamo;
+    }
+
     public void setFechaSoli(Date fechaSoli) {
         this.fechaSoli = fechaSoli;
     }
