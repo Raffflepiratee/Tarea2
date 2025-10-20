@@ -81,21 +81,79 @@ public class PrestamoServiceClient {
      * Obtiene todos los préstamos
      */
     public List<DtPrestamo> obtenerPrestamos() {
+        List<DtPrestamo> lista = new ArrayList<>();
         if (prestamoService != null) {
             try {
                 DtPrestamo[] prestamos = prestamoService.obtenerPrestamos();
-                List<DtPrestamo> lista = new ArrayList<>();
-                for (DtPrestamo prestamo : prestamos) {
-                    lista.add(prestamo);
+                System.out.println("PrestamoServiceClient - obtenerTodosLosPrestamos raw length: "
+                        + (prestamos == null ? 0 : prestamos.length));
+                try {
+                    System.out.println("PrestamoServiceClient - obtenerTodosLosPrestamos RAW JSON: "
+                            + objectMapper.writeValueAsString(prestamos));
+                } catch (Exception ex) {
+                    System.out.println("PrestamoServiceClient - ERROR serializing array: " + ex);
                 }
-                return lista;
+
+                if (prestamos != null) {
+                    boolean allDefault = true;
+                    for (int i = 0; i < prestamos.length; i++) {
+                        DtPrestamo prestamo = prestamos[i];
+                        try {
+                            System.out
+                                    .println("Prestamo[" + i + "] JSON: " + objectMapper.writeValueAsString(prestamo));
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] toString: " + prestamo);
+                        }
+                        try {
+                            System.out.println("Prestamo[" + i + "] getMaterial(): " + prestamo.getMaterial());
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] getMaterial() error: " + ex.getMessage());
+                        }
+
+                        if (prestamo != null) {
+                            if (prestamo.getIdPrestamo() != 0 || prestamo.getMaterial() != 0
+                                    || prestamo.getFechaSoli() != null || prestamo.getFechaDev() != null
+                                    || prestamo.getLector() != null || prestamo.getBibliotecario() != null
+                                    || prestamo.getEstadoPres() != null) {
+                                allDefault = false;
+                            }
+                        }
+                        lista.add(prestamo);
+                    }
+
+                    if (prestamos.length > 0 && allDefault) {
+                        System.out.println(
+                                "PrestamoServiceClient - Proxy returned default DTOs, attempting SOAP fallback...");
+                        try {
+                            List<DtPrestamo> parsed = parsePrestamosFromSoapEndpoint(
+                                    PRESTAMO_SERVICE_URL.replace("?wsdl", ""));
+                            if (parsed != null && !parsed.isEmpty()) {
+                                System.out.println(
+                                        "PrestamoServiceClient - SOAP fallback parsed " + parsed.size() + " prestamos");
+                                return parsed;
+                            } else {
+                                System.out.println(
+                                        "PrestamoServiceClient - SOAP fallback returned empty list, keeping proxy results");
+                            }
+                        } catch (Exception ex) {
+                            System.err.println("PrestamoServiceClient - SOAP fallback failed: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
+                    }
+                } else {
+                    System.out.println("PrestamoServiceClient - obtenerTodosLosPrestamos: prestamos es null");
+                }
             } catch (WebServiceException e) {
-                System.err.println("Error al obtener préstamos: " + e.getMessage());
-                throw new RuntimeException("Error al obtener préstamos", e);
+                System.err.println("Error al obtener todos los préstamos (WebServiceException): " + e.getMessage());
+                e.printStackTrace();
+            } catch (Exception e) {
+                System.err.println("Error inesperado al obtener todos los préstamos: " + e.getMessage());
+                e.printStackTrace();
             }
         } else {
-            throw new RuntimeException("Servicio de materiales no disponible. El backend SOAP no está conectado.");
+            System.out.println("PrestamoServiceClient - servicio no disponible (modo prueba), devolviendo lista vacía");
         }
+        return lista;
     }
 
     /**
