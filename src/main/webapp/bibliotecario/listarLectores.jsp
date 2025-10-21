@@ -9,12 +9,26 @@
     <link href="${pageContext.request.contextPath}/css/listarLectores.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-<<<<<<< HEAD
-        <h1 class="mb-4">📋 Lista de Lectores</h1>
-=======
-        <h1 class="mb-4">Lista de Lectores 📖</h1>
->>>>>>> origin/modificar-usuario
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container header-content">
+            <div class="brand">Biblioteca Comunitaria UY</div>
+        </div>
+    </header>
+
+    <!-- Navbar con acciones -->
+    <nav class="container mt-3 d-flex justify-content-between align-items-center" aria-label="Main navigation">
+        <div>
+            <button type="button" class="btn btn-outline-light" onclick="history.back()">Volver</button>
+        </div>
+        <div>
+            <a href="${pageContext.request.contextPath}/bibliotecario/dashboard.jsp" class="btn btn-light">Dashboard</a>
+        </div>
+    </nav>
+
+    <main class="page-wrapper">
+        <div class="container">
+            <h1 class="mb-4">📋 Lista de Lectores</h1>
         
         <!-- Loading -->
         <div class="loading">

@@ -16,14 +16,19 @@
         </div>
     </header>
 
+    <!-- Navbar con botones de acción -->
+    <nav class="container mt-3 d-flex justify-content-between align-items-center" aria-label="Main navigation">
+        <div>
+            <button type="button" class="btn btn-outline-light" onclick="history.back()">Volver</button>
+        </div>
+        <div>
+            <a href="${pageContext.request.contextPath}/bibliotecario/listarLectores.jsp" class="btn btn-light">Listar Lectores</a>
+        </div>
+    </nav>
+
     <main class="dashboard-wrapper">
-        <div class="container">
+        <div class="container mt-4">
             <h1>Bienvenido "Nombre del Bibliotecario"</h1>
-            <nav>
-                <ul>
-                    <li><a href="listarLectores.jsp">Listar Lectores</a></li>
-                </ul>
-            </nav>
         </div>
     </main>
 
