@@ -9,7 +9,7 @@ function cargarUsuarios() {
     showLoading(true);
     hideError();
     
-    fetch('/biblioteca-web/usuarios?action=list')
+    fetch('/biblioteca-web/listarLectores?action=list')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al conectar con el servidor');

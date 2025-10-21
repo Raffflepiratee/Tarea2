@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Servlet para manejar operaciones de Usuarios
  */
-@WebServlet("/usuarios")
-public class UsuarioServlet extends HttpServlet {
+@WebServlet("/listarLectores")
+public class listarLectoresServlet extends HttpServlet {
 
     private UsuarioServiceClient usuarioClient;
     private ObjectMapper objectMapper;
