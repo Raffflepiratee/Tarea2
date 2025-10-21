@@ -4,20 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Usuarios - Biblioteca</title>
+    <title>Lista de Lectores - Biblioteca</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/listarLectores.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
+<<<<<<< HEAD
         <h1 class="mb-4">📋 Lista de Lectores</h1>
+=======
+        <h1 class="mb-4">Lista de Lectores 📖</h1>
+>>>>>>> origin/modificar-usuario
         
         <!-- Loading -->
         <div class="loading">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Cargando...</span>
             </div>
-            <p class="mt-2">Cargando usuarios...</p>
+            <p class="mt-2">Cargando lectores...</p>
         </div>
 
         <!-- Error -->
