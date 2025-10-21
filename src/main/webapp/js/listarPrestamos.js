@@ -1,83 +1,122 @@
 document.addEventListener('DOMContentLoaded', function() {
-    cargarPrestamos();
+    initListarPrestamos();
 });
 
+let cachedPrestamos = [];
 let idPrestamoModificar = null;
+
+function initListarPrestamos() {
+    cargarPrestamos();
+
+    // attach handler for modal save button
+    const modificarBtn = document.getElementById('modificarPrestamoForm');
+    if (modificarBtn) {
+        modificarBtn.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            modificarBtn.disabled = true;
+            enviarModificarPrestamo().finally(() => { modificarBtn.disabled = false; });
+        });
+    }
+
+    const filtro = document.getElementById('filtroEstado');
+    if (filtro) {
+        filtro.addEventListener('change', function () {
+            applyFiltroEstado(this.value);
+        });
+    }
+}
 
 function cargarPrestamos() {
     showLoading(true);
     hideError();
-    
+
     fetch('/biblioteca-web/listarPrestamos')
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al conectar con el servidor');
-            }
+            if (!response.ok) throw new Error('Error al conectar con el servidor');
             return response.json();
         })
         .then(data => {
             showLoading(false);
-            mostrarPrestamos(data);
-            console.log('Prestamos cargados:', data);
+            cachedPrestamos = data || [];
+            mostrarPrestamos(cachedPrestamos);
+            console.log('Prestamos cargados:', cachedPrestamos.length);
         })
-        .catch(error => {
+        .catch(err => {
             showLoading(false);
-            showError('Error al cargar prestamos: ' + error.message);
-            console.error('Error:', error);
+            showError('Error al cargar préstamos: ' + (err && err.message ? err.message : err));
+            console.error(err);
         });
 }
 
 function mostrarPrestamos(prestamos) {
     const tbody = document.getElementById('prestamosTableBody');
+    if (!tbody) return;
     tbody.innerHTML = '';
-    
+
     if (!prestamos || prestamos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="text-center">No hay prestamos registrados</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center">No hay préstamos registrados</td></tr>';
         return;
     }
-    
-    prestamos.forEach(prestamos => {
+
+    prestamos.forEach(p => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${prestamos.id || 'N/A'}</td>
-            <td>${prestamos.fechaSoli || 'N/A'}</td>
-            <td>${prestamos.fechaDev || 'N/A'}</td>
-            <td>${prestamos.estadoP || 'N/A'}</td>
-            <td>${prestamos.correoL || 'N/A'}</td>
-            <td>${prestamos.idMaterial || 'N/A'}</td>
-            <td>${prestamos.correoB || 'N/A'}</td>
-            <td><button type="button" class="btn btn-primary" onclick="asignarPrestamo('${prestamos.id}', '${prestamos.estadoP}', '${prestamos.fechaSoli}', '${prestamos.fechaDev}', '${prestamos.correoL}', '${prestamos.idMaterial}', '${prestamos.correoB}')">Modificar</button></td>
+            <td>${p.id || 'N/A'}</td>
+            <td>${p.fechaSoli || 'N/A'}</td>
+            <td>${p.fechaDev || 'N/A'}</td>
+            <td>${p.estadoP || 'N/A'}</td>
+            <td>${p.correoL || 'N/A'}</td>
+            <td>${p.idMaterial || 'N/A'}</td>
+            <td>${p.correoB || 'N/A'}</td>
+            <td><button type="button" class="btn btn-primary" onclick="asignarPrestamo('${p.id}','${p.estadoP}','${p.fechaSoli}','${p.fechaDev}','${p.correoL}','${p.idMaterial}','${p.correoB}')">Modificar</button></td>
         `;
         tbody.appendChild(row);
     });
-    
-    console.log('Total prestamos mostrados:', prestamos.length);
+}
+
+function applyFiltroEstado(estado) {
+    if (!estado || estado === 'ALL') {
+        mostrarPrestamos(cachedPrestamos);
+        return;
+    }
+    const filtered = cachedPrestamos.filter(p => (p.estadoP || '').toUpperCase() === estado.toUpperCase());
+    mostrarPrestamos(filtered);
 }
 
 function showLoading(show) {
-    document.querySelector('.loading').style.display = show ? 'block' : 'none';
+    const el = document.querySelector('.loading');
+    if (el) el.style.display = show ? 'block' : 'none';
 }
 
 function showError(message) {
-    document.getElementById('errorMessage').textContent = message;
-    document.querySelector('.error').style.display = 'block';
+    const msgEl = document.getElementById('errorMessage');
+    if (msgEl) msgEl.textContent = message;
+    const errBox = document.querySelector('.error');
+    if (errBox) errBox.style.display = 'block';
 }
 
 function hideError() {
-    document.querySelector('.error').style.display = 'none';
+    const errBox = document.querySelector('.error');
+    if (errBox) errBox.style.display = 'none';
 }
 
-document.getElementById('modificarPrestamoForm').addEventListener('click', function(event) {
-    event.preventDefault();
-    const estadoP = document.getElementById('estadoP').value;
-    const fechaSolicitud = document.getElementById('fechaSoli').value;
-    const fechaDevolucion = document.getElementById('fechaDev').value;
-    const correoL = document.getElementById('correoL').value;
-    const idMaterial = document.getElementById('idMaterial').value;
-    const correoB = document.getElementById('correoB').value;
+function enviarModificarPrestamo() {
+    const estadoPEl = document.getElementById('estadoP');
+    const fechaSoliEl = document.getElementById('fechaSoli');
+    const fechaDevEl = document.getElementById('fechaDev');
+    const correoLEl = document.getElementById('correoL');
+    const idMaterialEl = document.getElementById('idMaterial');
+    const correoBEl = document.getElementById('correoB');
+
+    const estadoP = estadoPEl ? estadoPEl.value : '';
+    const fechaSolicitud = fechaSoliEl ? fechaSoliEl.value : '';
+    const fechaDevolucion = fechaDevEl ? fechaDevEl.value : '';
+    const correoL = correoLEl ? correoLEl.value : '';
+    const idMaterial = idMaterialEl ? idMaterialEl.value : '';
+    const correoB = correoBEl ? correoBEl.value : '';
 
     const body = new URLSearchParams();
-    body.append('idPrestamo', idPrestamoSeleccionado);
+    body.append('idPrestamo', idPrestamoModificar || '');
     body.append('estadoP', estadoP);
     body.append('fechaSoli', fechaSolicitud);
     body.append('fechaDev', fechaDevolucion);
@@ -85,44 +124,63 @@ document.getElementById('modificarPrestamoForm').addEventListener('click', funct
     body.append('idMaterial', idMaterial);
     body.append('correoB', correoB);
 
-    console.log('Datos a enviar para modificar prestamo:', body.toString());
+    const modalErrorEl = document.getElementById('modalErrorMessage');
+    if (modalErrorEl) { modalErrorEl.style.display = 'none'; modalErrorEl.textContent = ''; }
 
-    fetch('/biblioteca-web/listarPrestamos', {
+    return fetch('/biblioteca-web/listarPrestamos', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: body.toString(),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
     })
-    .then(response => {
+    .then(async response => {
         if (!response.ok) {
-            return response.text().then(text => { throw new Error('Server error: ' + text); });
+            const text = await response.text();
+            try {
+                const obj = JSON.parse(text);
+                const msg = obj && obj.error ? obj.error : text;
+                if (modalErrorEl) { modalErrorEl.textContent = msg; modalErrorEl.style.display = 'block'; }
+                throw new Error(msg);
+            } catch (e) {
+                if (modalErrorEl) { modalErrorEl.textContent = text || response.statusText || 'Error del servidor'; modalErrorEl.style.display = 'block'; }
+                throw new Error(text || response.statusText || 'Error del servidor');
+            }
         }
         return response.json();
     })
     .then(data => {
-        console.log('Prestamo actualizado:', data);
-        bootstrap.Modal.getInstance(document.getElementById('exampleModal')).hide();
+        const modalEl = document.getElementById('exampleModal');
+        if (modalEl) {
+            const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.hide();
+        }
         cargarPrestamos();
     })
-    .catch(error => {
-        console.error('Error al actualizar:', error);
-        showError('No se pudo actualizar el prestamo');
+    .catch(err => {
+        showError(err && err.message ? err.message : 'No se pudo actualizar el préstamo');
+        console.error(err);
     });
-});
+}
 
 function asignarPrestamo(idPrestamo, estadoP, fechaSoli, fechaDev, correoL, idMaterial, correoB) {
-    idPrestamoSeleccionado = idPrestamo;
-    console.log('ID préstamo asignado:', idPrestamoSeleccionado);
+    idPrestamoModificar = idPrestamo;
 
-    if (estadoP) document.getElementById('estadoP').value = estadoP;
-    if (fechaSoli) document.getElementById('fechaSoli').value = fechaSoli;
-    if (fechaDev) document.getElementById('fechaDev').value = fechaDev;
-    if (correoL) document.getElementById('correoL').value = correoL;
-    if (idMaterial) document.getElementById('idMaterial').value = idMaterial;
-    if (correoB) document.getElementById('correoB').value = correoB;
+    const estadoPEl = document.getElementById('estadoP');
+    const fechaSoliEl = document.getElementById('fechaSoli');
+    const fechaDevEl = document.getElementById('fechaDev');
+    const correoLEl = document.getElementById('correoL');
+    const idMaterialEl = document.getElementById('idMaterial');
+    const correoBEl = document.getElementById('correoB');
+
+    if (estadoPEl && estadoP) estadoPEl.value = estadoP;
+    if (fechaSoliEl && fechaSoli) fechaSoliEl.value = fechaSoli;
+    if (fechaDevEl && fechaDev) fechaDevEl.value = fechaDev;
+    if (correoLEl && correoL) correoLEl.value = correoL;
+    if (idMaterialEl && idMaterial) idMaterialEl.value = idMaterial;
+    if (correoBEl && correoB) correoBEl.value = correoB;
 
     const modalEl = document.getElementById('exampleModal');
-    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-    modal.show();
+    if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
 }

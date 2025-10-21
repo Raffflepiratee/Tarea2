@@ -24,6 +24,15 @@
         </div>
 
         <div class="table-responsive">
+            <div class="mb-3 d-flex align-items-center">
+                <label for="filtroEstado" class="me-2 mb-0">Filtrar por estado:</label>
+                <select id="filtroEstado" class="form-select w-auto">
+                    <option value="ALL">Todos</option>
+                    <option value="PENDIENTE">Pendientes</option>
+                    <option value="EN_CURSO">En curso</option>
+                    <option value="DEVUELTO">Devueltos</option>
+                </select>
+            </div>
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
