@@ -33,6 +33,9 @@ public interface PrestamoPublishController {
     DtPrestamo[] obtenerPrestamosPorBibliotecario(int idEmp);
 
     @WebMethod
+    DtPrestamo[] obtenerPrestamosPorLector(String correoLector);
+
+    @WebMethod
     DtPrestamo[] obtenerPrestamosActivosLector(String correoLector);
 
     @WebMethod

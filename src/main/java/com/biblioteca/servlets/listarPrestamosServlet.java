@@ -161,8 +161,11 @@ public class listarPrestamosServlet extends HttpServlet {
             response.getWriter().write("{\"message\": \"Préstamo modificado exitosamente\"}");
         } catch (Exception e) {
             e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            String mensaje = e.getMessage();
+            response.getWriter().write("{\"status\":\"error\", \"message\": \"" + escaparJson(mensaje) + "\"}");
         }
     }
 

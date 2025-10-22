@@ -125,7 +125,7 @@ public class PrestamoServiceClient {
                         System.out.println(
                                 "PrestamoServiceClient - Proxy returned default DTOs, attempting SOAP fallback...");
                         try {
-                            List<DtPrestamo> parsed = parsePrestamosFromSoapEndpoint(
+                            List<DtPrestamo> parsed = parsePrestamosFromSoapEndpointSinParametros(
                                     PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamos");
                             if (parsed != null && !parsed.isEmpty()) {
                                 System.out.println(
@@ -208,7 +208,7 @@ public class PrestamoServiceClient {
                         System.out.println(
                                 "PrestamoServiceClient - Proxy returned default/unpopulated DTOs, attempting SOAP fallback parse...");
                         try {
-                            List<DtPrestamo> parsed = parsePrestamosFromSoapEndpoint(
+                            List<DtPrestamo> parsed = parsePrestamosFromSoapEndpointSinParametros(
                                     PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamosPendientes");
                             if (parsed != null && !parsed.isEmpty()) {
                                 System.out.println(
@@ -275,6 +275,94 @@ public class PrestamoServiceClient {
         }
     }
 
+    public List<DtPrestamo> obtenerPrestamosPorLector(String correoLector) {
+        List<DtPrestamo> lista = new ArrayList<>();
+
+        if (prestamoService != null) {
+            try {
+                System.out.println("PrestamoServiceClient - obteniendo préstamos para lector: " + correoLector);
+                DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPorLector(correoLector);
+
+                System.out.println("PrestamoServiceClient - obtenerPrestamosPorLector raw length: "
+                        + (prestamos == null ? 0 : prestamos.length));
+
+                try {
+                    System.out.println("PrestamoServiceClient - obtenerPrestamosPorLector RAW JSON: "
+                            + objectMapper.writeValueAsString(prestamos));
+                } catch (Exception ex) {
+                    System.out.println("PrestamoServiceClient - ERROR serializing array: " + ex);
+                }
+
+                boolean allDefault = true;
+
+                if (prestamos != null) {
+                    for (int i = 0; i < prestamos.length; i++) {
+                        DtPrestamo p = prestamos[i];
+
+                        try {
+                            System.out.println("Prestamo[" + i + "] JSON: " + objectMapper.writeValueAsString(p));
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] toString: " + p);
+                        }
+
+                        try {
+                            System.out.println("Prestamo[" + i + "] getMaterial(): " + p.getMaterial());
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] getMaterial() error: " + ex.getMessage());
+                        }
+
+                        if (p != null && (p.getIdPrestamo() != 0 ||
+                                p.getMaterial() != 0 ||
+                                p.getFechaSoli() != null ||
+                                p.getFechaDev() != null ||
+                                p.getLector() != null ||
+                                p.getBibliotecario() != null ||
+                                p.getEstadoPres() != null)) {
+                            allDefault = false;
+                        }
+
+                        lista.add(p);
+                    }
+
+                    if (prestamos.length > 0 && allDefault) {
+                        System.out.println(
+                                "PrestamoServiceClient - Proxy devolvió DTOs vacíos, intentando fallback SOAP...");
+                        try {
+                            List<DtPrestamo> parsed = parsePrestamosFromSoapEndpointConParametro(
+                                    PRESTAMO_SERVICE_URL.replace("?wsdl", ""),
+                                    "obtenerPrestamosPorLector", // ← nombre del método SOAP
+                                    correoLector); // ← parámetro para el envelope
+                            if (parsed != null && !parsed.isEmpty()) {
+                                System.out.println("PrestamoServiceClient - Fallback SOAP devolvió " + parsed.size()
+                                        + " préstamos");
+                                return parsed;
+                            } else {
+                                System.out.println(
+                                        "PrestamoServiceClient - Fallback SOAP devolvió lista vacía, se mantiene proxy");
+                            }
+                        } catch (Exception ex) {
+                            System.err.println("PrestamoServiceClient - Fallback SOAP falló: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
+                    }
+                } else {
+                    System.out.println("PrestamoServiceClient - obtenerPrestamosPorLector: array es null");
+                }
+
+            } catch (WebServiceException e) {
+                System.err.println("Error al obtener préstamos por lector (WebServiceException): " + e.getMessage());
+                e.printStackTrace();
+            } catch (Exception e) {
+                System.err.println("Error inesperado al obtener préstamos por lector: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("PrestamoServiceClient - servicio no disponible (modo prueba), devolviendo lista vacía");
+        }
+
+        return lista;
+    }
+
     /**
      * Obtiene préstamos activos de un lector
      */
@@ -310,16 +398,33 @@ public class PrestamoServiceClient {
      * construir DtPrestamo.
      * NOS SABEMOS Q HACE PERO FUNCIONA, al final vemos de cambiarlo
      */
-    private List<DtPrestamo> parsePrestamosFromSoapEndpoint(String endpointUrl, String metodoSoap) throws Exception {
-        List<DtPrestamo> result = new ArrayList<>();
 
-        String soapEnvelope = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+    private List<DtPrestamo> parsePrestamosFromSoapEndpointSinParametros(String endpointUrl, String metodoSoap)
+            throws Exception {
+        return parsePrestamosFromSoapEnvelope(endpointUrl, "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
                 + "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:pub=\"http://publicadores/\">"
                 + "<soapenv:Header/>"
                 + "<soapenv:Body>"
                 + "<pub:" + metodoSoap + "/>"
                 + "</soapenv:Body>"
-                + "</soapenv:Envelope>";
+                + "</soapenv:Envelope>");
+    }
+
+    private List<DtPrestamo> parsePrestamosFromSoapEndpointConParametro(String endpointUrl, String metodoSoap,
+            String parametro) throws Exception {
+        return parsePrestamosFromSoapEnvelope(endpointUrl, "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                + "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:pub=\"http://publicadores/\">"
+                + "<soapenv:Header/>"
+                + "<soapenv:Body>"
+                + "<pub:" + metodoSoap + ">"
+                + "<arg0>" + escapeXml(parametro) + "</arg0>"
+                + "</pub:" + metodoSoap + ">"
+                + "</soapenv:Body>"
+                + "</soapenv:Envelope>");
+    }
+
+    private List<DtPrestamo> parsePrestamosFromSoapEnvelope(String endpointUrl, String soapEnvelope) throws Exception {
+        List<DtPrestamo> result = new ArrayList<>();
 
         URL url = URI.create(endpointUrl).toURL();
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -446,6 +551,16 @@ public class PrestamoServiceClient {
         }
 
         return result;
+    }
+
+    private String escapeXml(String s) {
+        if (s == null)
+            return "";
+        return s.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;");
     }
 
     private String getChildText(Element parent, String childName) {

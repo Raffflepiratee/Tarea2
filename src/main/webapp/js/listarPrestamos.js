@@ -8,7 +8,6 @@ let idPrestamoModificar = null;
 function initListarPrestamos() {
     cargarPrestamos();
 
-    // attach handler for modal save button
     const modificarBtn = document.getElementById('modificarPrestamoForm');
     if (modificarBtn) {
         modificarBtn.addEventListener('click', function (ev) {
@@ -137,7 +136,7 @@ function enviarModificarPrestamo() {
             const text = await response.text();
             try {
                 const obj = JSON.parse(text);
-                const msg = obj && obj.error ? obj.error : text;
+                const msg = obj && (obj.error || obj.message) ? (obj.error || obj.message) : text;
                 if (modalErrorEl) { modalErrorEl.textContent = msg; modalErrorEl.style.display = 'block'; }
                 throw new Error(msg);
             } catch (e) {
