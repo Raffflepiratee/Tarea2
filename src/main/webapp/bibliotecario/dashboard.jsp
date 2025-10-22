@@ -6,29 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Bibliotecario</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/css/login.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/dashboard.css" rel="stylesheet">
 </head>
 <body>
-    <header class="site-header">
-        <div class="container header-content">
-            <div class="brand">Biblioteca Comunitaria UY</div>
+    <!-- Top bar -->
+    <header class="topbar">
+        <div class="inner">
+            <div class="brand">
+                <a href="${pageContext.request.contextPath}/bibliotecario/dashboard.jsp">Biblioteca Comunitaria UY</a>
+            </div>
+            <div class="profile">
+                <small class="role">bibliotecario</small>
+                <span class="name">Nombre Apellido</span>
+                <div>
+                    <button class="logoutBtn" id="logoutBtn">Salir</button>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Navbar con botones de acción -->
-    <nav class="container mt-3 d-flex justify-content-between align-items-center" aria-label="Main navigation">
-        <div>
-            <button type="button" class="btn btn-outline-light" onclick="history.back()">Volver</button>
-        </div>
-        <div>
-            <a href="${pageContext.request.contextPath}/bibliotecario/listarLectores.jsp" class="btn btn-light">Listar Lectores</a>
-        </div>
-    </nav>
-
-    <main class="dashboard-wrapper">
-        <div class="container mt-4">
-            <h1>Bienvenido "Nombre del Bibliotecario"</h1>
+    <main class="main">
+        <div class="grid">
+            <a class="card" href="${pageContext.request.contextPath}/bibliotecario/listarLectores.jsp">
+                <div class="title">Listar lectores</div>
+            </a>
+            <a class="card" href="#">
+                <div class="title">Registrar material</div>
+            </a>
+            <a class="card" href="#">
+                <div class="title">Donaciones por rango</div>
+            </a>
+            <a class="card" href="#">
+                <div class="title">Materiales con más préstamos</div>
+            </a>
+            <a class="card" href="#">
+                <div class="title">Préstamos de un lector</div>
+            </a>
+            <a class="card" href="#">
+                <div class="title">Reporte zonal</div>
+            </a>
+            <a class="card" href="#">
+                <div class="title">Mi historial de préstamos</div>
+            </a>
         </div>
     </main>
 

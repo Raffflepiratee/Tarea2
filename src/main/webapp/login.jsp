@@ -9,8 +9,8 @@
     <link href="css/login.css" rel="stylesheet">
 </head>
 <body>
-    <header class="site-header">
-        <div class="container header-content">
+    <header class="topbar">
+        <div class="inner">
             <div class="brand">Biblioteca Comunitaria UY</div>
         </div>
     </header>

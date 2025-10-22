@@ -1,65 +1,203 @@
-/* Dashboard styles aligned to login.css palette */
-/* Uses variables defined in login.css (:root) */
+/* Dashboard styles - self-contained for bibliotecario dashboard */
 
-* { box-sizing: border-box; }
-
-h1 {
-  margin: 18px 0 14px;
-  font-weight: 700;
-  font-size: 1.75rem;
-  color: var(--accent-dark);
-  text-align: center;
+:root {
+  --primary: #F2EFE7;
+  --secondary: #9ACBD0;
+  --accent: #48A6A7;
+  --accent-dark: #006A71;
+  --card-bg: #FFFFFF;
+  --bg: #FBFBFB;
+  --text: #053936;
+  --muted: #6b7c7b;
+  --card-border: 2px;
+  --radius-lg: 28px;
 }
 
-.dashboard-wrapper {
-  min-height: calc(100vh - 140px);
-  padding: 24px 16px 32px;
-  display: block;
+* {
+  box-sizing: border-box
 }
 
-/* Nav bar */
-nav {
-  background: var(--accent-dark);
-  color: var(--primary);
-  border-radius: 12px;
-  padding: 10px 16px;
-  box-shadow: 0 6px 16px rgba(0,106,113,0.15);
-}
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 16px;
+html,
+body {
+  height: 100%;
   margin: 0;
-  padding: 0;
-  justify-content: center;
-  flex-wrap: wrap;
+  font-family: Inter, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text)
 }
-nav a {
-  color: var(--primary);
+
+/* Top bar */
+.topbar {
+  width: 100%;
+  background: var(--card-bg);
+  border-bottom: 4px solid rgba(3, 53, 50, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar .inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand a {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--text);
   text-decoration: none;
-  font-weight: 600;
+}
+
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: right;
   padding: 8px 12px;
+  border: 3px solid rgba(3, 53, 50, 0.12);
+  border-radius: 14px;
+  background: var(--card-bg)
+}
+
+.profile .role {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1
+}
+
+.profile .name {
+  font-weight: 700;
+  display: block
+}
+
+.profile>div {
+  display: flex;
+  align-items: center
+}
+
+.profile .logout {
+  margin-left: 8px;
+  background: transparent;
+  border: 2px solid var(--text);
+  color: var(--text);
+  padding: 6px 10px;
   border-radius: 10px;
-  transition: background .15s ease, color .15s ease, transform .15s ease;
+  cursor: pointer
 }
-nav a:hover {
+
+.profile .logout:hover {
   background: var(--accent);
-  color: var(--primary);
-  transform: translateY(-1px);
-}
-nav a:active {
-  background: var(--secondary);
+  color: #fff;
+  border-color: var(--accent)
 }
 
-/* Utility card style (optional for future panels) */
-.dash-card {
-  background: var(--primary);
-  border: var(--card-border) solid var(--accent-dark);
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 10px 20px rgba(0,106,113,0.12);
+/* Main content */
+.main {
+  max-width: 1200px;
+  margin: 36px auto;
+  padding: 24px 20px 60px
 }
 
-@media (max-width: 520px) {
-  .dashboard-wrapper { padding: 18px 12px 24px; }
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  column-gap: 40px;
+  row-gap: 40px;
+  width: 100%;
+  padding: 0 20px;
+  /* pequeño padding para asegurar espacio lateral */
+}
+
+.card {
+  width: 260px;
+  height: 160px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
+  border: var(--card-border) solid rgba(3, 53, 50, 0.12);
+  border-radius: 36px;
+  padding: 18px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  cursor: pointer;
+  /* ensure anchor cards don't show default link styles */
+  color: inherit;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.card:visited {
+  color: inherit
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 30px -12px rgba(3, 53, 50, 0.12);
+  border-color: var(--accent-dark)
+}
+
+.card .title {
+  font-weight: 700;
+  font-style: italic;
+  color: var(--text);
+  font-size: 1.05rem;
+  line-height: 1.2;
+  padding: 6px
+}
+
+/* make the anchor behave as a block so it can be centered and not underlined */
+.grid .card {
+  display: inline-flex
+}
+
+.page-footer {
+  padding: 18px 0 28px;
+  color: rgba(3, 53, 50, 0.6)
+}
+
+@media (max-width:900px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 22px
+  }
+
+  .card {
+    width: auto;
+    height: 150px
+  }
+}
+
+@media (max-width:520px) {
+  .topbar .inner {
+    padding: 12px
+  }
+
+  .brand {
+    font-size: 1.15rem
+  }
+
+  .main {
+    margin: 18px auto;
+    padding: 16px
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 18px
+  }
+
+  .card {
+    height: 130px;
+    border-radius: 18px
+  }
 }
