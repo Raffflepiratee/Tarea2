@@ -14,6 +14,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import com.biblioteca.client.PrestamoServiceClient;
+import com.biblioteca.client.UsuarioServiceClient;
+import com.biblioteca.datatypes.DtUsuario;
+import com.biblioteca.datatypes.DtLector;
 import com.biblioteca.datatypes.DtPrestamo;
 import com.biblioteca.datatypes.EstadosP;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +48,39 @@ public class prestamosActivosLectorServlet extends HttpServlet {
             response.getWriter().write("{\"error\": \"Missing required parameter: lector\"}");
             return;
         }
+
+        // Antes de consultar los préstamos, verificamos que el correo exista y sea un
+        // lector
+        try {
+            UsuarioServiceClient usuarioClient = new UsuarioServiceClient();
+            List<DtUsuario> usuarios = usuarioClient.obtenerUsuarios();
+            DtUsuario encontrado = null;
+            if (usuarios != null) {
+                for (DtUsuario u : usuarios) {
+                    if (u != null && u.getCorreo() != null && u.getCorreo().equalsIgnoreCase(lector.trim())) {
+                        encontrado = u;
+                        break;
+                    }
+                }
+            }
+
+            if (encontrado == null) {
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("{\"message\":\"El correo ingresado no corresponde a ningún usuario\"}");
+                return;
+            }
+
+            if (!(encontrado instanceof DtLector)) {
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("{\"message\":\"El usuario encontrado no es un lector\"}");
+                return;
+            }
+
+        } catch (Exception ex) {
+            // Si hay un error consultando usuarios, seguimos pero logueamos
+            System.err.println("Error verificando usuario: " + ex.getMessage());
+        }
+
         PrestamosActivosLector(lector, request, response);
 
     }

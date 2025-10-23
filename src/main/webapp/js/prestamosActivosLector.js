@@ -71,21 +71,30 @@ function cargarPrestamosActivos(correo) {
 	.then(data => {
 		showLoading(false);
 
-		// If server returned an object with an error field, show it
-		if (data && typeof data === 'object' && !Array.isArray(data) && data.error) {
-			showError(data.error);
-			const tbody = document.getElementById('prestamosTableBody');
-			if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="text-center text-warning">' + escapeHtml(data.error) + '</td></tr>';
-			return;
+		// If server returned an object with an error or message field, show it
+		if (data && typeof data === 'object' && !Array.isArray(data)) {
+			if (data.error) {
+				showError(data.error);
+				const tbody = document.getElementById('prestamosTableBody');
+				if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="text-center text-dark">' + escapeHtml(data.error) + '</td></tr>';
+				return;
+			}
+			if (data.message) {
+				showError(data.message);
+				const tbody = document.getElementById('prestamosTableBody');
+				if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="text-center text-dark">' + escapeHtml(data.message) + '</td></tr>';
+				return;
+			}
 		}
 
 		// If server returned an array (possibly empty), render it
 		if (Array.isArray(data)) {
-			if (data.length === 0) {
+			if (data.length === 0 || prestamoVaciosLector(data)) {
 				const tbody = document.getElementById('prestamosTableBody');
 				if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="text-center">El lector no tiene préstamos activos</td></tr>';
 				return;
 			}
+			// Normal non-empty array -> render
 			renderPrestamos(data);
 			return;
 		}
@@ -131,6 +140,24 @@ function renderPrestamos(prestamos) {
 		rowsHtml += `<tr><td>${id}</td><td>${escapeHtml(fechaS)}</td><td>${escapeHtml(fechaD)}</td><td>${estado}</td><td>${idMaterial}</td><td>${correoB}</td></tr>`;
 	});
 	tbody.innerHTML = rowsHtml;
+}
+
+// New helper: mostrarPrestamosLector is a thin wrapper kept for compatibility
+function mostrarPrestamosLector(prestamos) {
+	renderPrestamos(prestamos);
+}
+
+// Detect arrays that only contain default/empty placeholder prestamos
+function prestamoVaciosLector(prestamos) {
+	if (!Array.isArray(prestamos) || prestamos.length === 0) return true;
+	return prestamos.every(p =>
+		(!p || (!p.id || p.id === 0 || p.id === '0')) &&
+		(!p || !p.fechaSoli || String(p.fechaSoli).trim() === '') &&
+		(!p || !p.fechaDev || String(p.fechaDev).trim() === '') &&
+		(!p || !p.estadoP || String(p.estadoP).trim() === '') &&
+		(!p || !p.idMaterial || p.idMaterial === 0 || p.idMaterial === '0') &&
+		(!p || !p.correoB || String(p.correoB).trim() === '')
+	);
 }
 
 function formatDate(value) {

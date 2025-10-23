@@ -33,7 +33,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Fecha Solicitud</th>
-                        <th>Fecha Devolución</th>
+                        <th>Fecha Devolucion</th>
                         <th>Estado</th>
                         <th>Material</th>
                         <th>Bibliotecario</th>
