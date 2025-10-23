@@ -11,8 +11,8 @@ import jakarta.jws.soap.SOAPBinding.Style;
 
 import com.biblioteca.datatypes.DtMaterial;
 
-@WebService
-@SOAPBinding(style = Style.RPC, parameterStyle = ParameterStyle.WRAPPED)
+@WebService(targetNamespace = "http://publicadores/")
+@SOAPBinding(style = Style.DOCUMENT, parameterStyle = ParameterStyle.WRAPPED)
 public interface MaterialPublishController {
 
     @WebMethod

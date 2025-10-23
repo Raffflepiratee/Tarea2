@@ -1,5 +1,6 @@
 package com.biblioteca.client;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -17,40 +18,44 @@ import com.biblioteca.publicadores.MaterialPublishController;
  * Cliente para consumir el servicio web de Materiales
  */
 public class MaterialServiceClient {
-    
+
     private static final String MATERIAL_SERVICE_URL = "http://localhost:8080/materiales?wsdl";
     private MaterialPublishController materialService;
-    
+
     public MaterialServiceClient() {
         try {
-            URL url = new URL(MATERIAL_SERVICE_URL);
-            Service service = Service.create(url, 
-                new javax.xml.namespace.QName("http://publicadores/", "MaterialPublishControllerService"));
+            System.out.println("Intentando conectar a: " + MATERIAL_SERVICE_URL);
+            URL url = URI.create(MATERIAL_SERVICE_URL).toURL();
+            System.out.println("URL creada: " + url);
+            Service service = Service.create(url,
+                    new javax.xml.namespace.QName("http://publicadores/", "MaterialPublishControllerService"));
             materialService = service.getPort(MaterialPublishController.class);
-            System.out.println("✅ Conectado al servicio de materiales");
+            System.out.println("Service creado");
+            System.out.println("Conectado al servicio de materiales en " + MATERIAL_SERVICE_URL);
         } catch (Exception e) {
-            System.err.println("⚠️ No se pudo conectar con el servicio de materiales, usando datos de prueba: " + e.getMessage());
+            System.err.println("No se pudo conectar con el servicio de materiales, usando datos de prueba. Error: "
+                    + e.getClass().getName() + " - " + e.getMessage());
+            System.err.println("Error: " + e.getClass().getName() + " - " + e.getMessage());
+            e.printStackTrace();
             materialService = null; // Usar datos mock
         }
     }
-    
-    /**
-     * Agrega un nuevo material
-     */
+
     public void agregarMaterial(DtMaterial material) {
         if (materialService != null) {
             try {
                 materialService.agregarMaterial(material);
-                System.out.println("✅ Material agregado al backend: " + material);
+                System.out.println("✅ Material agregado: " + material);
             } catch (WebServiceException e) {
                 System.err.println("Error al agregar material: " + e.getMessage());
                 throw new RuntimeException("Error al agregar material", e);
             }
         } else {
-            System.out.println("✅ Material agregado (modo prueba): " + material);
+            // Simular agregado
+            System.out.println("📚 Simulando agregado de material: " + material);
         }
     }
-    
+
     /**
      * Obtiene todos los materiales
      */
@@ -68,16 +73,10 @@ public class MaterialServiceClient {
                 throw new RuntimeException("Error al obtener materiales", e);
             }
         } else {
-            // Datos de prueba
-            List<DtMaterial> materiales = new ArrayList<>();
-            materiales.add(new DtMaterial(1, new Date()));
-            materiales.add(new DtMaterial(2, new Date()));
-            materiales.add(new DtMaterial(3, new Date()));
-            System.out.println("📋 Retornando materiales de prueba: " + materiales.size() + " elementos");
-            return materiales;
+            throw new RuntimeException("Servicio de materiales no disponible. El backend SOAP no está conectado.");
         }
     }
-    
+
     /**
      * Obtiene materiales por rango de fechas
      */
@@ -102,7 +101,7 @@ public class MaterialServiceClient {
             return materiales;
         }
     }
-    
+
     /**
      * Verifica si el servicio está disponible
      */
@@ -114,5 +113,5 @@ public class MaterialServiceClient {
             return false;
         }
     }
-}
 
+}

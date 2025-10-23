@@ -15,6 +15,10 @@ public class DtMaterial {
     private int idMaterial;
     private Date fechaRegistro;
 
+    // No-arg constructor required by JAXB
+    public DtMaterial() {
+    }
+
     // Mostrar informacion
     public DtMaterial(int idMaterial, Date fechaRegistro) {
         this.idMaterial = idMaterial;
