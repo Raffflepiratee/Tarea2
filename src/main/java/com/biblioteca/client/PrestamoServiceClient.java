@@ -244,13 +244,57 @@ public class PrestamoServiceClient {
         try {
             DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPorBibliotecario(idEmp);
             List<DtPrestamo> lista = new ArrayList<>();
-            for (DtPrestamo prestamo : prestamos) {
-                lista.add(prestamo);
+            boolean allDefault = true;
+            if (prestamos != null) {
+                for (int i = 0; i < prestamos.length; i++) {
+                    DtPrestamo prestamo = prestamos[i];
+                    lista.add(prestamo);
+                    if (prestamo != null) {
+                        if (prestamo.getIdPrestamo() != 0 || prestamo.getMaterial() != 0
+                                || prestamo.getFechaSoli() != null || prestamo.getFechaDev() != null
+                                || prestamo.getLector() != null || prestamo.getBibliotecario() != null
+                                || prestamo.getEstadoPres() != null) {
+                            allDefault = false;
+                        }
+                    }
+                }
+
+                if (prestamos.length > 0 && allDefault) {
+                    System.out.println(
+                            "PrestamoServiceClient - Proxy returned default DTOs for obtenerPrestamosPorBibliotecario, attempting SOAP fallback...");
+                    try {
+                        List<DtPrestamo> parsed = parsePrestamosFromSoapEndpointConParametro(
+                                PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamosPorBibliotecario",
+                                String.valueOf(idEmp));
+                        if (parsed != null && !parsed.isEmpty()) {
+                            System.out.println("PrestamoServiceClient - SOAP fallback parsed " + parsed.size()
+                                    + " prestamos for bibliotecario");
+                            return parsed;
+                        } else {
+                            System.out.println(
+                                    "PrestamoServiceClient - SOAP fallback returned empty list, keeping proxy results");
+                        }
+                    } catch (Exception ex) {
+                        System.err.println(
+                                "PrestamoServiceClient - SOAP fallback failed for obtenerPrestamosPorBibliotecario: "
+                                        + ex.getMessage());
+                        ex.printStackTrace();
+                    }
+                }
+            } else {
+                System.out.println("PrestamoServiceClient - obtenerPrestamosPorBibliotecario: prestamos es null");
             }
+
             return lista;
         } catch (WebServiceException e) {
-            System.err.println("Error al obtener préstamos por bibliotecario: " + e.getMessage());
-            throw new RuntimeException("Error al obtener préstamos por bibliotecario", e);
+            System.err.println("Error al obtener préstamos por bibliotecario (proxy): " + e.getMessage());
+            try {
+                return parsePrestamosFromSoapEndpointConParametro(
+                        PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamosPorBibliotecario",
+                        String.valueOf(idEmp));
+            } catch (Exception ex) {
+                throw new RuntimeException("Error al obtener préstamos por bibliotecario", ex);
+            }
         }
     }
 
