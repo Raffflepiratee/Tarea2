@@ -10,18 +10,18 @@
 
     <!-- Welcome Files -->
     <welcome-file-list>
-        <welcome-file>usuarios.jsp</welcome-file>
+        <welcome-file>bibliotecario/listarLectores.jsp</welcome-file>
     </welcome-file-list>
 
     <!-- Error Pages -->
     <error-page>
         <error-code>404</error-code>
-        <location>/usuarios.jsp</location>
+        <location>/bibliotecario/listarLectores.jsp</location>
     </error-page>
     
     <error-page>
         <error-code>500</error-code>
-        <location>/usuarios.jsp</location>
+        <location>/bibliotecario/listarLectores.jsp</location>
     </error-page>
 
     <!-- Session Configuration -->
