@@ -48,9 +48,37 @@ public class ordenarMaterialesPorPendientesServlet extends HttpServlet {
 
     private void ordenarMaterialesPorPendientes(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-
         PrestamoServiceClient prestamoClient = new PrestamoServiceClient();
         List<DtPrestamo> prestamosPendientes = prestamoClient.obtenerPrestamosPendientes();
+
+        // Si se solicitó materialId, devolver los prestamos pendientes filtrados por
+        // ese material
+        String materialParam = request.getParameter("materialId");
+        if (materialParam != null && !materialParam.trim().isEmpty()) {
+            int materialId = -1;
+            try {
+                materialId = Integer.parseInt(materialParam);
+            } catch (NumberFormatException ex) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(objectMapper.writeValueAsString(
+                        java.util.Collections.singletonMap("error", "Parámetro materialId inválido")));
+                return;
+            }
+
+            List<DtPrestamo> filtrados = new java.util.ArrayList<>();
+            for (DtPrestamo p : prestamosPendientes) {
+                if (p != null && p.getMaterial() == materialId) {
+                    filtrados.add(p);
+                }
+            }
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(objectMapper.writeValueAsString(filtrados));
+            return;
+        }
 
         // Mantener orden de aparición de materiales
         Set<Integer> idsMateriales = new LinkedHashSet<>();
