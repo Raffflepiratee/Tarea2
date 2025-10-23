@@ -70,7 +70,7 @@ html, body {
     background: transparent;
     margin-top: 16px;
     border-collapse: separate;
-    border-spacing: 0 6px; /* gives a subtle gap between rows like cards */
+    border-spacing: 0 4px; /* gives a subtle gap between rows like cards */
 }
 
 .page-wrapper .table thead th {
@@ -95,8 +95,6 @@ html, body {
 }
 
 .page-wrapper .table tbody tr:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 30px -12px rgba(3, 53, 50, 0.12);
     border-color: var(--accent-dark);
 }
 

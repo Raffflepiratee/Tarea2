@@ -23,31 +23,8 @@ html, body {
     color: var(--text);
 }
 
-/* Topbar (same structure as dashboard) */
-.topbar {
-    width: 100%;
-    background: var(--card-bg);
-    border-bottom: 4px solid rgba(3, 53, 50, 0.08);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.topbar .inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 18px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.brand a, .brand { /* support both anchor and bare brand */
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: var(--text);
-    text-decoration: none;
-}
+/* Topbar styles are centralized in common.css; avoid duplicating them here. */
+/* If you need page-specific topbar tweaks, scope them under a page class (e.g. .login-page .topbar) */
 
 /* Main layout */
 .login-wrapper{

@@ -4,6 +4,14 @@
 //     window.location.assign('/biblioteca-web/login.jsp');
 // }
 
+const logoutBtnEl = document.getElementById('logoutBtn');
+if (logoutBtnEl) {
+    logoutBtnEl.addEventListener('click', () => {
+        localStorage.removeItem('tipoUsuario');
+        window.location.assign('/biblioteca-web/login.jsp');
+    });
+}
+
 // Cargar usuarios al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     cargarUsuarios();

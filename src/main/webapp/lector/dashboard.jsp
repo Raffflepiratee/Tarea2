@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Lector</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/common.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/login.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/dashboard.css" rel="stylesheet">
     
@@ -15,9 +16,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="site-header">
-        <div class="container header-content">
+    <header class="topbar">
+        <div class="inner">
             <div class="brand">Biblioteca Comunitaria UY</div>
+            <div class="profile"></div>
         </div>
     </header>
 

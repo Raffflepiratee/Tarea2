@@ -26,32 +26,8 @@ body {
   color: var(--text)
 }
 
-/* Top bar */
-.topbar {
-  width: 100%;
-  background: var(--card-bg);
-  border-bottom: 4px solid rgba(3, 53, 50, 0.08);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.topbar .inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.brand a {
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: var(--text);
-  text-decoration: none;
-}
+/* Topbar styles are centralized in common.css; avoid duplicating them here. */
+/* Keep dashboard-specific rules below this comment when necessary. */
 
 
 .profile {
@@ -178,13 +154,7 @@ body {
 }
 
 @media (max-width:520px) {
-  .topbar .inner {
-    padding: 12px
-  }
-
-  .brand {
-    font-size: 1.15rem
-  }
+  /* topbar responsive rules moved to common.css */
 
   .main {
     margin: 18px auto;
