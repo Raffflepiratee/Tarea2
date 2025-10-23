@@ -7,7 +7,7 @@
     <title>Dashboard Lector</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/common.css" rel="stylesheet">
-    <link href="${pageContext.request.contextPath}/css/login.css" rel="stylesheet">
+<!--     <link href="${pageContext.request.contextPath}/css/login.css" rel="stylesheet"> -->
     <link href="${pageContext.request.contextPath}/css/dashboard.css" rel="stylesheet">
     
     <!-- Optional: Inter font to match login if not globally available -->

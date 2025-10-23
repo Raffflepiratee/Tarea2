@@ -18,9 +18,9 @@
 html, body {
     height: 100%;
     margin: 0;
-    font-family: Inter, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
+    background-color: #F1FFF6 !important;
 }
 
 /* Limit most visual overrides to this page by scoping under .page-wrapper */
@@ -40,11 +40,6 @@ html, body {
     border-radius: var(--radius-lg);
     padding: 28px;
     box-shadow: 0 20px 30px -12px rgba(3, 53, 50, 0.12);
-}
-
-.page-wrapper h1, .page-wrapper h2 {
-    margin-top: 0;
-    color: var(--accent-dark);
 }
 
 .loading{

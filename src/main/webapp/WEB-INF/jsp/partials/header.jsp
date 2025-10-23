@@ -4,12 +4,12 @@
             <button id="menuToggle" class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
                 <span class="menu-icon"></span>
             </button>
-            <div class="brand">Biblioteca Comunitaria UY</div>
+            <h1 class="brand">Biblioteca Comunitaria UY</h1>
             <div class="profile">
-                <small class="role">bibliotecario</small>
+                <!-- <small class="role">bibliotecario</small> -->
                 <span class="name">Nombre Apellido</span>
                 <div>
-                    <button class="logoutBtn" id="logoutBtn">Salir</button>
+                    <button class="logoutBtn btn btn-danger" id="logoutBtn">Salir</button>
                 </div>
             </div>
         </div>
