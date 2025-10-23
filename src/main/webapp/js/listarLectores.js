@@ -71,16 +71,27 @@ function mostrarUsuarios(usuarios) {
 }
 
 function showLoading(show) {
-    document.querySelector('.loading').style.display = show ? 'block' : 'none';
+    const loadingEl = document.querySelector('.loading');
+    if (loadingEl) loadingEl.style.display = show ? 'block' : 'none';
 }
 
 function showError(message) {
-    document.getElementById('errorMessage').textContent = message;
-    document.querySelector('.error').style.display = 'block';
+    const errorSpan = document.getElementById('errorMessage');
+    const errorContainer = document.querySelector('.error');
+    if (errorSpan && errorContainer) {
+        errorSpan.textContent = message;
+        errorContainer.classList.remove('d-none');
+    } else {
+        console.warn('showError fallback - elements not found, message:', message);
+        try { alert(message); } catch (e) { /* ignore */ }
+    }
 }
 
 function hideError() {
-    document.querySelector('.error').style.display = 'none';
+    const errorContainer = document.querySelector('.error');
+    if (errorContainer) {
+        errorContainer.classList.add('d-none');
+    }
 }
 
 document.getElementById('modificarUsuarioForm').addEventListener('click', function(event) {

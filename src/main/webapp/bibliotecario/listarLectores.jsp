@@ -13,32 +13,10 @@
 
 <body class="with-sidebar">
     <!-- Header -->
-    <header class="topbar">
-        <div class="inner">
-            <button id="menuToggle" class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
-                <span class="menu-icon"></span>
-            </button>
-            <div class="brand">Biblioteca Comunitaria UY</div>
-            <div class="profile">
-                <small class="role">bibliotecario</small>
-                <span class="name">Nombre Apellido</span>
-                <div>
-                    <button class="logoutBtn" id="logoutBtn">Salir</button>
-                </div>
-            </div>
-        </div>
-    </header>
+    <jsp:include page="/WEB-INF/jsp/partials/header.jsp" />
 
-    <!-- Sidebar -->
-    <aside class="sidebar" aria-hidden="true">
-        <nav class="nav">
-            <a href="${pageContext.request.contextPath}/bibliotecario/dashboard.jsp">Dashboard</a>
-            <a href="${pageContext.request.contextPath}/bibliotecario/listarLectores.jsp">Listar lectores</a>
-            <a href="#">Registrar material</a>
-            <a href="#">Reportes</a>
-        </nav>
-    </aside>
-    <div class="sidebar-overlay"></div>
+    <!-- Sidebar include -->
+    <jsp:include page="/WEB-INF/jsp/partials/sidebar.jsp" />
 
     <main class="page-wrapper">
         <div class="container">

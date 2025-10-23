@@ -13,6 +13,7 @@
     <header class="topbar">
         <div class="inner">
             <div class="brand">Biblioteca Comunitaria UY</div>
+            <!-- <h1 class="brand">Biblioteca Comunitaria UY</h1> -->
         </div>
     </header>
 

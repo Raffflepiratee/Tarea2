@@ -10,12 +10,10 @@
     <link href="${pageContext.request.contextPath}/css/dashboard.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Top bar -->
+    
     <header class="topbar">
         <div class="inner">
-            <div class="brand">
-                <a href="${pageContext.request.contextPath}/bibliotecario/dashboard.jsp">Biblioteca Comunitaria UY</a>
-            </div>
+            <div class="brand">Biblioteca Comunitaria UY</div>
             <div class="profile">
                 <small class="role">bibliotecario</small>
                 <span class="name">Nombre Apellido</span>
@@ -31,10 +29,10 @@
             <a class="card" href="${pageContext.request.contextPath}/bibliotecario/listarLectores.jsp">
                 <div class="title">Listar lectores</div>
             </a>
-            <a class="card" href="#">
+            <a class="card" href="${pageContext.request.contextPath}/bibliotecario/agregarMaterial.jsp">
                 <div class="title">Registrar material</div>
             </a>
-            <a class="card" href="#">
+            <a class="card" href="${pageContext.request.contextPath}/bibliotecario/listarMaterialesPorRango.jsp">
                 <div class="title">Donaciones por rango</div>
             </a>
             <a class="card" href="#">
