@@ -1,0 +1,146 @@
+/* Dashboard-aligned palette and layout for the Listar Lectores page */
+:root {
+    --primary: #F2EFE7;
+    --secondary: #9ACBD0;
+    --accent: #48A6A7;
+    --accent-dark: #006A71;
+    --card-bg: #FFFFFF;
+    --bg: #FBFBFB;
+    --text: #053936;
+    --muted: #6b7c7b;
+    --card-border: 2px;
+    --radius-lg: 36px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    background-color: #F1FFF6 !important;
+}
+
+body.with-sidebar.no-page-scroll {
+    overflow: hidden !important;
+}
+
+.page-wrapper {
+    padding: 36px 20px 48px;
+    min-height: calc(100vh - 140px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.page-wrapper > .container {
+    width: 100%;
+    max-width: 980px;
+    background: linear-gradient(180deg, var(--card-bg) 0%, #fbfbfb 100%);
+    border: var(--card-border) solid rgba(3, 53, 50, 0.12);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: 0 20px 30px -12px rgba(3, 53, 50, 0.12);
+}
+
+.loading{
+    display: none;
+    text-align: center;
+    padding: 16px;
+    color: var(--accent-dark);
+    background: rgba(74,140,142,0.06);
+    border-radius: 10px;
+}
+
+.error{
+    display: none;
+    color: crimson;
+    padding: 12px 14px;
+    background: rgba(255,235,235,0.9);
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.page-wrapper .table {
+    background: transparent;
+    margin-top: 16px;
+    border-collapse: separate;
+    border-spacing: 0 4px; 
+}
+
+.page-wrapper .table thead th {
+    background: transparent;
+    color: var(--accent-dark);
+    font-weight: 700;
+    border: none;
+}
+
+.page-wrapper .table tbody tr {
+    background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
+    border: var(--card-border) solid rgba(3, 53, 50, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 8px 20px -10px rgba(3, 53, 50, 0.06);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.page-wrapper .table tbody tr td {
+    vertical-align: middle;
+    border: none; /* separate rows handle separation */
+    padding: 14px 12px;
+}
+
+.page-wrapper .table tbody tr:hover {
+    border-color: var(--accent-dark);
+}
+
+/* Make action buttons match dashboard accent when inside this page */
+.page-wrapper .btn-light {
+    background: var(--card-bg);
+    border: 2px solid rgba(3, 53, 50, 0.06);
+    color: var(--text);
+}
+
+.page-wrapper .btn-outline-light {
+    background: transparent;
+    color: var(--text);
+    border: 2px solid rgba(3, 53, 50, 0.06);
+}
+
+.page-wrapper .btn-outline-light:hover,
+.page-wrapper .btn-light:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll-container {
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+    overflow-x: auto;
+    padding-right: 2px;
+}
+
+.table-scroll-container::-webkit-scrollbar {
+    width: 8px;
+}
+.table-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--muted);
+    border-radius: 6px;
+}
+
+@media (max-width: 900px) {
+    .page-wrapper > .container { padding: 20px; }
+}
+
+@media (max-width: 520px) {
+    .page-wrapper { padding: 18px; }
+    .page-wrapper > .container { border-radius: 18px; padding: 14px; }
+    .page-wrapper .table tbody tr { border-radius: 12px; }
+    .page-wrapper h1 { font-size: 1.15rem; }
+}
