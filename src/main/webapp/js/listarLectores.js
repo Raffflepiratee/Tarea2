@@ -161,3 +161,24 @@ function asignarCorreo(correo, zona, estado) {
     modal.show();
 }
 
+let searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('keyup', filtrarUsuarios);
+function filtrarUsuarios() {
+    console.log('Filtrando usuarios con término:', searchInput.value);
+    let filter = searchInput.value.toLowerCase();
+    let table = document.querySelector('.table');
+    let tr = table.getElementsByTagName('tr');
+    for (let i = 1; i < tr.length; i++) {
+        let tdName = tr[i].getElementsByTagName('td')[0];
+        let tdEmail = tr[i].getElementsByTagName('td')[1];
+        if (tdName || tdEmail) {
+            let nameValue = tdName.textContent || tdName.innerText;
+            let emailValue = tdEmail.textContent || tdEmail.innerText;
+            if (nameValue.toLowerCase().indexOf(filter) > -1 || emailValue.toLowerCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+}

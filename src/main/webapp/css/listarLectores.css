@@ -1,4 +1,3 @@
-
 /* Dashboard-aligned palette and layout for the Listar Lectores page */
 :root {
     --primary: #F2EFE7;
@@ -23,7 +22,10 @@ html, body {
     background-color: #F1FFF6 !important;
 }
 
-/* Limit most visual overrides to this page by scoping under .page-wrapper */
+body.with-sidebar.no-page-scroll {
+    overflow: hidden !important;
+}
+
 .page-wrapper {
     padding: 36px 20px 48px;
     min-height: calc(100vh - 140px);
@@ -60,12 +62,11 @@ html, body {
     border: 1px solid rgba(0,0,0,0.06);
 }
 
-/* Tables: style the Bootstrap table locally to match dashboard cards */
 .page-wrapper .table {
     background: transparent;
     margin-top: 16px;
     border-collapse: separate;
-    border-spacing: 0 4px; /* gives a subtle gap between rows like cards */
+    border-spacing: 0 4px; 
 }
 
 .page-wrapper .table thead th {
@@ -113,6 +114,26 @@ html, body {
     border-color: var(--accent);
 }
 
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll-container {
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+    overflow-x: auto;
+    padding-right: 2px;
+}
+
+.table-scroll-container::-webkit-scrollbar {
+    width: 8px;
+}
+.table-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--muted);
+    border-radius: 6px;
+}
+
 @media (max-width: 900px) {
     .page-wrapper > .container { padding: 20px; }
 }
@@ -123,4 +144,3 @@ html, body {
     .page-wrapper .table tbody tr { border-radius: 12px; }
     .page-wrapper h1 { font-size: 1.15rem; }
 }
-

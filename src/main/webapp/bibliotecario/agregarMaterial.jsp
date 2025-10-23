@@ -24,7 +24,7 @@
             <!-- Formulario de registro -->
             <div class="card form-card">
                 <div class="card-body">
-                    <h1 class="mb-4">📚 Registrar Material</h1>
+                    <h1 class="mb-4">Registrar Material</h1>
                     <form id="agregarMaterialForm">
                         <div class="mb-3">
                             <label for="tipoMaterial" class="form-label">Tipo de material</label>

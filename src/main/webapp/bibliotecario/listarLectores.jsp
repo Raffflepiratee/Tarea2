@@ -11,18 +11,15 @@
     <link href="${pageContext.request.contextPath}/css/listarLectores.css" rel="stylesheet">
 </head>
 
-<body class="with-sidebar">
-    <!-- Header -->
+<body class="with-sidebar no-page-scroll">
     <jsp:include page="/WEB-INF/jsp/partials/header.jsp" />
-
-    <!-- Sidebar include -->
     <jsp:include page="/WEB-INF/jsp/partials/sidebar.jsp" />
 
     <main class="page-wrapper">
         <div class="container">
-            <h1 class="mb-4">📋 Lista de Lectores</h1>
+            <h1 class="mb-4">Lista de Lectores</h1>
+            <input type="text" id="searchInput" class="form-control mb-3" placeholder="Buscar por nombre o correo">
 
-            <!-- Loading -->
             <div class="loading">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Cargando...</span>
@@ -30,33 +27,32 @@
                 <p class="mt-2">Cargando lectores...</p>
             </div>
 
-            <!-- Error -->
             <div class="error alert alert-danger" role="alert">
                 <strong>Error:</strong> <span id="errorMessage"></span>
             </div>
 
-            <!-- Tabla de Usuarios -->
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Correo</th>
-                            <th>Tipo</th>
-                            <th>Detalles</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usuariosTableBody">
-                        <tr>
-                            <td colspan="5" class="text-center">Cargando lectores...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="table-scroll-container">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Tipo</th>
+                                <th>Detalles</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuariosTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center">Cargando lectores...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -87,8 +83,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="modificarUsuarioForm">Save
-                                changes</button>
+                            <button type="button" class="btn btn-primary" id="modificarUsuarioForm">Save changes</button>
                         </div>
                     </div>
                 </div>
