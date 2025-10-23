@@ -164,7 +164,7 @@ function asignarCorreo(correo, zona, estado) {
 let searchInput = document.getElementById('searchInput');
 searchInput.addEventListener('keyup', filtrarUsuarios);
 function filtrarUsuarios() {
-    console.log('Filtrando usuarios con término:', searchInput.value);
+    /* console.log('Filtrando usuarios con término:', searchInput.value); */
     let filter = searchInput.value.toLowerCase();
     let table = document.querySelector('.table');
     let tr = table.getElementsByTagName('tr');

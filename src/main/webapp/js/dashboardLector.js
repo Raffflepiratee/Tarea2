@@ -8,3 +8,6 @@ document.getElementById('logoutBtn').addEventListener('click', function() {
     console.log('Cierre de sesión realizado, redirigiendo al login.');
     window.location.assign('/biblioteca-web/login.jsp');
 });
+
+const nombreUsuario = localStorage.getItem('nombre');
+document.getElementById('nombre_usuario').innerHTML = nombreUsuario ? nombreUsuario : 'Lector';

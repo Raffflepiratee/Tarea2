@@ -41,7 +41,6 @@ async function handleSubmit(e) {
 
         const data = await res.json();
 
-        // Esperamos { role: 'lector'|'bibliotecario', redirect?: '/ruta', token?: '...' }
         if (!data || !data.role) {
             showMessage('Respuesta inválida del servidor.', true);
             return;
@@ -49,10 +48,8 @@ async function handleSubmit(e) {
 
         // Guardar rol en localStorage
         localStorage.setItem('tipoUsuario', data.role);
-
-    // Preferimos la URL de redirección que devuelva el servidor
-    // El servlet ya construye y devuelve `redirect` (incluye `contextPath`),
-    // así que confiamos en esa URL en lugar de mapas locales duplicados.
+        localStorage.setItem('nombre', data.nombre);
+        
     const redirectTo = data.redirect;
         if (redirectTo) {
             window.location.assign(redirectTo);

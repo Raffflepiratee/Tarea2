@@ -89,6 +89,7 @@ public class loginServlet extends HttpServlet {
             }
 
             String role = "usuario";
+            String nombre = match.getNombre();
             String redirect = null;
             if (match instanceof DtLector) {
                 role = "lector";
@@ -101,9 +102,9 @@ public class loginServlet extends HttpServlet {
             response.setContentType("application/json; charset=UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);
             if (redirect != null) {
-                response.getWriter().write("{\"role\": \"" + role + "\", \"redirect\": \"" + redirect + "\"}");
+                response.getWriter().write("{\"role\": \"" + role + "\", \"nombre\": \"" + nombre + "\", \"redirect\": \"" + redirect + "\"}");
             } else {
-                response.getWriter().write("{\"role\": \"" + role + "\"}");
+                response.getWriter().write("{\"role\": \"" + role + "\", \"nombre\": \"" + nombre + "\"}");
             }
 
         } catch (Exception e) {

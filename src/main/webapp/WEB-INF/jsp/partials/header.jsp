@@ -7,7 +7,7 @@
             <h1 class="brand">Biblioteca Comunitaria UY</h1>
             <div class="profile">
                 <!-- <small class="role">bibliotecario</small> -->
-                <span class="name">Nombre Apellido</span>
+                <p id="nombre_usuario"></p>
                 <div>
                     <button class="logoutBtn btn btn-danger" id="logoutBtn">Salir</button>
                 </div>

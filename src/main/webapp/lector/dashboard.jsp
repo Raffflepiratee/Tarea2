@@ -15,8 +15,7 @@
         <div class="inner">
             <div class="brand">Biblioteca Comunitaria UY</div>
             <div class="profile">
-                <small class="role">lector</small>
-                <span class="name">Nombre Apellido</span>
+                <p id="nombre_usuario"></p>
                 <div>
                     <button class="logoutBtn" id="logoutBtn">Salir</button>
                 </div>
