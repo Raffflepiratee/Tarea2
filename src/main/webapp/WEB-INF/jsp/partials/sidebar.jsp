@@ -9,6 +9,9 @@
         <a href="#">Prestamos de un lector</a>
         <a href="#">Reporte zonal</a>
         <a href="#">Mi historial</a>
+        <div class="sidebar-user d-none">
+            <button class="btn btn-logout btn-danger"onclick="location.href='${pageContext.request.contextPath}/logout'">Salir</button>
+        </div>
     </nav>
 </aside>
 <div class="sidebar-overlay"></div>
