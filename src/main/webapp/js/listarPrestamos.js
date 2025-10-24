@@ -120,6 +120,13 @@ function enviarModificarPrestamo() {
     const estadoP = estadoPEl ? estadoPEl.value : '';
     const fechaSolicitud = fechaSoliEl ? fechaSoliEl.value : '';
     const fechaDevolucion = fechaDevEl ? fechaDevEl.value : '';
+
+    if (fechaSolicitud > fechaDevolucion) {
+        mostrarErrorCampo('FechaSoli', 'La fecha de solicitud no puede ser posterior a la fecha de devolución');
+        mostrarErrorCampo('FechaDev', 'La fecha de devolución debe ser posterior a la fecha de solicitud');
+        return;
+    }
+
     const correoL = correoLEl ? correoLEl.value : '';
     const idMaterial = idMaterialEl ? idMaterialEl.value : '';
     const correoB = correoBEl ? correoBEl.value : '';

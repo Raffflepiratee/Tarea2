@@ -1,21 +1,20 @@
 package com.biblioteca.servlets;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import com.biblioteca.client.MaterialServiceClient;
 import com.biblioteca.client.PrestamoServiceClient;
 import com.biblioteca.client.UsuarioServiceClient;
 import com.biblioteca.datatypes.DtBibliotecario;
 import com.biblioteca.datatypes.DtLector;
+import com.biblioteca.datatypes.DtMaterial;
 import com.biblioteca.datatypes.DtPrestamo;
 import com.biblioteca.datatypes.DtUsuario;
 import com.biblioteca.datatypes.EstadosP;
-import com.biblioteca.datatypes.DtMaterial;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
@@ -134,12 +133,18 @@ public class listarPrestamosServlet extends HttpServlet {
 
             EstadosP nuevoEstado = estadoStr != null ? EstadosP.valueOf(estadoStr) : null;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setLenient(false);
+            sdf.setTimeZone(TimeZone.getTimeZone("America/Montevideo"));
             Date nuevaFechaSoli = (fechaSoliStr != null && !fechaSoliStr.isEmpty())
                     ? sdf.parse(fechaSoliStr)
                     : null;
             Date nuevaFechaDev = (fechaDevStr != null && !fechaDevStr.isEmpty())
                     ? sdf.parse(fechaDevStr)
                     : null;
+
+            System.out.println("Fecha solicitud parseada: " + nuevaFechaSoli);
+            System.out.println("Fecha devolución parseada: " + nuevaFechaDev);
+
             int nuevoMaterialId = Integer.parseInt(idMaterialStr);
 
             DtPrestamo prestamo = new DtPrestamo();
@@ -167,12 +172,16 @@ public class listarPrestamosServlet extends HttpServlet {
             }
             prestamoClient.cambiarEstadoPrestamo(prestamo, nuevoEstado);
 
-            if (nuevaFechaSoli != null) {
-                prestamoClient.cambiarFechaSolicitudPrestamo(prestamo, nuevaFechaSoli);
+            if (nuevaFechaSoli != null && nuevaFechaDev != null && nuevaFechaSoli.after(nuevaFechaDev)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(
+                        "{\"message\": \"La fecha de solicitud no puede ser posterior a la fecha de devolución\"}");
+                return;
             }
-            if (nuevaFechaDev != null) {
-                prestamoClient.cambiarFechaDevolucionPrestamo(prestamo, nuevaFechaDev);
-            }
+            prestamoClient.cambiarFechaSolicitudPrestamo(prestamo, nuevaFechaSoli);
+            prestamoClient.cambiarFechaDevolucionPrestamo(prestamo, nuevaFechaDev);
             if (correoL != null && !correoL.isEmpty()) {
                 if (!validarCorreoLector(correoL)) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -200,7 +209,9 @@ public class listarPrestamosServlet extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write("{\"message\": \"Préstamo modificado exitosamente\"}");
-        } catch (Exception e) {
+        } catch (
+
+        Exception e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setContentType("application/json");
