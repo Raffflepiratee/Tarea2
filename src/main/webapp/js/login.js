@@ -49,6 +49,7 @@ async function handleSubmit(e) {
         // Guardar rol en localStorage
         localStorage.setItem('tipoUsuario', data.role);
         localStorage.setItem('nombre', data.nombre);
+        localStorage.setItem('correo', data.correo);
         
     const redirectTo = data.redirect;
         if (redirectTo) {
