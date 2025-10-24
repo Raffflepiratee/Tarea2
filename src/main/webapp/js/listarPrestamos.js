@@ -99,6 +99,16 @@ function hideError() {
     if (errBox) errBox.style.display = 'none';
 }
 
+function showSuccess(message) {
+    const msgEl = document.getElementById('successMessage');
+    if (msgEl) msgEl.textContent = message;
+    const box = document.querySelector('.success');
+    if (box) box.style.display = 'block';
+    setTimeout(() => {
+        if (box) box.style.display = 'none';
+    }, 4000);
+}
+
 function enviarModificarPrestamo() {
     const estadoPEl = document.getElementById('estadoP');
     const fechaSoliEl = document.getElementById('fechaSoli');
@@ -124,7 +134,10 @@ function enviarModificarPrestamo() {
     body.append('correoB', correoB);
 
     const modalErrorEl = document.getElementById('modalErrorMessage');
-    if (modalErrorEl) { modalErrorEl.style.display = 'none'; modalErrorEl.textContent = ''; }
+    if (modalErrorEl) { 
+        modalErrorEl.style.display = 'none'; 
+        modalErrorEl.textContent = ''; 
+    }
 
     return fetch('/biblioteca-web/listarPrestamos', {
         method: 'POST',
@@ -132,21 +145,49 @@ function enviarModificarPrestamo() {
         body: body.toString()
     })
     .then(async response => {
-        if (!response.ok) {
-            const text = await response.text();
-            try {
-                const obj = JSON.parse(text);
-                const msg = obj && (obj.error || obj.message) ? (obj.error || obj.message) : text;
-                if (modalErrorEl) { modalErrorEl.textContent = msg; modalErrorEl.style.display = 'block'; }
-                throw new Error(msg);
-            } catch (e) {
-                if (modalErrorEl) { modalErrorEl.textContent = text || response.statusText || 'Error del servidor'; modalErrorEl.style.display = 'block'; }
-                throw new Error(text || response.statusText || 'Error del servidor');
-            }
+        const text = await response.text();
+        let msg = text;
+
+        try {
+            const obj = JSON.parse(text);
+            msg = obj.message || 'Error del servidor';
+        } catch (e) {
         }
-        return response.json();
+
+        if (!response.ok) {
+            limpiarErroresCampos();
+
+            if (msg.includes('estado')) {
+                mostrarErrorCampo('EstadoP', msg);
+            }
+            if (msg.includes('material')) {
+                mostrarErrorCampo('IdMaterial', msg);
+            }
+            if (msg.includes('solicitud')) {
+                mostrarErrorCampo('FechaSoli', msg);
+            }
+            if (msg.includes('devolucion')) {
+                mostrarErrorCampo('FechaDev', msg);
+            }
+            if (msg.includes('lector')) {
+                mostrarErrorCampo('CorreoL', msg);
+            }
+            if (msg.includes('bibliotecario')) {
+                mostrarErrorCampo('CorreoB', msg);
+            }
+
+            if (modalErrorEl) {
+                modalErrorEl.textContent = msg;
+                modalErrorEl.style.display = 'block';
+            }
+
+            throw new Error(msg);
+        }
+        return msg;
     })
     .then(data => {
+        limpiarErroresCampos();
+        showSuccess('Préstamo modificado exitosamente');
         const modalEl = document.getElementById('exampleModal');
         if (modalEl) {
             const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -155,8 +196,7 @@ function enviarModificarPrestamo() {
         cargarPrestamos();
     })
     .catch(err => {
-        showError(err && err.message ? err.message : 'No se pudo actualizar el préstamo');
-        console.error(err);
+        console.error('Error al modificar préstamo:', err);
     });
 }
 
@@ -177,9 +217,27 @@ function asignarPrestamo(idPrestamo, estadoP, fechaSoli, fechaDev, correoL, idMa
     if (idMaterialEl && idMaterial) idMaterialEl.value = idMaterial;
     if (correoBEl && correoB) correoBEl.value = correoB;
 
+    limpiarErroresCampos();
+
     const modalEl = document.getElementById('exampleModal');
     if (modalEl) {
         const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
         modal.show();
     }
+}
+
+function mostrarErrorCampo(campoId, mensaje) {
+    const span = document.getElementById(`error${campoId}`);
+    if (span) {
+        span.textContent = mensaje;
+        span.style.display = 'block';
+    }
+}
+
+function limpiarErroresCampos() {
+    const errores = document.querySelectorAll('span[id^="error"]');
+    errores.forEach(e => {
+        e.textContent = '';
+        e.style.display = 'none';
+    });
 }

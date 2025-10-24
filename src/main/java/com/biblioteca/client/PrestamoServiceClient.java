@@ -683,6 +683,15 @@ public class PrestamoServiceClient {
         return null;
     }
 
+    public boolean existePrestamoActivo(int idMaterial) {
+        try {
+            return prestamoService.existePrestamoActivo(idMaterial);
+        } catch (WebServiceException e) {
+            System.err.println("Error al verificar existencia de préstamo activo: " + e.getMessage());
+            throw new RuntimeException("Error al verificar existencia de préstamo activo", e);
+        }
+    }
+
     public void cambiarEstadoPrestamo(DtPrestamo prestamo, EstadosP nuevoEstado) {
         if (prestamoService != null) {
             try {
@@ -704,7 +713,7 @@ public class PrestamoServiceClient {
                 System.out.println("Material de préstamo cambiado en el backend: " + prestamo);
             } catch (WebServiceException e) {
                 System.err.println("Error al cambiar material de préstamo: " + e.getMessage());
-                throw new RuntimeException("Error al cambiar material de préstamo", e);
+                throw new RuntimeException("Error al cambiar el id material de préstamo", e);
             }
         } else {
             System.out.println("Material de préstamo cambiado (modo prueba): " + prestamo);

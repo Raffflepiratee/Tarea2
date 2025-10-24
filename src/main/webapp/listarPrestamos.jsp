@@ -23,6 +23,11 @@
             <strong>Error:</strong> <span id="errorMessage"></span>
         </div>
 
+        <div class="success alert alert-success" role="alert" style="display: none;">
+            <strong>Exito:</strong> <span id="successMessage"></span>
+        </div>
+
+
         <div class="table-responsive">
             <div class="mb-3 d-flex align-items-center">
                 <label for="filtroEstado" class="me-2 mb-0">Filtrar por estado:</label>
@@ -66,10 +71,12 @@
                             <div class="mb-3">
                                 <label for="fechaSolicitud" class="col-form-label">Fecha solicitud:</label>
                                 <input type="date" class="form-control" id="fechaSoli">
+                                <span class="text-danger small" id="errorFechaSoli" style="display: none;"></span>
                             </div>
                             <div class="mb-3">
                                 <label for="fechaDevolucion" class="col-form-label">Fecha devolucion:</label>
                                 <input type="date" class="form-control" id="fechaDev">
+                                <span class="text-danger small" id="errorFechaDev" style="display: none;"></span>
                             </div>
                             <div class="mb-3">
                                 <label for="estadoP" class="col-form-label">Estado:</label>
@@ -79,18 +86,22 @@
                                     <option value="EN_CURSO">En curso</option>
                                     <option value="DEVUELTO">Devuelto</option>
                                 </select>
+                                <span class="text-danger small" id="errorEstadoP" style="display: none;"></span>
                             </div>
                             <div class="mb-3">
                                 <label for="correoL" class="col-form-label">Correo Lector:</label>
                                 <input type="email" class="form-control" id="correoL">
+                                <span class="text-danger small" id="errorCorreoL" style="display: none;"></span>
                             </div>
                             <div class="mb-3">
                                 <label for="idMaterial" class="col-form-label">ID Material:</label>
                                 <input type="text" class="form-control" id="idMaterial">
+                                <span class="text-danger small" id="errorIdMaterial" style="display: none;"></span>
                             </div>
                             <div class="mb-3">
                                 <label for="correoB" class="col-form-label">Correo Bibliotecario:</label>
                                 <input type="email" class="form-control" id="correoB">
+                                <span class="text-danger small" id="errorCorreoB" style="display: none;"></span>
                             </div>
                         </form>
                     </div>
@@ -101,8 +112,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

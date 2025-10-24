@@ -8,6 +8,10 @@ public class DtArticuloEspecial extends DtMaterial {
     private float peso;
     private float dimFisica;
 
+    public DtArticuloEspecial() {
+        super();
+    }
+
     // Mostrar informacion
     public DtArticuloEspecial(int idMaterial, Date fechaRegistro, String descripcion, float peso, float dimFisica) {
         super(idMaterial, fechaRegistro);
@@ -36,10 +40,21 @@ public class DtArticuloEspecial extends DtMaterial {
         return dimFisica;
     }
 
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setPeso(float peso) {
+        this.peso = peso;
+    }
+
+    public void setDimFisica(float dimFisica) {
+        this.dimFisica = dimFisica;
+    }
+
     @Override
     public String toString() {
         return "DtArticuloEspecial [descripcion=" + descripcion + ", peso=" + peso + ", dimFisica=" + dimFisica
                 + ", toString()=" + super.toString() + "]";
     }
 }
-

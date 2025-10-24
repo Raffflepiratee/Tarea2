@@ -39,6 +39,9 @@ public interface PrestamoPublishController {
     DtPrestamo[] obtenerPrestamosActivosLector(String correoLector);
 
     @WebMethod
+    boolean existePrestamoActivo(int idMaterial);
+
+    @WebMethod
     void cambiarEstadoPrestamo(DtPrestamo prestamo, EstadosP nuevoEstado);
 
     @WebMethod

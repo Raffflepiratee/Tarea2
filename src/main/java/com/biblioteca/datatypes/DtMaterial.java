@@ -7,13 +7,18 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "dtMaterial", propOrder = { "idMaterial", "fechaRegistro" })
-@XmlSeeAlso({DtLibro.class,DtArticuloEspecial.class })
+@XmlSeeAlso({ DtLibro.class, DtArticuloEspecial.class })
 public class DtMaterial {
 
     private int idMaterial;
     private Date fechaRegistro;
+
+    public DtMaterial() {
+    }
 
     // Mostrar informacion
     public DtMaterial(int idMaterial, Date fechaRegistro) {
@@ -34,9 +39,16 @@ public class DtMaterial {
         return fechaRegistro;
     }
 
+    public void setIdMaterial(int idMaterial) {
+        this.idMaterial = idMaterial;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
     @Override
     public String toString() {
         return "DtMaterial [idMaterial=" + idMaterial + ", fechaRegistro=" + fechaRegistro + "]";
     }
 }
-

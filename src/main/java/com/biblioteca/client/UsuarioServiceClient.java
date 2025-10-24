@@ -17,17 +17,17 @@ import com.biblioteca.publicadores.UsuarioPublishController;
  * Cliente para consumir el servicio web de Usuarios
  */
 public class UsuarioServiceClient {
-    
+
     private static final String USUARIO_SERVICE_URL = "http://localhost:8080/usuarios?wsdl";
     private UsuarioPublishController usuarioService;
-    
+
     public UsuarioServiceClient() {
         try {
             System.out.println("🔄 Intentando conectar a: " + USUARIO_SERVICE_URL);
             URL url = URI.create(USUARIO_SERVICE_URL).toURL();
             System.out.println("🔄 URL creada: " + url);
-            Service service = Service.create(url, 
-                new javax.xml.namespace.QName("http://publicadores/", "UsuarioPublishControllerService"));
+            Service service = Service.create(url,
+                    new javax.xml.namespace.QName("http://publicadores/", "UsuarioPublishControllerService"));
             System.out.println("🔄 Service creado");
             usuarioService = service.getPort(UsuarioPublishController.class);
             System.out.println("✅ Conectado al servicio de usuarios en " + USUARIO_SERVICE_URL);
@@ -38,7 +38,7 @@ public class UsuarioServiceClient {
             usuarioService = null; // Usar datos mock
         }
     }
-    
+
     /**
      * Agrega un nuevo usuario
      */
@@ -55,7 +55,7 @@ public class UsuarioServiceClient {
             System.out.println("✅ Usuario agregado (modo prueba): " + usuario);
         }
     }
-    
+
     /**
      * Obtiene todos los usuarios
      */
@@ -65,21 +65,19 @@ public class UsuarioServiceClient {
                 DtUsuario[] usuarios = usuarioService.obtenerUsuarios();
                 List<DtUsuario> lista = new ArrayList<>();
                 for (DtUsuario usuario : usuarios) {
-                    if (usuario instanceof DtLector) {
-                        lista.add(usuario); // en este caso, solo nos interesan mostrar lectores
-                    }
+                    lista.add(usuario);
                 }
-                System.out.println("✅ Usuarios obtenidos del backend: " + lista.size() + " elementos");
+                System.out.println("Usuarios obtenidos del backend: " + lista.size() + " elementos");
                 return lista;
             } catch (WebServiceException e) {
-                System.err.println("❌ Error al obtener usuarios del backend: " + e.getMessage());
+                System.err.println("Error al obtener usuarios del backend: " + e.getMessage());
                 throw new RuntimeException("Error al obtener usuarios del backend", e);
             }
         } else {
             throw new RuntimeException("Servicio de usuarios no disponible. El backend SOAP no está conectado.");
         }
     }
-    
+
     /**
      * Verifica si el servicio está disponible
      */
@@ -92,4 +90,3 @@ public class UsuarioServiceClient {
         }
     }
 }
-

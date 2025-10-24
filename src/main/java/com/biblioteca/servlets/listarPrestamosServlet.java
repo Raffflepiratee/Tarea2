@@ -7,16 +7,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.biblioteca.client.MaterialServiceClient;
+import com.biblioteca.client.PrestamoServiceClient;
+import com.biblioteca.client.UsuarioServiceClient;
+import com.biblioteca.datatypes.DtBibliotecario;
+import com.biblioteca.datatypes.DtLector;
+import com.biblioteca.datatypes.DtPrestamo;
+import com.biblioteca.datatypes.DtUsuario;
+import com.biblioteca.datatypes.EstadosP;
+import com.biblioteca.datatypes.DtMaterial;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import com.biblioteca.client.PrestamoServiceClient;
-import com.biblioteca.datatypes.DtPrestamo;
-import com.biblioteca.datatypes.EstadosP;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebServlet("/listarPrestamos")
 public class listarPrestamosServlet extends HttpServlet {
@@ -139,9 +145,28 @@ public class listarPrestamosServlet extends HttpServlet {
             DtPrestamo prestamo = new DtPrestamo();
             prestamo.setIdPrestamo(Integer.parseInt(idStr));
 
-            if (nuevoEstado != null) {
-                prestamoClient.cambiarEstadoPrestamo(prestamo, nuevoEstado);
+            System.out.println("Modificando préstamo ID: " + nuevoMaterialId);
+
+            if (nuevoMaterialId <= 0 || !validarMaterial(nuevoMaterialId)) {
+                System.out.println("ID del material no válido: " + nuevoMaterialId);
+                /*
+                 * response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                 * response.setContentType("application/json");
+                 * response.setCharacterEncoding("UTF-8");
+                 * response.getWriter().write(
+                 * "{\"message\": \"El ID del material no existe en el sistema\"}");
+                 * return;
+                 */
+            } else if (nuevoEstado == EstadosP.EN_CURSO && !validarEstadoEnCurso(nuevoMaterialId)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(
+                        "{\"message\": \"Ya existe un préstamo en el estado en CURSO\"}");
+                return;
             }
+            prestamoClient.cambiarEstadoPrestamo(prestamo, nuevoEstado);
+
             if (nuevaFechaSoli != null) {
                 prestamoClient.cambiarFechaSolicitudPrestamo(prestamo, nuevaFechaSoli);
             }
@@ -149,9 +174,25 @@ public class listarPrestamosServlet extends HttpServlet {
                 prestamoClient.cambiarFechaDevolucionPrestamo(prestamo, nuevaFechaDev);
             }
             if (correoL != null && !correoL.isEmpty()) {
+                if (!validarCorreoLector(correoL)) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(
+                            "{\"message\": \"El correo del lector no existe en el sistema\"}");
+                    return;
+                }
                 prestamoClient.cambiarCorreoLectorPrestamo(prestamo, correoL);
             }
             if (correoB != null && !correoB.isEmpty()) {
+                if (!validarCorreoBibliotecario(correoB)) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(
+                            "{\"message\": \"El correo del bibliotecario no existe en el sistema\"}");
+                    return;
+                }
                 prestamoClient.cambiarCorreoBibliotecarioPrestamo(prestamo, correoB);
             }
             prestamoClient.cambiarMaterialPrestamo(prestamo, nuevoMaterialId);
@@ -165,8 +206,55 @@ public class listarPrestamosServlet extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             String mensaje = e.getMessage();
-            response.getWriter().write("{\"status\":\"error\", \"message\": \"" + escaparJson(mensaje) + "\"}");
+            response.getWriter().write("{\"message\": \"" + escaparJson(mensaje) + "\"}");
         }
+    }
+
+    private boolean validarEstadoEnCurso(int idMaterial) {
+        return !prestamoClient.existePrestamoActivo(idMaterial);
+    }
+
+    private boolean validarCorreoLector(String correoL) {
+        UsuarioServiceClient usuarioClient = new UsuarioServiceClient();
+        List<DtUsuario> usuarios = usuarioClient.obtenerUsuarios();
+        for (DtUsuario u : usuarios) {
+            if (u != null
+                    && u.getCorreo() != null
+                    && u.getCorreo().equalsIgnoreCase(correoL.trim())
+                    && u instanceof DtLector) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean validarCorreoBibliotecario(String correoB) {
+        UsuarioServiceClient usuarioClient = new UsuarioServiceClient();
+        List<DtUsuario> usuarios = usuarioClient.obtenerUsuarios();
+        for (DtUsuario u : usuarios) {
+            if (u != null
+                    && u.getCorreo() != null
+                    && u.getCorreo().equalsIgnoreCase(correoB.trim())
+                    && u instanceof DtBibliotecario) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean validarMaterial(int idMaterial) {
+        System.out.println("Validando material con ID: " + idMaterial);
+        MaterialServiceClient materialClient = new MaterialServiceClient();
+        List<DtMaterial> materiales = materialClient.obtenerMateriales();
+        for (DtMaterial m : materiales) {
+            if (m != null && m.getIdMaterial() > 0) {
+                System.out.println("→ Material recibido: " + m);
+            }
+            if (m != null && m.getIdMaterial() == idMaterial) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String escaparJson(String s) {
