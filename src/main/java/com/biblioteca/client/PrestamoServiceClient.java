@@ -1,5 +1,6 @@
 package com.biblioteca.client;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -12,119 +13,307 @@ import com.biblioteca.datatypes.DtPrestamo;
 import com.biblioteca.datatypes.EstadosP;
 import com.biblioteca.datatypes.Zonas;
 import com.biblioteca.publicadores.PrestamoPublishController;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
-/**
- * Cliente para consumir el servicio web de Préstamos
- */
 public class PrestamoServiceClient {
-    
+
     private static final String PRESTAMO_SERVICE_URL = "http://localhost:8080/prestamos?wsdl";
     private PrestamoPublishController prestamoService;
-    
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     public PrestamoServiceClient() {
         try {
-            URL url = new URL(PRESTAMO_SERVICE_URL);
-            Service service = Service.create(url, 
-                new javax.xml.namespace.QName("http://publicadores/", "PrestamoPublishControllerService"));
+            System.out.println("Intentando conectar a: " + PRESTAMO_SERVICE_URL);
+            URL url = URI.create(PRESTAMO_SERVICE_URL).toURL();
+            System.out.println("URL creada: " + url);
+            Service service = Service.create(url,
+                    new javax.xml.namespace.QName("http://publicadores/", "PrestamoPublishControllerService"));
             prestamoService = service.getPort(PrestamoPublishController.class);
-            System.out.println("✅ Conectado al servicio de préstamos");
+            System.out.println("Service creado");
+            System.out.println("Conectado al servicio de prestamo en " + PRESTAMO_SERVICE_URL);
         } catch (Exception e) {
-            System.err.println("⚠️ No se pudo conectar con el servicio de préstamos, usando datos de prueba: " + e.getMessage());
-            prestamoService = null; // Usar datos mock
+            System.err.println("No se pudo conectar con el servicio de prestamo, usando datos de prueba. Error: "
+                    + e.getClass().getName() + " - " + e.getMessage());
+            System.err.println("Error: " + e.getClass().getName() + " - " + e.getMessage());
+            e.printStackTrace();
+            prestamoService = null;
         }
     }
-    
-    /**
-     * Agrega un nuevo préstamo
-     */
-    public void agregarPrestamo(Date fechaSoli, Date fechaDev, EstadosP estadoP,
-            String correoLector, String correoBiblio, int idMaterial) {
+
+    public void agregarPrestamo(DtPrestamo prestamo) {
         if (prestamoService != null) {
             try {
-                prestamoService.agregarPrestamo(fechaSoli, fechaDev, estadoP, correoLector, correoBiblio, idMaterial);
-                System.out.println("✅ Préstamo agregado al backend: " + correoLector + " -> " + idMaterial);
+                prestamoService.agregarPrestamo(prestamo);
+                System.out.println("Préstamo agregado al backend: " + prestamo);
             } catch (WebServiceException e) {
                 System.err.println("Error al agregar préstamo: " + e.getMessage());
                 throw new RuntimeException("Error al agregar préstamo", e);
             }
         } else {
-            System.out.println("✅ Préstamo agregado (modo prueba): " + correoLector + " -> " + idMaterial);
+            System.out.println("Préstamo agregado (modo prueba): " + prestamo);
         }
     }
-    
-    /**
-     * Obtiene todos los préstamos
-     */
+
     public List<DtPrestamo> obtenerPrestamos() {
+        List<DtPrestamo> lista = new ArrayList<>();
         if (prestamoService != null) {
             try {
                 DtPrestamo[] prestamos = prestamoService.obtenerPrestamos();
-                List<DtPrestamo> lista = new ArrayList<>();
-                for (DtPrestamo prestamo : prestamos) {
-                    lista.add(prestamo);
+                System.out.println("PrestamoServiceClient - obtenerTodosLosPrestamos raw length: "
+                        + (prestamos == null ? 0 : prestamos.length));
+                try {
+                    System.out.println("PrestamoServiceClient - obtenerTodosLosPrestamos RAW JSON: "
+                            + objectMapper.writeValueAsString(prestamos));
+                } catch (Exception ex) {
+                    System.out.println("PrestamoServiceClient - ERROR serializing array: " + ex);
                 }
-                return lista;
+
+                if (prestamos != null) {
+                    boolean allDefault = true;
+                    for (int i = 0; i < prestamos.length; i++) {
+                        DtPrestamo prestamo = prestamos[i];
+                        try {
+                            System.out
+                                    .println("Prestamo[" + i + "] JSON: " + objectMapper.writeValueAsString(prestamo));
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] toString: " + prestamo);
+                        }
+                        try {
+                            System.out.println("Prestamo[" + i + "] getMaterial(): " + prestamo.getMaterial());
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] getMaterial() error: " + ex.getMessage());
+                        }
+
+                        if (prestamo != null) {
+                            if (prestamo.getIdPrestamo() != 0 || prestamo.getMaterial() != 0
+                                    || prestamo.getFechaSoli() != null || prestamo.getFechaDev() != null
+                                    || prestamo.getLector() != null || prestamo.getBibliotecario() != null
+                                    || prestamo.getEstadoPres() != null) {
+                                allDefault = false;
+                            }
+                        }
+                        lista.add(prestamo);
+                    }
+
+                    if (prestamos.length > 0 && allDefault) {
+                        System.out.println(
+                                "PrestamoServiceClient - Proxy returned default DTOs, attempting SOAP fallback...");
+                        try {
+                            List<DtPrestamo> parsed = parsePrestamosFromSoapEndpointSinParametros(
+                                    PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamos");
+                            if (parsed != null && !parsed.isEmpty()) {
+                                System.out.println(
+                                        "PrestamoServiceClient - SOAP fallback parsed " + parsed.size() + " prestamos");
+                                return parsed;
+                            } else {
+                                System.out.println(
+                                        "PrestamoServiceClient - SOAP fallback returned empty list, keeping proxy results");
+                            }
+                        } catch (Exception ex) {
+                            System.err.println("PrestamoServiceClient - SOAP fallback failed: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
+                    }
+                } else {
+                    System.out.println("PrestamoServiceClient - obtenerTodosLosPrestamos: prestamos es null");
+                }
             } catch (WebServiceException e) {
-                System.err.println("Error al obtener préstamos: " + e.getMessage());
-                throw new RuntimeException("Error al obtener préstamos", e);
+                System.err.println("Error al obtener todos los préstamos (WebServiceException): " + e.getMessage());
+                e.printStackTrace();
+            } catch (Exception e) {
+                System.err.println("Error inesperado al obtener todos los préstamos: " + e.getMessage());
+                e.printStackTrace();
             }
         } else {
-            // Datos de prueba
-            List<DtPrestamo> prestamos = new ArrayList<>();
-            prestamos.add(new DtPrestamo(1, new Date(), EstadosP.PENDIENTE, new Date(), 
-                "juan@test.com", "biblio@test.com", 1));
-            prestamos.add(new DtPrestamo(2, new Date(), EstadosP.EN_CURSO, new Date(), 
-                "maria@test.com", "biblio@test.com", 2));
-            prestamos.add(new DtPrestamo(3, new Date(), EstadosP.DEVUELTO, new Date(), 
-                "carlos@test.com", "biblio@test.com", 3));
-            System.out.println("📋 Retornando préstamos de prueba: " + prestamos.size() + " elementos");
-            return prestamos;
+            System.out.println("PrestamoServiceClient - servicio no disponible (modo prueba), devolviendo lista vacía");
         }
+        return lista;
     }
-    
-    /**
-     * Obtiene préstamos pendientes
-     */
+
     public List<DtPrestamo> obtenerPrestamosPendientes() {
+        List<DtPrestamo> lista = new ArrayList<>();
         if (prestamoService != null) {
             try {
                 DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPendientes();
-                List<DtPrestamo> lista = new ArrayList<>();
-                for (DtPrestamo prestamo : prestamos) {
-                    lista.add(prestamo);
+                System.out.println("PrestamoServiceClient - obtenerPrestamosPendientes raw length: "
+                        + (prestamos == null ? 0 : prestamos.length));
+                try {
+                    System.out.println("PrestamoServiceClient - obtenerPrestamosPendientes RAW JSON: "
+                            + objectMapper.writeValueAsString(prestamos));
+                } catch (Exception ex) {
+                    System.out.println("PrestamoServiceClient - ERROR serializing array: " + ex);
                 }
-                return lista;
+
+                if (prestamos != null) {
+                    boolean allDefault = true;
+                    for (int i = 0; i < prestamos.length; i++) {
+                        DtPrestamo prestamo = prestamos[i];
+                        try {
+                            System.out
+                                    .println("Prestamo[" + i + "] JSON: " + objectMapper.writeValueAsString(prestamo));
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] toString: " + prestamo);
+                        }
+                        try {
+                            System.out.println(
+                                    "Prestamo[" + i + "] getMaterial(): " + String.valueOf(prestamo.getMaterial()));
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] getMaterial() error: " + ex.getMessage());
+                        }
+
+                        if (prestamo != null) {
+                            if (prestamo.getIdPrestamo() != 0 || prestamo.getMaterial() != 0
+                                    || prestamo.getFechaSoli() != null
+                                    || prestamo.getFechaDev() != null || prestamo.getLector() != null
+                                    || prestamo.getBibliotecario() != null || prestamo.getEstadoPres() != null) {
+                                allDefault = false;
+                            }
+                        }
+                        lista.add(prestamo);
+                    }
+
+                    if (prestamos.length > 0 && allDefault) {
+                        System.out.println(
+                                "PrestamoServiceClient - Proxy returned default/unpopulated DTOs, attempting SOAP fallback parse...");
+                        try {
+                            List<DtPrestamo> parsed = parsePrestamosFromSoapEndpointSinParametros(
+                                    PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamosPendientes");
+                            if (parsed != null && !parsed.isEmpty()) {
+                                System.out.println(
+                                        "PrestamoServiceClient - SOAP fallback parsed " + parsed.size() + " prestamos");
+                                return parsed;
+                            } else {
+                                System.out.println(
+                                        "PrestamoServiceClient - SOAP fallback returned empty list, keeping proxy results");
+                            }
+                        } catch (Exception ex) {
+                            System.err.println("PrestamoServiceClient - SOAP fallback failed: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
+                    }
+                } else {
+                    System.out.println("PrestamoServiceClient - obtenerPrestamosPendientes: prestamos es null");
+                }
             } catch (WebServiceException e) {
-                System.err.println("Error al obtener préstamos pendientes: " + e.getMessage());
-                throw new RuntimeException("Error al obtener préstamos pendientes", e);
+                System.err.println("Error al obtener préstamos pendientes (WebServiceException): " + e.getMessage());
+                e.printStackTrace();
+                // no lanzar; devolvemos lista vacía para que el front no rompa
+            } catch (Exception e) {
+                System.err.println("Error inesperado al obtener préstamos pendientes: " + e.getMessage());
+                e.printStackTrace();
             }
         } else {
-            // Datos de prueba - solo pendientes
-            List<DtPrestamo> prestamos = new ArrayList<>();
-            prestamos.add(new DtPrestamo(1, new Date(), EstadosP.PENDIENTE, new Date(), 
-                "juan@test.com", "biblio@test.com", 1));
-            System.out.println("📋 Retornando préstamos pendientes de prueba: " + prestamos.size() + " elementos");
-            return prestamos;
+            System.out.println("PrestamoServiceClient - servicio no disponible (modo prueba), devolviendo lista vacía");
+            // Podríamos agregar datos mock aquí si deseas
         }
+        return lista;
     }
-    
-    /**
-     * Obtiene préstamos por zona
-     */
+
     public List<DtPrestamo> obtenerPrestamosPorZona(Zonas zona) {
-        try {
-            DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPorZona(zona);
-            List<DtPrestamo> lista = new ArrayList<>();
-            for (DtPrestamo prestamo : prestamos) {
-                lista.add(prestamo);
+        List<DtPrestamo> lista = new ArrayList<>();
+
+        if (prestamoService != null) {
+            try {
+                System.out.println("PrestamoServiceClient - obteniendo préstamos por zona: " + zona);
+                DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPorZona(zona);
+
+                System.out.println("PrestamoServiceClient - obtenerPrestamosPorZona raw length: "
+                        + (prestamos == null ? 0 : prestamos.length));
+
+                try {
+                    System.out.println("PrestamoServiceClient - obtenerPrestamosPorZona RAW JSON: "
+                            + objectMapper.writeValueAsString(prestamos));
+                } catch (Exception ex) {
+                    System.out.println("PrestamoServiceClient - ERROR serializing array: " + ex);
+                }
+
+                boolean allDefault = true;
+
+                if (prestamos != null) {
+                    for (int i = 0; i < prestamos.length; i++) {
+                        DtPrestamo p = prestamos[i];
+
+                        try {
+                            System.out.println("Prestamo[" + i + "] JSON: " + objectMapper.writeValueAsString(p));
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] toString: " + p);
+                        }
+
+                        try {
+                            System.out.println("Prestamo[" + i + "] getMaterial(): " + p.getMaterial());
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] getMaterial() error: " + ex.getMessage());
+                        }
+
+                        if (p != null && (p.getIdPrestamo() != 0 ||
+                                p.getMaterial() != 0 ||
+                                p.getFechaSoli() != null ||
+                                p.getFechaDev() != null ||
+                                p.getLector() != null ||
+                                p.getBibliotecario() != null ||
+                                p.getEstadoPres() != null)) {
+                            allDefault = false;
+                        }
+
+                        lista.add(p);
+                    }
+
+                    if (prestamos.length > 0 && allDefault) {
+                        System.out.println(
+                                "PrestamoServiceClient - Proxy devolvió DTOs vacíos, intentando fallback SOAP...");
+                        try {
+                            List<DtPrestamo> parsed = parsePrestamosFromSoapEndpointConParametro(
+                                    PRESTAMO_SERVICE_URL.replace("?wsdl", ""),
+                                    "obtenerPrestamosPorZona",
+                                    zona.name());
+                            if (parsed != null && !parsed.isEmpty()) {
+                                System.out.println("PrestamoServiceClient - Fallback SOAP devolvió " + parsed.size()
+                                        + " préstamos");
+                                return parsed;
+                            } else {
+                                System.out.println(
+                                        "PrestamoServiceClient - Fallback SOAP devolvió lista vacía, se mantiene proxy");
+                            }
+                        } catch (Exception ex) {
+                            System.err.println("PrestamoServiceClient - Fallback SOAP falló: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
+                    }
+                } else {
+                    System.out.println("PrestamoServiceClient - obtenerPrestamosPorZona: array es null");
+                }
+
+            } catch (WebServiceException e) {
+                System.err.println("Error al obtener préstamos por zona (WebServiceException): " + e.getMessage());
+                e.printStackTrace();
+            } catch (Exception e) {
+                System.err.println("Error inesperado al obtener préstamos por zona: " + e.getMessage());
+                e.printStackTrace();
             }
-            return lista;
-        } catch (WebServiceException e) {
-            System.err.println("Error al obtener préstamos por zona: " + e.getMessage());
-            throw new RuntimeException("Error al obtener préstamos por zona", e);
+        } else {
+            System.out.println("PrestamoServiceClient - servicio no disponible (modo prueba), devolviendo lista vacía");
         }
+
+        return lista;
     }
-    
+
     /**
      * Obtiene préstamos por bibliotecario
      */
@@ -132,36 +321,201 @@ public class PrestamoServiceClient {
         try {
             DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPorBibliotecario(idEmp);
             List<DtPrestamo> lista = new ArrayList<>();
-            for (DtPrestamo prestamo : prestamos) {
-                lista.add(prestamo);
+            boolean allDefault = true;
+            if (prestamos != null) {
+                for (int i = 0; i < prestamos.length; i++) {
+                    DtPrestamo prestamo = prestamos[i];
+                    lista.add(prestamo);
+                    if (prestamo != null) {
+                        if (prestamo.getIdPrestamo() != 0 || prestamo.getMaterial() != 0
+                                || prestamo.getFechaSoli() != null || prestamo.getFechaDev() != null
+                                || prestamo.getLector() != null || prestamo.getBibliotecario() != null
+                                || prestamo.getEstadoPres() != null) {
+                            allDefault = false;
+                        }
+                    }
+                }
+
+                if (prestamos.length > 0 && allDefault) {
+                    System.out.println(
+                            "PrestamoServiceClient - Proxy returned default DTOs for obtenerPrestamosPorBibliotecario, attempting SOAP fallback...");
+                    try {
+                        List<DtPrestamo> parsed = parsePrestamosFromSoapEndpointConParametro(
+                                PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamosPorBibliotecario",
+                                String.valueOf(idEmp));
+                        if (parsed != null && !parsed.isEmpty()) {
+                            System.out.println("PrestamoServiceClient - SOAP fallback parsed " + parsed.size()
+                                    + " prestamos for bibliotecario");
+                            return parsed;
+                        } else {
+                            System.out.println(
+                                    "PrestamoServiceClient - SOAP fallback returned empty list, keeping proxy results");
+                        }
+                    } catch (Exception ex) {
+                        System.err.println(
+                                "PrestamoServiceClient - SOAP fallback failed for obtenerPrestamosPorBibliotecario: "
+                                        + ex.getMessage());
+                        ex.printStackTrace();
+                    }
+                }
+            } else {
+                System.out.println("PrestamoServiceClient - obtenerPrestamosPorBibliotecario: prestamos es null");
             }
+
             return lista;
         } catch (WebServiceException e) {
-            System.err.println("Error al obtener préstamos por bibliotecario: " + e.getMessage());
-            throw new RuntimeException("Error al obtener préstamos por bibliotecario", e);
+            System.err.println("Error al obtener préstamos por bibliotecario (proxy): " + e.getMessage());
+            try {
+                return parsePrestamosFromSoapEndpointConParametro(
+                        PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamosPorBibliotecario",
+                        String.valueOf(idEmp));
+            } catch (Exception ex) {
+                throw new RuntimeException("Error al obtener préstamos por bibliotecario", ex);
+            }
         }
     }
-    
-    /**
-     * Obtiene préstamos activos de un lector
-     */
+
+    public List<DtPrestamo> obtenerPrestamosPorLector(String correoLector) {
+        List<DtPrestamo> lista = new ArrayList<>();
+
+        if (prestamoService != null) {
+            try {
+                System.out.println("PrestamoServiceClient - obteniendo préstamos para lector: " + correoLector);
+                DtPrestamo[] prestamos = prestamoService.obtenerPrestamosPorLector(correoLector);
+
+                System.out.println("PrestamoServiceClient - obtenerPrestamosPorLector raw length: "
+                        + (prestamos == null ? 0 : prestamos.length));
+
+                try {
+                    System.out.println("PrestamoServiceClient - obtenerPrestamosPorLector RAW JSON: "
+                            + objectMapper.writeValueAsString(prestamos));
+                } catch (Exception ex) {
+                    System.out.println("PrestamoServiceClient - ERROR serializing array: " + ex);
+                }
+
+                boolean allDefault = true;
+
+                if (prestamos != null) {
+                    for (int i = 0; i < prestamos.length; i++) {
+                        DtPrestamo p = prestamos[i];
+
+                        try {
+                            System.out.println("Prestamo[" + i + "] JSON: " + objectMapper.writeValueAsString(p));
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] toString: " + p);
+                        }
+
+                        try {
+                            System.out.println("Prestamo[" + i + "] getMaterial(): " + p.getMaterial());
+                        } catch (Exception ex) {
+                            System.out.println("Prestamo[" + i + "] getMaterial() error: " + ex.getMessage());
+                        }
+
+                        if (p != null && (p.getIdPrestamo() != 0 ||
+                                p.getMaterial() != 0 ||
+                                p.getFechaSoli() != null ||
+                                p.getFechaDev() != null ||
+                                p.getLector() != null ||
+                                p.getBibliotecario() != null ||
+                                p.getEstadoPres() != null)) {
+                            allDefault = false;
+                        }
+
+                        lista.add(p);
+                    }
+
+                    if (prestamos.length > 0 && allDefault) {
+                        System.out.println(
+                                "PrestamoServiceClient - Proxy devolvió DTOs vacíos, intentando fallback SOAP...");
+                        try {
+                            List<DtPrestamo> parsed = parsePrestamosFromSoapEndpointConParametro(
+                                    PRESTAMO_SERVICE_URL.replace("?wsdl", ""),
+                                    "obtenerPrestamosPorLector", // ← nombre del método SOAP
+                                    correoLector); // ← parámetro para el envelope
+                            if (parsed != null && !parsed.isEmpty()) {
+                                System.out.println("PrestamoServiceClient - Fallback SOAP devolvió " + parsed.size()
+                                        + " préstamos");
+                                return parsed;
+                            } else {
+                                System.out.println(
+                                        "PrestamoServiceClient - Fallback SOAP devolvió lista vacía, se mantiene proxy");
+                            }
+                        } catch (Exception ex) {
+                            System.err.println("PrestamoServiceClient - Fallback SOAP falló: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
+                    }
+                } else {
+                    System.out.println("PrestamoServiceClient - obtenerPrestamosPorLector: array es null");
+                }
+
+            } catch (WebServiceException e) {
+                System.err.println("Error al obtener préstamos por lector (WebServiceException): " + e.getMessage());
+                e.printStackTrace();
+            } catch (Exception e) {
+                System.err.println("Error inesperado al obtener préstamos por lector: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("PrestamoServiceClient - servicio no disponible (modo prueba), devolviendo lista vacía");
+        }
+
+        return lista;
+    }
+
     public List<DtPrestamo> obtenerPrestamosActivosLector(String correoLector) {
-        try {
-            DtPrestamo[] prestamos = prestamoService.obtenerPrestamosActivosLector(correoLector);
-            List<DtPrestamo> lista = new ArrayList<>();
-            for (DtPrestamo prestamo : prestamos) {
-                lista.add(prestamo);
+        if (prestamoService != null) {
+            try {
+                DtPrestamo[] prestamos = prestamoService.obtenerPrestamosActivosLector(correoLector);
+                List<DtPrestamo> lista = new ArrayList<>();
+                boolean hasData = false;
+                if (prestamos != null) {
+                    for (DtPrestamo prestamo : prestamos) {
+                        lista.add(prestamo);
+                        if (prestamo != null && (prestamo.getIdPrestamo() != 0 || prestamo.getMaterial() != 0
+                                || prestamo.getFechaSoli() != null || prestamo.getFechaDev() != null
+                                || prestamo.getLector() != null)) {
+                            hasData = true;
+                        }
+                    }
+                }
+
+                if (!hasData) {
+                    try {
+                        List<DtPrestamo> parsed = parsePrestamosFromSoapEndpointConParametro(
+                                PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamosActivosLector",
+                                correoLector);
+                        if (parsed != null && !parsed.isEmpty()) {
+                            return parsed;
+                        }
+                    } catch (Exception ex) {
+                        System.err.println("SOAP fallback con parametro falló: " + ex.getMessage());
+                    }
+                }
+
+                return lista;
+            } catch (WebServiceException e) {
+                System.err.println("Error al obtener préstamos activos del lector (proxy): " + e.getMessage());
+                try {
+                    return parsePrestamosFromSoapEndpointConParametro(
+                            PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamosActivosLector",
+                            correoLector);
+                } catch (Exception ex) {
+                    throw new RuntimeException("Error al obtener préstamos activos del lector", ex);
+                }
             }
-            return lista;
-        } catch (WebServiceException e) {
-            System.err.println("Error al obtener préstamos activos del lector: " + e.getMessage());
-            throw new RuntimeException("Error al obtener préstamos activos del lector", e);
+        } else {
+
+            try {
+                return parsePrestamosFromSoapEndpointConParametro(
+                        PRESTAMO_SERVICE_URL.replace("?wsdl", ""), "obtenerPrestamosActivosLector", correoLector);
+            } catch (Exception ex) {
+                throw new RuntimeException("Servicio de préstamo no disponible y fallback SOAP falló", ex);
+            }
         }
     }
-    
-    /**
-     * Verifica si el servicio está disponible
-     */
+
+    // Auxiliares
     public boolean isServiceAvailable() {
         try {
             prestamoService.obtenerPrestamos();
@@ -170,5 +524,309 @@ public class PrestamoServiceClient {
             return false;
         }
     }
-}
 
+    /**
+     * Realiza una llamada HTTP SOAP al endpoint y parsea la respuesta XML para
+     * construir DtPrestamo.
+     * NOS SABEMOS Q HACE PERO FUNCIONA, al final vemos de cambiarlo
+     */
+
+    private List<DtPrestamo> parsePrestamosFromSoapEndpointSinParametros(String endpointUrl, String metodoSoap)
+            throws Exception {
+        return parsePrestamosFromSoapEnvelope(endpointUrl, "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                + "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:pub=\"http://publicadores/\">"
+                + "<soapenv:Header/>"
+                + "<soapenv:Body>"
+                + "<pub:" + metodoSoap + "/>"
+                + "</soapenv:Body>"
+                + "</soapenv:Envelope>");
+    }
+
+    private List<DtPrestamo> parsePrestamosFromSoapEndpointConParametro(String endpointUrl, String metodoSoap,
+            String parametro) throws Exception {
+        return parsePrestamosFromSoapEnvelope(endpointUrl, "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                + "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:pub=\"http://publicadores/\">"
+                + "<soapenv:Header/>"
+                + "<soapenv:Body>"
+                + "<pub:" + metodoSoap + ">"
+                + "<arg0>" + escapeXml(parametro) + "</arg0>"
+                + "</pub:" + metodoSoap + ">"
+                + "</soapenv:Body>"
+                + "</soapenv:Envelope>");
+    }
+
+    private List<DtPrestamo> parsePrestamosFromSoapEnvelope(String endpointUrl, String soapEnvelope) throws Exception {
+        List<DtPrestamo> result = new ArrayList<>();
+
+        URL url = URI.create(endpointUrl).toURL();
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
+        conn.setRequestProperty("Accept", "text/xml");
+
+        try (OutputStream os = conn.getOutputStream()) {
+            os.write(soapEnvelope.getBytes(StandardCharsets.UTF_8));
+        }
+
+        int status = conn.getResponseCode();
+        InputStream in = (status >= 200 && status < 300) ? conn.getInputStream() : conn.getErrorStream();
+
+        // read response
+        StringBuilder respSb = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                respSb.append(line).append('\n');
+            }
+        }
+
+        String resp = respSb.toString();
+        System.out.println("PrestamoServiceClient - SOAP fallback response length: " + resp.length());
+        System.out.println(resp);
+
+        // parse XML
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(new java.io.ByteArrayInputStream(resp.getBytes(StandardCharsets.UTF_8)));
+
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        // find all <return> nodes (common for JAX-WS responses)
+        NodeList returns = (NodeList) xpath.evaluate("//*[local-name() = 'return']", doc, XPathConstants.NODESET);
+        if (returns == null || returns.getLength() == 0) {
+            // try to find any DtPrestamo-like nodes
+            returns = (NodeList) xpath.evaluate("//*[local-name() = 'DtPrestamo' or local-name() = 'prestamo']", doc,
+                    XPathConstants.NODESET);
+        }
+
+        for (int i = 0; returns != null && i < returns.getLength(); i++) {
+            Node returnNode = returns.item(i);
+            if (returnNode.getNodeType() != Node.ELEMENT_NODE)
+                continue;
+            Element e = (Element) returnNode;
+
+            // If the <return> node contains multiple child elements representing DtPrestamo
+            // (common when the SOAP response wraps the array in one <return>), iterate its
+            // element children.
+            NodeList childElements = e.getChildNodes();
+            boolean parsedChilds = false;
+            for (int c = 0; childElements != null && c < childElements.getLength(); c++) {
+                Node child = childElements.item(c);
+                if (child.getNodeType() != Node.ELEMENT_NODE)
+                    continue;
+                Element childElem = (Element) child;
+                // Heuristic: if child element contains an idPrestamo field, treat it as a
+                // DtPrestamo node
+                String possibleId = getChildText(childElem, "idPrestamo");
+                String possibleMaterial = getChildText(childElem, "material");
+                if (possibleId != null || possibleMaterial != null) {
+                    parsedChilds = true;
+                    Integer idPrestamo = tryParseInt(getChildText(childElem, "idPrestamo"));
+                    Date fechaSoli = tryParseDate(getChildText(childElem, "fechaSoli"));
+                    String estadoStr = getChildText(childElem, "estadoPres");
+                    EstadosP estado = null;
+                    if (estadoStr != null && !estadoStr.isEmpty()) {
+                        try {
+                            estado = EstadosP.valueOf(estadoStr);
+                        } catch (Exception ex) {
+                            // ignore
+                        }
+                    }
+                    Date fechaDev = tryParseDate(getChildText(childElem, "fechaDev"));
+                    String lector = getChildText(childElem, "lector");
+                    String bibliotecario = getChildText(childElem, "bibliotecario");
+                    Integer material = tryParseInt(getChildText(childElem, "material"));
+
+                    DtPrestamo dp = new DtPrestamo(
+                            idPrestamo == null ? 0 : idPrestamo,
+                            fechaSoli,
+                            estado,
+                            fechaDev,
+                            lector,
+                            bibliotecario,
+                            material == null ? 0 : material);
+                    result.add(dp);
+                }
+            }
+
+            if (parsedChilds) {
+                continue;
+            }
+
+            Integer idPrestamo = tryParseInt(getChildText(e, "idPrestamo"));
+            Date fechaSoli = tryParseDate(getChildText(e, "fechaSoli"));
+            String estadoStr = getChildText(e, "estadoPres");
+            EstadosP estado = null;
+            if (estadoStr != null && !estadoStr.isEmpty()) {
+                try {
+                    estado = EstadosP.valueOf(estadoStr);
+                } catch (Exception ex) {
+                }
+            }
+            Date fechaDev = tryParseDate(getChildText(e, "fechaDev"));
+            String lector = getChildText(e, "lector");
+            String bibliotecario = getChildText(e, "bibliotecario");
+            Integer material = tryParseInt(getChildText(e, "material"));
+
+            DtPrestamo dp = new DtPrestamo(
+                    idPrestamo == null ? 0 : idPrestamo,
+                    fechaSoli,
+                    estado,
+                    fechaDev,
+                    lector,
+                    bibliotecario,
+                    material == null ? 0 : material);
+            result.add(dp);
+        }
+
+        return result;
+    }
+
+    private String escapeXml(String s) {
+        if (s == null)
+            return "";
+        return s.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;");
+    }
+
+    private String getChildText(Element parent, String childName) {
+        NodeList nodes = parent.getElementsByTagName(childName);
+        if (nodes != null && nodes.getLength() > 0) {
+            Node n = nodes.item(0);
+            if (n != null)
+                return n.getTextContent();
+        }
+        NodeList any = parent.getElementsByTagNameNS("*", childName);
+        if (any != null && any.getLength() > 0) {
+            Node n = any.item(0);
+            if (n != null)
+                return n.getTextContent();
+        }
+        return null;
+    }
+
+    private Integer tryParseInt(String s) {
+        if (s == null || s.trim().isEmpty())
+            return null;
+        try {
+            return Integer.parseInt(s.trim());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Date tryParseDate(String s) {
+        if (s == null || s.trim().isEmpty())
+            return null;
+        String v = s.trim();
+        String[] patterns = { "yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ss",
+                "yyyy-MM-dd" };
+        for (String p : patterns) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat(p);
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                return sdf.parse(v.replaceAll("Z$", "Z"));
+            } catch (Exception e) {
+                // continue
+            }
+        }
+        return null;
+    }
+
+    public boolean existePrestamoActivo(int idMaterial) {
+        try {
+            return prestamoService.existePrestamoActivo(idMaterial);
+        } catch (WebServiceException e) {
+            System.err.println("Error al verificar existencia de préstamo activo: " + e.getMessage());
+            throw new RuntimeException("Error al verificar existencia de préstamo activo", e);
+        }
+    }
+
+    public void cambiarEstadoPrestamo(DtPrestamo prestamo, EstadosP nuevoEstado) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarEstadoPrestamo(prestamo, nuevoEstado);
+                System.out.println("Estado de préstamo cambiado en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar estado de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar estado de préstamo", e);
+            }
+        } else {
+            System.out.println("Estado de préstamo cambiado (modo prueba): " + prestamo);
+        }
+    }
+
+    public void cambiarMaterialPrestamo(DtPrestamo prestamo, int nuevoMaterialID) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarMaterialPrestamo(prestamo, nuevoMaterialID);
+                System.out.println("Material de préstamo cambiado en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar material de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar el id material de préstamo", e);
+            }
+        } else {
+            System.out.println("Material de préstamo cambiado (modo prueba): " + prestamo);
+        }
+    }
+
+    public void cambiarCorreoLectorPrestamo(DtPrestamo prestamo, String nuevoCorreo) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarCorreoLectorPrestamo(prestamo, nuevoCorreo);
+                System.out.println("Correo del lector de préstamo cambiado en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar correo del lector de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar correo del lector de préstamo", e);
+            }
+        } else {
+            System.out.println("Correo del lector de préstamo cambiado (modo prueba): " + prestamo);
+        }
+    }
+
+    public void cambiarCorreoBibliotecarioPrestamo(DtPrestamo prestamo, String nuevoCorreo) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarCorreoBibliotecarioPrestamo(prestamo, nuevoCorreo);
+                System.out.println("Correo del bibliotecario de préstamo cambiado en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar correo del bibliotecario de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar correo del bibliotecario de préstamo", e);
+            }
+        } else {
+            System.out.println("Correo del bibliotecario de préstamo cambiado (modo prueba): " + prestamo);
+        }
+    }
+
+    public void cambiarFechaDevolucionPrestamo(DtPrestamo prestamo, Date nuevaFecha) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarFechaDevolucionPrestamo(prestamo, nuevaFecha);
+                System.out.println("Fecha de devolución de préstamo cambiada en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar fecha de devolución de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar fecha de devolución de préstamo", e);
+            }
+        } else {
+            System.out.println("Fecha de devolución de préstamo cambiada (modo prueba): " + prestamo);
+        }
+    }
+
+    public void cambiarFechaSolicitudPrestamo(DtPrestamo prestamo, Date nuevaFecha) {
+        if (prestamoService != null) {
+            try {
+                prestamoService.cambiarFechaSolicitudPrestamo(prestamo, nuevaFecha);
+                System.out.println("Fecha de solicitud de préstamo cambiada en el backend: " + prestamo);
+            } catch (WebServiceException e) {
+                System.err.println("Error al cambiar fecha de solicitud de préstamo: " + e.getMessage());
+                throw new RuntimeException("Error al cambiar fecha de solicitud de préstamo", e);
+            }
+        } else {
+            System.out.println("Fecha de solicitud de préstamo cambiada (modo prueba): " + prestamo);
+        }
+    }
+}

@@ -22,21 +22,16 @@ public class MaterialServiceClient {
     private static final String MATERIAL_SERVICE_URL = "http://localhost:8080/materiales?wsdl";
     private MaterialPublishController materialService;
 
+
     public MaterialServiceClient() {
         try {
-            System.out.println("Intentando conectar a: " + MATERIAL_SERVICE_URL);
-            URL url = URI.create(MATERIAL_SERVICE_URL).toURL();
-            System.out.println("URL creada: " + url);
-            Service service = Service.create(url,
-                    new javax.xml.namespace.QName("http://publicadores/", "MaterialPublishControllerService"));
+            URL url = new URL(MATERIAL_SERVICE_URL);
+            Service service = Service.create(url, 
+                new javax.xml.namespace.QName("http://publicadores/", "MaterialPublishControllerService"));
             materialService = service.getPort(MaterialPublishController.class);
-            System.out.println("Service creado");
-            System.out.println("Conectado al servicio de materiales en " + MATERIAL_SERVICE_URL);
+            System.out.println("✅ Conectado al servicio de materiales");
         } catch (Exception e) {
-            System.err.println("No se pudo conectar con el servicio de materiales, usando datos de prueba. Error: "
-                    + e.getClass().getName() + " - " + e.getMessage());
-            System.err.println("Error: " + e.getClass().getName() + " - " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("⚠️ No se pudo conectar con el servicio de materiales, usando datos de prueba: " + e.getMessage());
             materialService = null; // Usar datos mock
         }
     }
@@ -45,7 +40,7 @@ public class MaterialServiceClient {
         if (materialService != null) {
             try {
                 materialService.agregarMaterial(material);
-                System.out.println("✅ Material agregado: " + material);
+                System.out.println("✅ Material agregado al backend: " + material);
             } catch (WebServiceException e) {
                 System.err.println("Error al agregar material: " + e.getMessage());
                 throw new RuntimeException("Error al agregar material", e);
@@ -101,7 +96,7 @@ public class MaterialServiceClient {
             return materiales;
         }
     }
-
+    
     /**
      * Verifica si el servicio está disponible
      */
@@ -113,5 +108,5 @@ public class MaterialServiceClient {
             return false;
         }
     }
-
 }
+

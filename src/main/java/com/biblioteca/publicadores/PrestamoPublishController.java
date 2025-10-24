@@ -13,13 +13,12 @@ import com.biblioteca.datatypes.DtPrestamo;
 import com.biblioteca.datatypes.EstadosP;
 import com.biblioteca.datatypes.Zonas;
 
-@WebService
-@SOAPBinding(style = Style.RPC, parameterStyle = ParameterStyle.WRAPPED)
+@WebService(targetNamespace = "http://publicadores/")
+@SOAPBinding(style = Style.DOCUMENT, parameterStyle = ParameterStyle.WRAPPED)
 public interface PrestamoPublishController {
 
     @WebMethod
-    void agregarPrestamo(Date fechaSoli, Date fechaDev, EstadosP estadoP,
-            String correoLector, String correoBiblio, int idMaterial);
+    void agregarPrestamo(DtPrestamo prestamo);
 
     @WebMethod
     DtPrestamo[] obtenerPrestamos();
@@ -34,5 +33,29 @@ public interface PrestamoPublishController {
     DtPrestamo[] obtenerPrestamosPorBibliotecario(int idEmp);
 
     @WebMethod
+    DtPrestamo[] obtenerPrestamosPorLector(String correoLector);
+
+    @WebMethod
     DtPrestamo[] obtenerPrestamosActivosLector(String correoLector);
+
+    @WebMethod
+    boolean existePrestamoActivo(int idMaterial);
+
+    @WebMethod
+    void cambiarEstadoPrestamo(DtPrestamo prestamo, EstadosP nuevoEstado);
+
+    @WebMethod
+    void cambiarMaterialPrestamo(DtPrestamo prestamo, int nuevoMaterialID);
+
+    @WebMethod
+    void cambiarCorreoLectorPrestamo(DtPrestamo prestamo, String nuevoCorreo);
+
+    @WebMethod
+    void cambiarCorreoBibliotecarioPrestamo(DtPrestamo prestamo, String nuevoCorreo);
+
+    @WebMethod
+    void cambiarFechaDevolucionPrestamo(DtPrestamo prestamo, Date nuevaFecha);
+
+    @WebMethod
+    void cambiarFechaSolicitudPrestamo(DtPrestamo prestamo, Date nuevaFecha);
 }

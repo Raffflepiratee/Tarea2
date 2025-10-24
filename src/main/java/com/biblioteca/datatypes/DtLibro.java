@@ -6,7 +6,6 @@ public class DtLibro extends DtMaterial {
     private String titulo;
     private int cantPag;
 
-    // No-arg constructor required by JAXB
     public DtLibro() {
         super();
     }
@@ -33,9 +32,16 @@ public class DtLibro extends DtMaterial {
         return cantPag;
     }
 
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setCantPag(int cantPag) {
+        this.cantPag = cantPag;
+    }
+
     @Override
     public String toString() {
         return "DtLibro [titulo=" + titulo + ", cantPag=" + cantPag + ", toString()=" + super.toString() + "]";
     }
 }
-
