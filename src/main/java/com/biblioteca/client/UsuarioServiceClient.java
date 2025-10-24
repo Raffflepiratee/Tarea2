@@ -56,9 +56,28 @@ public class UsuarioServiceClient {
         }
     }
 
-    /**
-     * Obtiene todos los usuarios
-     */
+    // OJO
+    public List<DtUsuario> obtenerLectores() {
+        if (usuarioService != null) {
+            try {
+                DtUsuario[] usuarios = usuarioService.obtenerUsuarios();
+                List<DtUsuario> lista = new ArrayList<>();
+                for (DtUsuario usuario : usuarios) {
+                    if (usuario instanceof DtLector) {
+                        lista.add(usuario); // en este caso, solo nos interesan mostrar lectores
+                    }
+                }
+                System.out.println("Usuarios obtenidos del backend: " + lista.size() + " elementos");
+                return lista;
+            } catch (WebServiceException e) {
+                System.err.println("Error al obtener usuarios del backend: " + e.getMessage());
+                throw new RuntimeException("Error al obtener usuarios del backend", e);
+            }
+        } else {
+            throw new RuntimeException("Servicio de usuarios no disponible. El backend SOAP no está conectado.");
+        }
+    }
+
     public List<DtUsuario> obtenerUsuarios() {
         if (usuarioService != null) {
             try {
