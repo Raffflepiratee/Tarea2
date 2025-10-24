@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const detalles = item['Detalles'] || item.detalles || '';
                 // Escape HTML then convert newlines to <br> for rendering
                 const detallesHtml = escapeHtml(detalles).replace(/\n/g, '<br>');
-                resultsEl.innerHTML += `<tr><td>${escapeHtml(id)}</td><td>${escapeHtml(fecha)}</td><td>${escapeHtml(tipo)}</td><td>${detallesHtml}</td></tr>`;
+                resultsEl.innerHTML += `<tr><td data-label="ID Material">${escapeHtml(id)}</td><td data-label="Fecha">${escapeHtml(fecha)}</td><td data-label="Tipo">${escapeHtml(tipo)}</td><td data-label="Detalles">${detallesHtml}</td></tr>`;
             });
 
             //resultsEl.innerHTML = `<table border="1" style="border-collapse:collapse"><thead><tr><th>ID</th><th>Fecha registro</th><th>Tipo</th><th>Detalles</th></tr></thead><tbody>${rows.join('')}</tbody></table>`;

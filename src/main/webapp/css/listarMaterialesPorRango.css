@@ -103,8 +103,77 @@ button#Boton:hover{
     #results{ padding: 0; }
     #results table, #results thead, #results tbody, #results th, #results td, #results tr{ display: block; }
     #results thead{ display: none; }
-    #results tr{ margin-bottom: 0.75rem; }
     #results td{ display: flex; justify-content: space-between; padding: 0.6rem; border-bottom: 1px solid #e6e6e6; }
     #results td::before{ content: attr(data-label); font-weight: 600; margin-right: 1rem; color: #555; }
 }
+
+@media (max-width: 425px) {
+    tr{
+        border-bottom: solid 1px black;
+    }
+
+    #results{
+        padding: 1rem;
+    }
+
+    /* centrar brand correctamente */
+    .inner {
+        justify-content: center;
+        position: relative;
+    }
+
+    .brand {
+        font-size: .9rem;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .profile {
+        display: none;
+    }
+
+    .sidebar-user{
+        display: block !important;
+        justify-content: center;
+    }
+
+    .btn-logout{
+        width: 100%;
+    }
+
+    form {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: 0.9rem;
+    }
+
+    /* contenedor de cada campo */
+    .date-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: .6rem;
+        width: 100%;
+    }
+
+    .date-row label {
+        flex: 1;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .date-row input[type="date"] {
+        flex: 1;
+        width: auto;
+        min-width: 150px;
+    }
+
+    button#Boton {
+        margin-top: .8rem;
+        width: 100%;
+    }
+}
+
 
