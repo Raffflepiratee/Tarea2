@@ -1,38 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('form#prestamosForm') || document.querySelector('form');
-    const buscarBtn = document.getElementById('buscarPrestamos');
+    // Obtener correo del bibliotecario desde localStorage
+    const correo = (localStorage.getItem('correo') || '').trim();
+    console.log("Correo del bibliotecario cargado desde sesión:", correo || 'no disponible');
 
-    if (form) {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const correo = document.getElementById('biblioEmail')?.value?.trim() || '';
-            if (!correo) { showError('Ingrese el correo del bibliotecario'); return; }
-            cargarPrestamosPorBibliotecario(correo);
-        });
+    if (!correo) {
+        // Mostrar error y un mensaje en la tabla si no hay correo en sesión
+        showError('Correo del bibliotecario no disponible en la sesión');
+        const tbody = document.getElementById('prestamosTableBody');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="text-center text-warning">Correo del bibliotecario no disponible. Inicie sesión.</td></tr>';
         return;
     }
 
-    if (buscarBtn) {
-        buscarBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            const correo = document.getElementById('biblioEmail')?.value?.trim() || '';
-            if (!correo) { showError('Ingrese el correo del bibliotecario'); return; }
-            cargarPrestamosPorBibliotecario(correo);
-        });
-    }
-
-    // allow enter on input when no form
-    const input = document.getElementById('biblioEmail');
-    if (input) {
-        input.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const correo = input.value.trim();
-                if (!correo) { showError('Ingrese el correo del bibliotecario'); return; }
-                cargarPrestamosPorBibliotecario(correo);
-            }
-        });
-    }
+    // Cargar automáticamente los préstamos para el bibliotecario en sesión
+    cargarPrestamosPorBibliotecario(correo);
 });
 
 function cargarPrestamosPorBibliotecario(correo) {
@@ -44,7 +24,7 @@ function cargarPrestamosPorBibliotecario(correo) {
     const body = new URLSearchParams();
     body.append('bibliotecario', correo);
 
-    fetch(window.location.pathname.replace(/\/[^/]*$/, '') + '/prestamosPorBibliotecario', {
+    fetch('/biblioteca-web/prestamosPorBibliotecario', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
         body: body.toString()
@@ -55,13 +35,25 @@ function cargarPrestamosPorBibliotecario(correo) {
         try {
             data = text ? JSON.parse(text) : null;
         } catch (e) {
+            // Log the raw response for debugging: status and body
+            console.error('Invalid JSON response while fetching prestamosPorBibliotecario', { status: response.status, statusText: response.statusText, body: text });
+
             if (!response.ok) throw new Error(text || response.statusText || 'Error del servidor');
-            throw new Error('Respuesta inválida del servidor');
+
+            // return response;
+
+            // Otherwise it's a 200 but invalid JSON
+            // Include a short excerpt of the body to aid debugging without flooding the UI
+            const excerpt = (text || '').slice(0, 1000);
+            throw new Error('Respuesta inválida del servidor: ' + (excerpt ? excerpt + (text.length > 1000 ? '... (truncated)' : '') : 'contenido vacío'));
         }
 
         if (!response.ok) {
-            const msg = (data && data.error) ? data.error : (text || response.statusText || 'Error del servidor');
-            throw new Error(msg);
+            // If the server returned a JSON body with an error field, let the next `.then` handle it
+            // by returning the parsed data. If there was no JSON body, create a small object
+            // so the downstream error handling shows a friendly message instead of raw text.
+            if (!data) data = { error: (text || response.statusText || 'Error del servidor') };
+            return data;
         }
 
         return data;
@@ -111,10 +103,23 @@ function cargarPrestamosPorBibliotecario(correo) {
     })
     .catch(err => {
         showLoading(false);
-        console.error('Fetch error:', err);
+        // Normalize error message and log full object for debugging
+        let message = 'Error al cargar préstamos';
+        try {
+            if (err && err.message) message = err.message;
+            else if (typeof err === 'string') message = err;
+            else if (err && typeof err === 'object') message = JSON.stringify(err);
+        } catch (ex) {
+            message = String(err);
+        }
+
+        console.error('Fetch error (prestamosPorBibliotecario):', err);
+        if (err && err.stack) console.error(err.stack);
+
         const tbody = document.getElementById('prestamosTableBody');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">' + escapeHtml(err.message || 'Error') + '</td></tr>';
-        showError(err && err.message ? err.message : 'Error al cargar préstamos');
+        const safe = escapeHtml((message || 'Error').toString()).slice(0, 2000);
+        if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">' + safe + '</td></tr>';
+        showError(message || 'Error al cargar préstamos');
     });
 }
 

@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log('Cuerpo de la solicitud:', body.toString());
 
-        // reemplazar el try { fetch... } catch(...) por este bloque:
         fetch('/biblioteca-web/listarMaterialesPorRango', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },

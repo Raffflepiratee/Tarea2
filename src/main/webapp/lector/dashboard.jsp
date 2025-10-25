@@ -11,24 +11,14 @@
 </head>
 <body>
     
-    <header class="topbar">
-        <div class="inner">
-            <div class="brand">Biblioteca Comunitaria UY</div>
-            <div class="profile">
-                <p id="nombre_usuario"></p>
-                <div>
-                    <button class="logoutBtn" id="logoutBtn">Salir</button>
-                </div>
-            </div>
-        </div>
-    </header>
+    <jsp:include page="/WEB-INF/jsp/partials/header.jsp" />
 
     <main class="main">
         <div class="grid">
             <a class="card" href="#">
                 <div class="title">Buscar Libros</div>
             </a>
-            <a class="card" href="#">
+            <a class="card" href="${pageContext.request.contextPath}/lector/prestamosActivosLector.jsp">
                 <div class="title">Mis Préstamos</div>
             </a>
            <!--  <a class="card" href="#">

@@ -1,0 +1,71 @@
+
+/* Styles specific to prestamosPorBibliotecario.jsp
+   These are small, page-scoped overrides to keep visual coherence
+   with listarLectores.css and the global common.css. */
+
+/* Heading and container tweaks */
+.page-wrapper h1 {
+	margin-bottom: 12px;
+	font-size: 1.6rem;
+	font-weight: 700;
+	color: var(--text, #053936);
+}
+
+/* Search form (bibliotecario email) */
+#prestamosForm {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin-bottom: 8px;
+}
+
+#prestamosForm label {
+	margin-bottom: 0;
+	font-weight: 600;
+	color: var(--muted, #6b7c7b);
+}
+
+#biblioEmail {
+	min-width: 200px;
+	max-width: 420px;
+	width: 300px;
+}
+
+@media (max-width: 700px) {
+	#prestamosForm {
+		width: 100%;
+		gap: 10px;
+	}
+	#biblioEmail { width: 100%; }
+	#buscarPrestamos { width: 100%; }
+}
+
+/* Table tweaks to match listarLectores visual language */
+.table-scroll-container .table thead th {
+	background: #053936; /* same as listarLectores */
+	color: #fff;
+}
+
+.table-scroll-container .table tbody tr td {
+	vertical-align: middle;
+}
+
+/* Message shown when no results */
+#prestamosTableBody td.text-center {
+	color: var(--muted, #6b7c7b);
+	font-style: italic;
+}
+
+/* Ensure alerts follow the same sizing and spacing */
+.page-wrapper .error {
+	display: none; /* default hidden; JSP may toggle inline */
+	margin-top: 8px;
+}
+
+/* Small responsive polish for very small screens */
+@media (max-width: 425px) {
+	.page-wrapper .table tbody tr { height: auto; }
+	.page-wrapper h1 { font-size: 1.25rem; text-align: center; }
+}
+

@@ -43,7 +43,7 @@
             <a class="card" href="#">
                 <div class="title">Reporte zonal</div>
             </a>
-            <a class="card" href="#">
+            <a class="card" href="${pageContext.request.contextPath}/bibliotecario/prestamosPorBibliotecario.jsp">
                 <div class="title">Mi historial de préstamos</div>
             </a>
         </div>
