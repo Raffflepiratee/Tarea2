@@ -5,18 +5,15 @@ document.addEventListener('DOMContentLoaded', function() {
 let cachedPrestamos = [];
 
 function initListarPrestamos() {
-    const btnListar = document.getElementById('btnListarPrestamos');
-    if (btnListar) {
-        btnListar.addEventListener('click', function () {
-            const correoInput = document.getElementById('correoLector');
-            const correo = correoInput ? correoInput.value.trim() : '';
-            if (!correo) {
-                showError('Debe ingresar un correo válido');
-                return;
-            }
-            cargarPrestamosPorLector(correo);
-        });
+
+    const correo = localStorage.getItem('correo')
+
+    if(!correo) {
+        showError('No se encontró el correo del lector.');
+        return;
     }
+
+    cargarPrestamosPorLector(correo);
 
     const filtro = document.getElementById('filtroEstado');
     if (filtro) {
@@ -68,20 +65,26 @@ function mostrarPrestamos(prestamos) {
     tbody.innerHTML = '';
 
     if (!prestamos || prestamos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="text-center">No hay préstamos registrados</td></tr>';
+        tbody.innerHTML = `
+        <tr class="container-imagen">
+            <td colspan="7" class="text-center py-4">
+                <img src="${contextPath}/img/png.png" alt="No hay resultados" style="max-width: 140px; opacity: 0.8;">
+                <div class="mt-2 text-muted">No hay resultados</div>
+            </td>
+        </tr>`;
         return;
     }
 
     prestamos.forEach(p => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${p.idPrestamo || 'N/A'}</td>
-            <td>${p.fechaSoli || 'N/A'}</td>
-            <td>${p.fechaDev || 'N/A'}</td>
-            <td>${p.estadoP || 'N/A'}</td>
-            <td>${p.lector || 'N/A'}</td>
-            <td>${p.material || 'N/A'}</td>
-            <td>${p.bibliotecario || 'N/A'}</td>
+            <td data-label="ID:">${p.idPrestamo || 'N/A'}</td>
+            <td data-label="Solicitud:">${p.fechaSoli || 'N/A'}</td>
+            <td data-label="Devolución:">${p.fechaDev || 'N/A'}</td>
+            <td data-label="Estado:">${p.estadoP || 'N/A'}</td>
+            <td data-label="Lector:">${p.lector || 'N/A'}</td>
+            <td data-label="Material:">${p.material || 'N/A'}</td>
+            <td data-label="Bibliotecario:">${p.bibliotecario || 'N/A'}</td>
         `;
         tbody.appendChild(row);
     });
