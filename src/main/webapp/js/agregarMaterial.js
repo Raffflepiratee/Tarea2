@@ -89,6 +89,11 @@ document.getElementById('registrarMaterial').addEventListener('click', function(
     });
 });
 
+document.getElementById('limpiarForm').addEventListener('click', function() {
+    document.getElementById('agregarMaterialForm').reset();
+    mostrarCampos('');
+});
+
 function showError(message) {
     document.getElementById('errorMessage').textContent = message;
     document.querySelector('.error').style.display = 'block';

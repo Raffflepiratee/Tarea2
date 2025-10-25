@@ -34,7 +34,7 @@
             <a class="card" href="${pageContext.request.contextPath}/bibliotecario/listarMaterialesPorRango.jsp">
                 <div class="title">Donaciones por rango</div>
             </a>
-            <a class="card" href="#">
+            <a class="card" href="${pageContext.request.contextPath}/bibliotecario/ordenarMaterialesPorPendientes.jsp">
                 <div class="title">Materiales con más préstamos</div>
             </a>
             <a class="card" href="${pageContext.request.contextPath}/bibliotecario/prestamosActivosLector.jsp">
