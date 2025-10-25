@@ -17,7 +17,7 @@
             <div class="profile">
                 <p id="nombre_usuario"></p>
                 <div>
-                    <button class="logoutBtn" id="logoutBtn">Salir</button>
+                    <button class="logoutBtn btn btn-danger" id="logoutBtn">Salir</button>
                 </div>
             </div>
         </div>
@@ -32,8 +32,10 @@
             <a class="card" href="${pageContext.request.contextPath}/lector/listarPrestamosPorLector.jsp">
                 <div class="title">Mis Préstamos</div>
             </a>
-         
-            </a> -->
+
+            <a class="card" href="${pageContext.request.contextPath}/lector/agregarPrestamo.jsp">
+                <div class="title">Nuevo Préstamo</div>
+            </a>
         </div>
     </main>
 

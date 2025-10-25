@@ -17,7 +17,7 @@
             <div class="profile">
                 <p id="nombre_usuario"></p>
                 <div>
-                    <button class="logoutBtn" id="logoutBtn">Salir</button>
+                    <button class="logoutBtn btn btn-danger" id="logoutBtn">Salir</button>
                 </div>
             </div>
         </div>

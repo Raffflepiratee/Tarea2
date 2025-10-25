@@ -2,7 +2,7 @@
     <nav class="nav">
         <a href="${pageContext.request.contextPath}/lector/dashboard.jsp">Dashboard</a>
 
-        <a href="${pageContext.request.contextPath}/lector/listarMateriales.jsp">Buscar material</a>
+        <a href="${pageContext.request.contextPath}/lector/listarMateriales.jsp">Libros y Artículos</a>
 
         <a href="${pageContext.request.contextPath}/lector/listarPrestamosPorLector.jsp">Mis préstamos</a>
 
