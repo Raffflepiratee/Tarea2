@@ -1,0 +1,39 @@
+/* Page-specific styles for prestamosActivosLector.jsp
+   Keep visual coherence with listarLectores.css and common.css */
+
+.page-wrapper h1 {
+    margin-bottom: 12px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text, #053936);
+}
+
+/* Form alignment */
+#prestamosActivosForm {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+#prestamosActivosForm label { margin-bottom: 0; font-weight: 600; color: var(--muted, #6b7c7b); }
+#lectorEmail { min-width: 200px; max-width: 420px; width: 300px; }
+
+@media (max-width: 700px) {
+    #prestamosActivosForm { width: 100%; gap: 10px; }
+    #lectorEmail { width: 100%; }
+    #buscarPrestamosActivos { width: 100%; }
+}
+
+/* Table tweaks */
+.table-scroll-container .table thead th { background: #053936; color: #fff; }
+.table-scroll-container .table tbody tr td { vertical-align: middle; }
+
+/* Loading / error spacing */
+.page-wrapper .loading { display: none; margin-bottom: 8px; }
+.page-wrapper .error { margin-top: 8px; }
+
+@media (max-width: 425px) {
+    .page-wrapper h1 { font-size: 1.25rem; text-align: center; }
+}

@@ -37,7 +37,7 @@
             <a class="card" href="#">
                 <div class="title">Materiales con más préstamos</div>
             </a>
-            <a class="card" href="#">
+            <a class="card" href="${pageContext.request.contextPath}/bibliotecario/prestamosActivosLector.jsp">
                 <div class="title">Préstamos de un lector</div>
             </a>
             <a class="card" href="#">

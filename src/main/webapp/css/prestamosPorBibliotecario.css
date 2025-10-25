@@ -43,7 +43,7 @@
 
 /* Table tweaks to match listarLectores visual language */
 .table-scroll-container .table thead th {
-	background: #053936; /* same as listarLectores */
+	background: #053936; 
 	color: #fff;
 }
 

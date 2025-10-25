@@ -6,7 +6,7 @@
         <a href="${pageContext.request.contextPath}/bibliotecario/agregarMaterial.jsp">Registrar material</a>
         <a href="${pageContext.request.contextPath}/bibliotecario/listarMaterialesPorRango.jsp">Donaciones por rango</a>
         <a href="#">Materiales con mas prestamos</a>
-        <a href="#">Prestamos de un lector</a>
+        <a href="${pageContext.request.contextPath}/bibliotecario/prestamosActivosLector.jsp">Prestamos de un lector</a>
         <a href="#">Reporte zonal</a>
         <a href="${pageContext.request.contextPath}/bibliotecario/prestamosPorBibliotecario.jsp">Mi historial</a>
         <div class="sidebar-user d-none">
