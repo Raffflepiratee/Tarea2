@@ -1,4 +1,3 @@
-<%-- Fragmento reusable para la sidebar y overlay --%>
 <aside class="sidebar" aria-hidden="true">
     <nav class="nav">
         <a href="${pageContext.request.contextPath}/bibliotecario/dashboard.jsp">Dashboard</a>

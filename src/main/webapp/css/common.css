@@ -5,7 +5,7 @@
   --sidebar-shadow: 0 20px 30px -12px rgba(3,53,50,0.12);
   --accent: #48A6A7;
   --text: #053936;
-  --topbar-height: 99px; /* adjust this if your header height changes */
+  --topbar-height: 99px;
 }
 
 #nombre_usuario {

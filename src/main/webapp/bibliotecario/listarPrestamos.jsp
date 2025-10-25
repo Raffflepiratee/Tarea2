@@ -123,6 +123,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="${pageContext.request.contextPath}/js/listarPrestamos.js"></script>
     <script src="${pageContext.request.contextPath}/js/sidebar.js"></script>
-    <script src="${pageContext.request.contextPath}/js/dashboardLectorjs"></script>
+    <script src="${pageContext.request.contextPath}/js/dashboardBiblio.js"></script>
 </body>
 </html>

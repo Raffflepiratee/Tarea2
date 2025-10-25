@@ -28,21 +28,31 @@
             <a class="card" href="${pageContext.request.contextPath}/bibliotecario/listarLectores.jsp">
                 <div class="title">Listar lectores</div>
             </a>
+
             <a class="card" href="${pageContext.request.contextPath}/bibliotecario/agregarMaterial.jsp">
                 <div class="title">Registrar material</div>
             </a>
+
             <a class="card" href="${pageContext.request.contextPath}/bibliotecario/listarMaterialesPorRango.jsp">
                 <div class="title">Donaciones por rango</div>
             </a>
+
             <a class="card" href="${pageContext.request.contextPath}/bibliotecario/ordenarMaterialesPorPendientes.jsp">
                 <div class="title">Materiales con más préstamos</div>
             </a>
+
+            <a class="card" href="${pageContext.request.contextPath}/bibliotecario/listarPrestamos.jsp">
+                <div class="title">Listar todos los préstamos</div>
+            </a>
+
             <a class="card" href="${pageContext.request.contextPath}/bibliotecario/prestamosActivosLector.jsp">
                 <div class="title">Préstamos de un lector</div>
             </a>
-            <a class="card" href="#">
+
+            <a class="card" href="${pageContext.request.contextPath}/bibliotecario/listarPrestamosPorZona.jsp">
                 <div class="title">Reporte zonal</div>
             </a>
+            
             <a class="card" href="${pageContext.request.contextPath}/bibliotecario/prestamosPorBibliotecario.jsp">
                 <div class="title">Mi historial de préstamos</div>
             </a>

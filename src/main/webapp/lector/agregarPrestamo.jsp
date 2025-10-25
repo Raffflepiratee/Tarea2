@@ -11,7 +11,7 @@
 </head>
 <body class="with-sidebar">
     <jsp:include page="/WEB-INF/jsp/partials/header.jsp"/>
-    <jsp:include page="/WEB-INF/jsp/partials/sidebar.jsp"/>
+    <jsp:include page="/WEB-INF/jsp/partials/sidebarLector.jsp"/>
 
     <div class="container">
         <h1 class="mb-4">Prestamos</h1>

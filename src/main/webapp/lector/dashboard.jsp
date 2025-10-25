@@ -25,26 +25,14 @@
 
     <main class="main">
         <div class="grid">
-            <a class="card" href="#">
-                <div class="title">Buscar Libros</div>
+            <a class="card" href="${pageContext.request.contextPath}/lector/listarMateriales.jsp">
+                <div class="title">Libros y Artículos</div>
             </a>
-            <a class="card" href="${pageContext.request.contextPath}/lector/prestamosActivosLector.jsp">
+
+            <a class="card" href="${pageContext.request.contextPath}/lector/listarPrestamosPorLector.jsp">
                 <div class="title">Mis Préstamos</div>
             </a>
-           <!--  <a class="card" href="#">
-                <div class="title">Donaciones por rango</div>
-            </a> -->
-            <!-- <a class="card" href="#">
-                <div class="title">Materiales con más préstamos</div>
-            </a>
-            <a class="card" href="#">
-                <div class="title">Préstamos de un lector</div>
-            </a>
-            <a class="card" href="#">
-                <div class="title">Reporte zonal</div>
-            </a>
-            <a class="card" href="#">
-                <div class="title">Mi historial de préstamos</div>
+         
             </a> -->
         </div>
     </main>
