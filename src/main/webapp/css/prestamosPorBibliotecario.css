@@ -64,8 +64,62 @@
 }
 
 /* Small responsive polish for very small screens */
-@media (max-width: 425px) {
+@media (max-width: 600px) {
 	.page-wrapper .table tbody tr { height: auto; }
 	.page-wrapper h1 { font-size: 1.25rem; text-align: center; }
+
+	/* Mobile table*/
+
+	table thead { display: none; }
+
+	table tbody tr { 
+		display: block;
+		margin-bottom: 14px;
+		border-radius: 10px;
+		padding: 8px;
+		height: auto;
+	}
+
+	table tbody tr td {
+		display: flex;
+		justify-content: center;
+		padding: 8px 6px;
+		border: none !important;
+		font-size: .9rem;
+		color: var(--text);
+	}
+
+	table tbody tr td::before {
+		content: attr(data-label);
+		font-weight: 700;
+		color: var(--accent-dark);
+		margin-right: 8px;
+	}
+
+	table tbody tr td:last-child {
+		justify-content: center;
+		background-color: #ffffff;
+	}
+
+	table tbody tr:nth-child(odd),
+	table tbody tr:nth-child(even) {
+		background: #ffffff !important;
+	}
+	
+	.inner {
+        justify-content: center;
+        position: relative;
+    }
+
+    .brand {
+        font-size: .9rem;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .profile {
+        display: none;
+    }
 }
 

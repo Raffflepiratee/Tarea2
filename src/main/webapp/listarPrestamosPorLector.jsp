@@ -43,7 +43,7 @@
                 </thead>
                 <tbody id="prestamosTableBody">
                     <tr>
-                        <td colspan="7" class="text-center">Ingrese un correo y presione "Listar Prestamos"</td>
+                        <td colspan="7" class="text-center">Thinking...</td>
                     </tr>
                 </tbody>
             </table>

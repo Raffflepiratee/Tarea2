@@ -11,7 +11,17 @@
 </head>
 <body>
     
-    <jsp:include page="/WEB-INF/jsp/partials/header.jsp" />
+    <header class="topbar">
+        <div class="inner">
+            <div class="brand">Biblioteca Comunitaria UY</div>
+            <div class="profile">
+                <p id="nombre_usuario"></p>
+                <div>
+                    <button class="logoutBtn" id="logoutBtn">Salir</button>
+                </div>
+            </div>
+        </div>
+    </header>
 
     <main class="main">
         <div class="grid">

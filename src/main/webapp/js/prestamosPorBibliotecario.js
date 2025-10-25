@@ -140,7 +140,7 @@ function renderPrestamosPorBibliotecario(prestamos) {
         const estado = escapeHtml(p.estadoP || '');
         const idMaterial = escapeHtml(p.idMaterial || '');
         const correoL = escapeHtml(p.correoL || '');
-        rowsHtml += `<tr><td>${id}</td><td>${escapeHtml(fechaS)}</td><td>${escapeHtml(fechaD)}</td><td>${estado}</td><td>${idMaterial}</td><td>${correoL}</td></tr>`;
+        rowsHtml += `<tr><td data-label="ID: ">${id}</td><td data-label="Solicitud: ">${escapeHtml(fechaS)}</td><td data-label="Fecha: ">${escapeHtml(fechaD)}</td><td data-label="Estado: ">${estado}</td><td data-label="Material: ">${idMaterial}</td><td data-label="Lector: ">${correoL}</td></tr>`;
     });
     tbody.innerHTML = rowsHtml;
 }
