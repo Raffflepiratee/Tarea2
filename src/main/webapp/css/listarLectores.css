@@ -1,11 +1,11 @@
 :root {
-    --primary: #F2EFE7;
-    --secondary: #9ACBD0;
-    --accent: #48A6A7;
-    --accent-dark: #006A71;
+    --primary: #fff7f2;
+    --secondary: #ffc8a4;
+    --accent: #da6618; /* NARANJA */
+    --accent-dark: #b85214;
     --card-bg: #FFFFFF;
     --bg: #FBFBFB;
-    --text: #053936;
+    --text: #303030;
     --muted: #6b7c7b;
     --card-border: 2px;
     --radius-lg: 36px;
@@ -16,7 +16,7 @@
 html, body {
     height: 100%;
     margin: 0;
-    background: var(--bg);
+    background: var(--background) !important;
     color: var(--text);
     background-color: #F1FFF6 !important;
 }
@@ -55,7 +55,7 @@ body.with-sidebar.no-page-scroll {
 }
 
 .page-wrapper .table thead th {
-    background: #053936;
+    background: #db844a;
     color: #fff;
     font-weight: 700;
     border: none;
