@@ -60,13 +60,13 @@ function mostrarPrestamos(prestamos) {
     prestamos.forEach(p => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${p.id || 'N/A'}</td>
-            <td>${p.fechaSoli || 'N/A'}</td>
-            <td>${p.fechaDev || 'N/A'}</td>
-            <td>${p.estadoP || 'N/A'}</td>
-            <td>${p.correoL || 'N/A'}</td>
-            <td>${p.idMaterial || 'N/A'}</td>
-            <td>${p.correoB || 'N/A'}</td>
+            <td data-label="ID:">${p.id || 'N/A'}</td>
+            <td data-label="Solicitud:">${p.fechaSoli || 'N/A'}</td>
+            <td data-label="Devolución:">${p.fechaDev || 'N/A'}</td>
+            <td data-label="Estado:">${p.estadoP || 'N/A'}</td>
+            <td data-label="Lector:">${p.correoL || 'N/A'}</td>
+            <td data-label="ID_Material:">${p.idMaterial || 'N/A'}</td>
+            <td data-label="Bibliotecario:">${p.correoB || 'N/A'}</td>
             <td><button type="button" class="btn btn-primary" onclick="asignarPrestamo('${p.id}','${p.estadoP}','${p.fechaSoli}','${p.fechaDev}','${p.correoL}','${p.idMaterial}','${p.correoB}')">Modificar</button></td>
         `;
         tbody.appendChild(row);

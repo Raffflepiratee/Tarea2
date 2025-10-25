@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Prestamos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/common.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/listarPrestamosPorLector.css" rel="stylesheet">
 </head>
-<body>
+<body class="with-sidebar">
+    <jsp:include page="/WEB-INF/jsp/partials/header.jsp"/>
+    <jsp:include page="/WEB-INF/jsp/partials/sidebar.jsp"/>
     <div class="container">
-        <h1 class="mb-4"> Lista de Prestamos de un Lector</h1>
-        
-        <div class="mb-3">
-            <label for="correoLector" class="form-label">Correo del Lector:</label>
-            <input type="email" class="form-control" id="correoLector" placeholder="Ingrese el correo del lector">
-            <button id="btnListarPrestamos" class="btn btn-primary mt-2">Listar Prestamos</button>
-        </div>
+        <h1 class="mb-4">Prestamos asociados a usted</h1>
 
         <!-- Error -->
         <div class="error alert alert-danger" role="alert" style="display: none;">
@@ -53,6 +51,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="${pageContext.request.contextPath}/js/sidebar.js"></script>
+    <script src="${pageContext.request.contextPath}/js/dashboardLector.js"></script>
     <script src="${pageContext.request.contextPath}/js/listarPrestamosPorLector.js"></script>
+    <script>const contextPath = "${pageContext.request.contextPath}";</script>
 </body>
 </html>

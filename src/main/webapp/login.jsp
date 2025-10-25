@@ -18,7 +18,7 @@
     </header>
 
     <main class="login-wrapper">
-        <section class="login-card" role="region" aria-label="Formulario de inicio de sesión">
+        <section class="login-card slide-in" role="region" aria-label="Formulario de inicio de sesión">
             <h2 class="card-title">Login</h2>
 
             <form id="loginForm" class="login-form" novalidate>
