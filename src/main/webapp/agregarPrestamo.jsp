@@ -52,7 +52,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="${pageContext.request.contextPath}/js/sidebar.js"></script>
-    <script src="${pageContext.request.contextPath}/js/dashboardLectores.js"></script>
+    <script src="${pageContext.request.contextPath}/js/dashboardLector.js"></script>
     <script src="${pageContext.request.contextPath}/js/agregarPrestamo.js"></script>
 </body>
 </html>
