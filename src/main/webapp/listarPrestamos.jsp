@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Prestamos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/common.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/listarPrestamos.css" rel="stylesheet">
 </head>
-<body>
+<body class="with-sidebar">
+    <jsp:include page="/WEB-INF/jsp/partials/header.jsp"/>
+    <jsp:include page="/WEB-INF/jsp/partials/sidebar.jsp"/>
+
     <div class="container">
         <h1 class="mb-4"> Lista de Prestamos</h1>
         
@@ -114,7 +119,10 @@
         </div>
     </div>
 
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="${pageContext.request.contextPath}/js/listarPrestamos.js"></script>
+    <script src="${pageContext.request.contextPath}/js/sidebar.js"></script>
+    <script src="${pageContext.request.contextPath}/js/dashboardLectores.js"></script>
 </body>
 </html>
