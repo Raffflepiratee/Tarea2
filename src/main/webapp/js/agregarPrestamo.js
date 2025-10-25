@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const body = new URLSearchParams();
             body.append('material', idMaterial);
             body.append('lector', correoLector);
+            console.log('Lector correo:', correoLector);
             body.append('fechaSoli', fechaInicial);
             body.append('fechaDev', fechaFinal);
 
