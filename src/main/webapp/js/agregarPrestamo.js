@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // use names expected by servlet
             body.append('material', idMaterial);
             body.append('lector', correoLector);
+            console.log('Lector correo:', correoLector);
             body.append('fechaSoli', fechaInicial);
             body.append('fechaDev', fechaFinal);
 
