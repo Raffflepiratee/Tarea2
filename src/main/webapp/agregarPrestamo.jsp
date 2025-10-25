@@ -24,11 +24,6 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for = "correoLector" class ="form-label">Correo Lector</label>
-                        <input type="text" class="form-control" id="correoLector" name="correoLector" required>
-                    </div>
-
-                    <div class="mb-3">
                         <label for = "fechaInicial" class ="form-label">Fecha Inicial</label>
                         <input type="date" class="form-control" id="fechaInicial" name="fechaInicial" required>
                     </div>

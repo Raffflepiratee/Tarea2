@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    const correoLector = localStorage.getItem('correo') || '';
+
     // registrarPrestamo button listener
     const registrarBtn = document.getElementById('registrarPrestamo');
     if (registrarBtn) {
@@ -14,12 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
 
             const idMaterialEl = document.getElementById('idMaterial');
-            const correoLectorEl = document.getElementById('correoLector');
+            // const correoLectorEl = document.getElementById('correoLector');
             const fechaInicialEl = document.getElementById('fechaInicial');
             const fechaFinalEl = document.getElementById('fechaFinal');
 
             const idMaterial = idMaterialEl ? idMaterialEl.value : '';
-            const correoLector = correoLectorEl ? correoLectorEl.value : '';
+            // const correoLector = correoLectorEl ? correoLectorEl.value : '';
             const fechaInicial = fechaInicialEl ? fechaInicialEl.value : '';
             const fechaFinal = fechaFinalEl ? fechaFinalEl.value : '';
 
