@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // tipoMaterial listener (if present) - mirrors pattern from agregarMaterial.js
     const tipoMaterialSelect = document.getElementById('tipoMaterial');
     if (tipoMaterialSelect) {
         tipoMaterialSelect.addEventListener('change', function() {
@@ -9,24 +8,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const correoLector = localStorage.getItem('correo') || '';
 
-    // registrarPrestamo button listener
     const registrarBtn = document.getElementById('registrarPrestamo');
     if (registrarBtn) {
         registrarBtn.addEventListener('click', function(event) {
             event.preventDefault();
 
             const idMaterialEl = document.getElementById('idMaterial');
-            // const correoLectorEl = document.getElementById('correoLector');
             const fechaInicialEl = document.getElementById('fechaInicial');
             const fechaFinalEl = document.getElementById('fechaFinal');
 
             const idMaterial = idMaterialEl ? idMaterialEl.value : '';
-            // const correoLector = correoLectorEl ? correoLectorEl.value : '';
             const fechaInicial = fechaInicialEl ? fechaInicialEl.value : '';
             const fechaFinal = fechaFinalEl ? fechaFinalEl.value : '';
 
             const body = new URLSearchParams();
-            // use names expected by servlet
             body.append('material', idMaterial);
             body.append('lector', correoLector);
             body.append('fechaSoli', fechaInicial);
@@ -64,7 +59,18 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error al agregar:', error);
-                mostrarMensaje('Error de conexión: ' + error.message, 'danger');
+                let msg = (error && error.message) ? error.message : String(error);
+                const serverPrefix = 'Server error:';
+                if (msg.startsWith(serverPrefix)) {
+                    const jsonPart = msg.substring(serverPrefix.length).trim();
+                    try {
+                        const parsed = JSON.parse(jsonPart);
+                        msg = parsed && (parsed.error || parsed.message) ? (parsed.error || parsed.message) : jsonPart;
+                    } catch (e) {
+                        msg = jsonPart;
+                    }
+                }
+                mostrarMensaje(msg, 'danger');
             });
         });
     }
