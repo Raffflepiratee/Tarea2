@@ -1,0 +1,41 @@
+.container{
+    width: 600px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 5%;
+    margin: 80px auto; /* <-- esto centra horizontal y agrega espacio arriba */
+    padding: 50px;
+}
+
+@media (max-width: 425px) {
+    .inner {
+        justify-content: center;
+        position: relative;
+    }
+
+    .brand {
+        font-size: .9rem;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .profile {
+        display: none;
+    }
+
+    .sidebar-user{
+        display: block !important;
+        justify-content: center;
+    }
+
+    .btn-logout {
+        width: 100%;
+    }
+
+    .container{
+        width: 80%;
+        border-radius: 5%;
+        padding: 20px;
+    }
+
+}
