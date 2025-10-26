@@ -6,13 +6,15 @@ body{
 
 .container{
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    border-radius: 1%;
+    border-radius: 18px;
     margin: 80px auto; /* <-- esto centra horizontal y agrega espacio arriba */
     padding: 50px;
+    background-color: #ffffff;
 }
 
 thead{
-    background-color: #da6618 !important;
+    background-color: #db844a !important;
+    color: #fff !important;
 }
 
 @media (max-width: 425px) {
@@ -24,7 +26,7 @@ thead{
         .container{
             width: 90%;
             padding: 8px 10px;
-            border-radius: 0%;
+            border-radius: 18px;
         }
 
         table thead {
