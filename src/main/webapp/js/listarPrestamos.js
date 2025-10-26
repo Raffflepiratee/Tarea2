@@ -58,6 +58,9 @@ function mostrarPrestamos(prestamos) {
     }
 
     prestamos.forEach(p => {
+        if(p.correoB == 'admin@admin.com'){
+            p.correoB = '-';
+        }
         const row = document.createElement('tr');
         row.innerHTML = `
             <td data-label="ID:">${p.id || 'N/A'}</td>

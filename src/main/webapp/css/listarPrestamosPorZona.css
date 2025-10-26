@@ -15,7 +15,7 @@ body{
 }
 
 .container{
-    background: #fffaf3;
+    background: #fff;
     padding: 2rem;
     border-radius: 18px;
     box-shadow: rgba(218,102,24,0.12) 0px 6px 24px;
@@ -39,9 +39,40 @@ input[type="number"]{
 
 select:focus,
 input:focus{
-    border-color: #da6618;
+    border-color: #db844a !important;
     outline: none;
     box-shadow: 0px 0px 6px rgba(218,102,24,0.2);
+}
+
+/* Stronger, page-scoped overrides to win over Bootstrap or other styles */
+body.with-sidebar .container select:focus,
+body.with-sidebar .container input:focus,
+body.with-sidebar .container .form-control:focus,
+body.with-sidebar .container .form-select:focus {
+    border-color: #db844a !important;
+    outline: none !important;
+    /* use a subtle outline-like box-shadow similar to Bootstrap but in accent color */
+    box-shadow: 0 0 0 0.25rem rgba(218,102,24,0.12) !important;
+}
+
+/* also ensure focus ring for WebKit form elements */
+body.with-sidebar .container select:focus::-ms-value,
+body.with-sidebar .container input:focus::-ms-value {
+    border-color: #db844a !important;
+}
+
+/* Ultra-specific focus override: highest priority for this page
+   Covers native inputs, Bootstrap .form-control/.form-select, and focus-visible */
+body.with-sidebar .container :is(input,select,textarea,.form-control,.form-select):where(:focus,:focus-visible) {
+    border-color: #db844a !important;
+    outline: none !important;
+    box-shadow: 0 0 0 0.35rem rgba(218,102,24,0.12) !important;
+    -webkit-box-shadow: 0 0 0 0.35rem rgba(218,102,24,0.12) !important;
+}
+
+/* Edge case: some libraries set box-shadow on pseudo-element; clear common overrides */
+body.with-sidebar .container :is(input,select,textarea,.form-control,.form-select):where(:focus,:focus-visible) {
+    -moz-box-shadow: 0 0 0 0.35rem rgba(218,102,24,0.12) !important;
 }
 
 .btn-primary{
@@ -76,7 +107,7 @@ table{
 }
 
 thead{
-    background: #da6618 !important;
+    background-color:#db844a !important;
     color: #ffffff !important;
 }
 
@@ -156,10 +187,7 @@ tbody tr:hover{
   position: relative;
 }
 
-thead {
-    background: #da6618 !important;
-    color: #ffffff !important;
-}
+
 
 /* ==== EXTRA SMALL ==== */
 @media (max-width: 425px){

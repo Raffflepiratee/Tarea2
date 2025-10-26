@@ -52,7 +52,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="cantPaginas" class="form-label">Cantidad de páginas</label>
-                                <input type="number" class="form-control" id="cantPaginas">
+                                <input type="number" class="form-control" id="cantPaginas" min="0">
                             </div>
                         </div>
 

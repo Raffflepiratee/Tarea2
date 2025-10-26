@@ -102,7 +102,7 @@ public class listarLectoresServlet extends HttpServlet {
             if (u instanceof DtLector) {
                 DtLector l = (DtLector) u;
                 tipo = "Lector";
-                detalles = "Zona: " + l.getZona() + ", Dirección: " + l.getDireccion();
+                detalles = "Zona: " + l.getZona() + /* salto de linea */ "<br>" + " Dirección: " + l.getDireccion();
                 zona = l.getZona() != null ? l.getZona().toString() : "";
                 estado = l.getEstadoUsuario() != null ? l.getEstadoUsuario().toString() : "";
             } else if (u instanceof DtBibliotecario) {
@@ -148,33 +148,33 @@ public class listarLectoresServlet extends HttpServlet {
         String zona = request.getParameter("zona");
         String estadoParam = request.getParameter("estado");
 
-        // System.out.println("modificarLector called with correo='" + correo + "', zona='" + zona + "', estado='" + estadoParam + "'");
+        // System.out.println("modificarLector called with correo='" + correo + "',
+        // zona='" + zona + "', estado='" + estadoParam + "'");
 
         // if (correo == null || correo.trim().isEmpty()) {
-        //     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        //     response.getWriter().write("{\"error\": \"Missing parameter: correo\"}");
-        //     return;
+        // response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        // response.getWriter().write("{\"error\": \"Missing parameter: correo\"}");
+        // return;
         // }
 
         // if (zona == null || zona.trim().isEmpty()) {
-        //     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        //     response.getWriter().write("{\"error\": \"Missing parameter: zona\"}");
-        //     return;
+        // response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        // response.getWriter().write("{\"error\": \"Missing parameter: zona\"}");
+        // return;
         // }
 
         // if (estadoParam == null || estadoParam.trim().isEmpty()) {
-        //     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        //     response.getWriter().write("{\"error\": \"Missing parameter: estado\"}");
-        //     return;
+        // response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        // response.getWriter().write("{\"error\": \"Missing parameter: estado\"}");
+        // return;
         // }
 
         EstadosU estado;
 
         estado = EstadosU.valueOf(estadoParam);
-       
 
-
-        // System.out.println("About to call usuarioClient.cambiarZonaLector with correo='" + correo + "', zona='" + zona + "'");
+        // System.out.println("About to call usuarioClient.cambiarZonaLector with
+        // correo='" + correo + "', zona='" + zona + "'");
         try {
             usuarioClient.cambiarZonaLector(correo, zona);
             System.out.println("cambiarZonaLector succeeded for '" + correo + "'");
@@ -186,7 +186,8 @@ public class listarLectoresServlet extends HttpServlet {
             return;
         }
 
-        // System.out.println("About to call usuarioClient.cambiarEstadoLector with correo='" + correo + "', estado='" + estado + "'");
+        // System.out.println("About to call usuarioClient.cambiarEstadoLector with
+        // correo='" + correo + "', estado='" + estado + "'");
         try {
             usuarioClient.cambiarEstadoLector(correo, estado);
             System.out.println("cambiarEstadoLector succeeded for '" + correo + "' -> " + estado);

@@ -100,6 +100,9 @@ function fetchPrestamosPorMaterial(materialId) {
                 if (modalBody) modalBody.innerHTML = '<tr><td colspan="6" class="text-center">No hay préstamos pendientes para este material</td></tr>';
             } else {
                 const rows = data.map(p => {
+                    if(p.bibliotecario== 'admin@admin.com'){
+                        p.bibliotecario= '-';
+                    }
                     // DtPrestamo JSON fields: idPrestamo, fechaSoli, estadoPres, fechaDev, lector, bibliotecario, material
                     const id = p.idPrestamo !== undefined ? escapeHtml(p.idPrestamo) : '';
                     const fs = formatDateISOFromValue(p.fechaSoli);
