@@ -52,7 +52,7 @@ function mostrarMaterialesConPendientes(materiales){
         const btnCell = document.createElement('td');
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'btn btn-info btn-sm ver-mas';
+        btn.className = 'btn btn-sm ver-mas btn-primary';
         btn.textContent = 'Mas info';
         btn.dataset.materialId = idMaterial;
         btn.addEventListener('click', function() {
