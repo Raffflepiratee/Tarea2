@@ -6,36 +6,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Material - Biblioteca</title>
+
+    <!-- Estilos -->
+    <link href="${pageContext.request.contextPath}/css/dashboard.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/common.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/css/agregarMaterial.css" rel="stylesheet">
 </head>
 
 <body class="with-sidebar">
-    <!-- Header include -->
+
+    <!-- Header -->
     <jsp:include page="/WEB-INF/jsp/partials/header.jsp" />
 
-    <!-- Sidebar include -->
+    <!-- Sidebar -->
     <jsp:include page="/WEB-INF/jsp/partials/sidebar.jsp" />
 
+    <!-- CONTENIDO -->
     <main class="page-wrapper">
+
         <div class="container">
-            
-            <!-- Formulario de registro -->
+
             <div class="card form-card">
                 <div class="card-body">
+
                     <h1 class="mb-4">Registrar Material</h1>
+
                     <form id="agregarMaterialForm">
+
+                        <!-- Tipo -->
                         <div class="mb-3">
                             <label for="tipoMaterial" class="form-label">Tipo de material</label>
                             <select class="form-select" id="tipoMaterial" required>
                                 <option value="" disabled selected hidden>-- Seleccionar tipo --</option>
                                 <option value="LIBRO">Libro</option>
-                                <option value="ARTICULO">Articulo Especial</option>
+                                <option value="ARTICULO">Artículo Especial</option>
                             </select>
                         </div>
 
-                        <div id="camposLibro" style="display: none;"><!-- Información del libro -->
+                        <!-- Campos LIBRO -->
+                        <div id="camposLibro" style="display: none;">
                             <div class="mb-3">
                                 <label for="tituloLibro" class="form-label">Título del libro</label>
                                 <input type="text" class="form-control" id="tituloLibro">
@@ -46,7 +56,8 @@
                             </div>
                         </div>
 
-                        <div id="camposArticulo" style="display: none;"><!-- Información del material especial -->
+                        <!-- Campos ARTÍCULO -->
+                        <div id="camposArticulo" style="display: none;">
                             <div class="mb-3">
                                 <label for="descArticulo" class="form-label">Descripción del artículo</label>
                                 <input type="text" class="form-control" id="descArticulo">
@@ -61,27 +72,31 @@
                             </div>
                         </div>
 
-                        <div class="d-flex gap-2">
+                        <!-- Botones -->
+                        <div class="botones d-flex gap-2">
                             <button type="submit" class="btn btn-primary" id="registrarMaterial">Guardar Material</button>
                             <button type="button" class="btn btn-secondary" id="limpiarForm">Limpiar</button>
                         </div>
+
                     </form>
-                    <!-- Mensajes de resultado / error (usados por agregarMaterial.js) -->
+
+                    <!-- Mensajes -->
                     <div id="mensajes" class="mt-3">
                         <div id="mensajeResultado" class="alert d-none" role="alert"></div>
-                        <div class="error alert alert-danger d-none"><span id="errorMessage"></span></div>
+                        <div class="error alert alert-danger d-none">
+                            <span id="errorMessage"></span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <br>
         </div>
     </main>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="${pageContext.request.contextPath}/js/sidebar.js"></script>
     <script src="${pageContext.request.contextPath}/js/agregarMaterial.js"></script>
     <script src="${pageContext.request.contextPath}/js/dashboardBiblio.js"></script>
-</body>
 
+</body>
 </html>
