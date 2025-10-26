@@ -40,7 +40,7 @@
     </main>
 
     <footer class="page-footer">
-        <div class="container text-center small">© Biblioteca Comunitaria</div>
+        <div class="container text-center small" style="margin-top: 400px;">© Biblioteca Comunitaria</div>
     </footer>
 
     <script src="${pageContext.request.contextPath}/js/dashboardLector.js"></script>
