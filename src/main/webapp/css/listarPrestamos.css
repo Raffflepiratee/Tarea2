@@ -11,6 +11,10 @@ body{
     padding: 50px;
 }
 
+thead{
+    background-color: #da6618 !important;
+}
+
 @media (max-width: 425px) {
 
         h1{
