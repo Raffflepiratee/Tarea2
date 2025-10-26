@@ -77,11 +77,14 @@ function mostrarPrestamos(prestamos) {
     if (!tbody) return;
     tbody.innerHTML = '';
 
-    if (!prestamos || prestamos.length === 0 || prestamoVacios(prestamos)) {
+    if (!prestamos || prestamoVacios(prestamos)) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="7" class="text-center">
-                    <img src="${contextPath}/img/png.png" alt="No hay resultados" style="max-width: 140px; opacity: 0.8;">
+                    <div style="margin-top: 10px;">
+                        <img src="${contextPath}/img/png.png" alt="No hay resultados" style="max-width: 140px; opacity: 0.8;">
+                        <p class="mt-2 text-muted">No se encontraron préstamos para los filtros seleccionados.</p>
+                    </div>
                 </td>
             </tr>`;
         return;
