@@ -17,7 +17,7 @@ html, body {
     height: 100%;
     margin: 0;
     background: var(--bg);
-    color: var(--text);
+    color: #252422;
 }
 
 body.with-sidebar.no-page-scroll {
@@ -34,7 +34,7 @@ body.with-sidebar.no-page-scroll {
     width: 100%;
     max-width: 980px;
     background: linear-gradient(180deg, var(--card-bg) 0%, #fffaf4 100%);
-    border: var(--card-border) solid rgba(216, 110, 32, 0.15);
+    border: var(--card-border) solid #e0e6e6;
     border-radius: var(--radius-lg);
     padding: 28px;
     box-shadow: 0 20px 30px -12px rgba(216, 110, 32, 0.20);
@@ -61,7 +61,7 @@ body.with-sidebar.no-page-scroll {
 
 .page-wrapper .table tbody tr {
     background: linear-gradient(180deg, #ffffff 0%, #fff8f2 100%);
-    border: var(--card-border) solid rgba(216, 110, 32, 0.12);
+    border: var(--card-border) solid #e0e6e6;
     border-radius: 16px;
     box-shadow: 0 8px 20px -10px rgba(216, 110, 32, 0.15);
     transition: .18s ease;
@@ -141,7 +141,7 @@ tbody, td, tfoot, th, thead, tr {
         margin-bottom: 14px;
         border-radius: 10px;
         padding: 8px;
-        height: 250px;
+        height: auto;
     }
 
     table tbody tr td {
