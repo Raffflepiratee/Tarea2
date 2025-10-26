@@ -58,10 +58,10 @@ function mostrarUsuarios(usuarios) {
         const estadoVal = usuario.estado ? usuario.estado.replace(/'/g, "\\'") : '';
 
         row.innerHTML = `
-            <td>${usuario.nombre || 'N/A'}</td>
-            <td>${usuario.correo || 'N/A'}</td>
-            <td>${usuario.tipo || 'N/A'}</td>
-            <td>${usuario.detalles || 'N/A'}</td>
+            <td data-label="Nombre:">${usuario.nombre || 'N/A'}</td>
+            <td data-label="Correo:">${usuario.correo || 'N/A'}</td>
+            <td data-label="Tipo:">${usuario.tipo || 'N/A'}</td>
+            <td data-label="Detalles:">${usuario.detalles || 'N/A'}</td>
             <td><button type="button" class="btn btn-primary" onclick="asignarCorreo('${usuario.correo}','${zonaVal}','${estadoVal}')">Modificar</button></td>
         `;
         tbody.appendChild(row);

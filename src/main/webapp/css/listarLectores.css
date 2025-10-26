@@ -18,7 +18,7 @@ html, body {
     margin: 0;
     background: var(--background) !important;
     color: var(--text);
-    background-color: #F1FFF6 !important;
+    background-color: #fff8f3 !important;
 }
 
 body.with-sidebar.no-page-scroll {
@@ -85,8 +85,20 @@ body.with-sidebar.no-page-scroll {
     width: 8px;
 }
 .table-scroll-container::-webkit-scrollbar-thumb {
-    background: var(--accent);
+    background: #bdbdbd; /* gris para la barra de scroll */
     border-radius: 6px;
+}
+
+/* Firefox scrollbar color */
+.table-scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: #bdbdbd transparent;
+}
+
+/* Alineación de texto: dejar todo a la izquierda (estilo clásico) */
+.page-wrapper .table thead th,
+.page-wrapper .table tbody td {
+    text-align: left;
 }
 
 .page-wrapper .btn-light {
@@ -152,7 +164,8 @@ body.with-sidebar.no-page-scroll {
 
     table tbody tr td {
         display: flex;
-        justify-content: center;
+        justify-content: flex-start; /* alinear contenido a la izquierda en mobile */
+        align-items: flex-start;
         padding: 8px 6px;
         border: none !important;
         font-size: .9rem;
@@ -169,6 +182,14 @@ body.with-sidebar.no-page-scroll {
     table tbody tr td:last-child {
         justify-content: center;
         background-color: #ffffff;
+    }
+
+    /* Fuerza alineación a la izquierda para el contenido de Nombre/Correo/Detalles */
+    table tbody tr td,
+    table tbody tr td * {
+        text-align: left !important;
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
     }
 
     /* centrar brand correctamente */
