@@ -9,7 +9,7 @@
 
 .container{
   height: 750px;
-  width: 60%;
+  width: 30%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,9 +98,13 @@ body.is-loading .form-card { display: none; }
     display: none;
   }
 
-  .logoutBtn {
-    display: block;
-    width: 100%;
+  .sidebar-user{
+    display: flex !important;
+    justify-content: center; 
+  }
+
+  .btn-danger {
+    width: 100% !important;
   }
 
   #agregarMaterialForm .btn {

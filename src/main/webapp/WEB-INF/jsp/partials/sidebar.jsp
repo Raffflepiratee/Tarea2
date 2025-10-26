@@ -15,9 +15,10 @@
         <a href="${pageContext.request.contextPath}/bibliotecario/prestamosActivosLector.jsp">Prestamos de un lector</a>
 
         <a href="${pageContext.request.contextPath}/bibliotecario/listarPrestamosPorZona.jsp">Reporte zonal</a>
+        
         <a href="${pageContext.request.contextPath}/bibliotecario/prestamosPorBibliotecario.jsp">Mi historial</a>
         <div class="sidebar-user d-none">
-            <button class="btn btn-logout btn-danger"onclick="location.href='${pageContext.request.contextPath}/logout'">Salir</button>
+            <button class="btn btn-logout btn-danger" id="logoutBtn2">Salir</button>
         </div>
     </nav>
 </aside>

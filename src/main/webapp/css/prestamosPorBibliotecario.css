@@ -1,112 +1,116 @@
-
-/* Styles specific to prestamosPorBibliotecario.jsp
-   These are small, page-scoped overrides to keep visual coherence
-   with listarLectores.css and the global common.css. */
-
-/* Heading and container tweaks */
 .page-wrapper h1 {
-	margin-bottom: 12px;
-	font-size: 1.6rem;
-	font-weight: 700;
-	color: var(--text, #053936);
+    margin-bottom: 12px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text, #053936);
 }
 
-/* Search form (bibliotecario email) */
 #prestamosForm {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	flex-wrap: wrap;
-	margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
 }
 
 #prestamosForm label {
-	margin-bottom: 0;
-	font-weight: 600;
-	color: var(--muted, #6b7c7b);
+    margin-bottom: 0;
+    font-weight: 600;
+    color: var(--muted, #6b7c7b);
 }
 
 #biblioEmail {
-	min-width: 200px;
-	max-width: 420px;
-	width: 300px;
+    min-width: 200px;
+    max-width: 420px;
+    width: 300px;
 }
 
-@media (max-width: 700px) {
-	#prestamosForm {
-		width: 100%;
-		gap: 10px;
-	}
-	#biblioEmail { width: 100%; }
-	#buscarPrestamos { width: 100%; }
+.container {
+    width: 90%;
+    max-width: 1150px;
+    margin: 50px auto;
+    background: #fffdfb;
+    border-radius: 14px;
+    padding: 24px 28px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.05);
 }
 
-/* Table tweaks to match listarLectores visual language */
+.table-scroll-container {
+    width: 100%;
+}
+
+.table-scroll-container .table {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
 .table-scroll-container .table thead th {
-	background: #053936; 
-	color: #fff;
+    background: #d86e20;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: none;
 }
 
 .table-scroll-container .table tbody tr td {
-	vertical-align: middle;
+    vertical-align: middle;
+    text-align: center;
+    color: var(--text);
 }
 
-/* Message shown when no results */
 #prestamosTableBody td.text-center {
-	color: var(--muted, #6b7c7b);
-	font-style: italic;
+    color: var(--muted, #6b7c7b);
+    font-style: italic;
 }
 
-/* Ensure alerts follow the same sizing and spacing */
 .page-wrapper .error {
-	display: none; /* default hidden; JSP may toggle inline */
-	margin-top: 8px;
+    display: none;
+    margin-top: 8px;
 }
 
-/* Small responsive polish for very small screens */
+@media (max-width: 700px) {
+    #prestamosForm {
+        width: 100%;
+        gap: 10px;
+    }
+    #biblioEmail { width: 100%; }
+    #buscarPrestamos { width: 100%; }
+}
+
 @media (max-width: 600px) {
-	.page-wrapper .table tbody tr { height: auto; }
-	.page-wrapper h1 { font-size: 1.25rem; text-align: center; }
+    .page-wrapper .table tbody tr { height: auto; }
+    .page-wrapper h1 { font-size: 1.25rem; text-align: center; }
 
-	/* Mobile table*/
+    table thead { display: none; }
 
-	table thead { display: none; }
+    table tbody tr {
+        display: block;
+        margin-bottom: 14px;
+        border-radius: 10px;
+        padding: 8px;
+        height: auto;
+        background: #ffffff;
+        box-shadow: 0 0 6px rgba(0,0,0,0.05);
+    }
 
-	table tbody tr { 
-		display: block;
-		margin-bottom: 14px;
-		border-radius: 10px;
-		padding: 8px;
-		height: auto;
-	}
+    table tbody tr td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 6px;
+        border: none !important;
+        font-size: .9rem;
+        color: var(--text);
+    }
 
-	table tbody tr td {
-		display: flex;
-		justify-content: center;
-		padding: 8px 6px;
-		border: none !important;
-		font-size: .9rem;
-		color: var(--text);
-	}
+    table tbody tr td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: var(--accent-dark, #053936);
+        margin-right: 8px;
+    }
 
-	table tbody tr td::before {
-		content: attr(data-label);
-		font-weight: 700;
-		color: var(--accent-dark);
-		margin-right: 8px;
-	}
-
-	table tbody tr td:last-child {
-		justify-content: center;
-		background-color: #ffffff;
-	}
-
-	table tbody tr:nth-child(odd),
-	table tbody tr:nth-child(even) {
-		background: #ffffff !important;
-	}
-	
-	.inner {
+    .inner {
         justify-content: center;
         position: relative;
     }
@@ -121,5 +125,17 @@
     .profile {
         display: none;
     }
-}
 
+	.profile {
+        display: none !important;
+    }
+
+    .sidebar-user{
+        display: block !important;
+        justify-content: center;
+    }
+
+    .btn-logout {
+        width: 100%;
+    }
+}
