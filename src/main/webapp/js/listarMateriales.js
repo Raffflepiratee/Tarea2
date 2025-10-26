@@ -37,10 +37,10 @@ function mostrarMateriales(materiales){
     materiales.forEach(materiales => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${materiales.IDMaterial || 'N/A'}</td>
-            <td>${materiales.FechaRegistro || 'N/A'}</td>
-            <td>${materiales.Tipo || 'N/A'}</td>
-            <td>${materiales.Detalles || 'N/A'}</td>
+            <td data-label="ID:">${materiales.IDMaterial || 'N/A'}</td>
+            <td data-label="FechaRegistro:">${materiales.FechaRegistro || 'N/A'}</td>
+            <td data-label="Tipo:">${materiales.Tipo || 'N/A'}</td>
+            <td data-label="Detalles:"><br>${materiales.Detalles || 'N/A'}</td>
         `;
         tbody.appendChild(row);
     });
