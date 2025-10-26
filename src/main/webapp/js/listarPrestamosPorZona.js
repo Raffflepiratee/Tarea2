@@ -78,20 +78,25 @@ function mostrarPrestamos(prestamos) {
     tbody.innerHTML = '';
 
     if (!prestamos || prestamos.length === 0 || prestamoVacios(prestamos)) {
-        tbody.innerHTML = '<tr><td colspan="7" class="text-center">No hay préstamos registrados</td></tr>';
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center">
+                    <img src="${contextPath}/img/png.png" alt="No hay resultados" style="max-width: 140px; opacity: 0.8;">
+                </td>
+            </tr>`;
         return;
     }
 
     prestamos.forEach(p => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${p.idPrestamo || 'N/A'}</td>
-            <td>${p.fechaSoli || 'N/A'}</td>
-            <td>${p.fechaDev || 'N/A'}</td>
-            <td>${p.estadoP || 'N/A'}</td>
-            <td>${p.lector || 'N/A'}</td>
-            <td>${p.material || 'N/A'}</td>
-            <td>${p.bibliotecario || 'N/A'}</td>
+            <td data-label="ID:">${p.idPrestamo || 'N/A'}</td>
+            <td data-label="Solicitud:">${p.fechaSoli || 'N/A'}</td>
+            <td data-label="Devolución:">${p.fechaDev || 'N/A'}</td>
+            <td data-label="Estado:">${p.estadoP || 'N/A'}</td>
+            <td data-label="Lector:">${p.lector || 'N/A'}</td>
+            <td data-label="Material:">${p.material || 'N/A'}</td>
+            <td data-label="Bibliotecario:">${p.bibliotecario || 'N/A'}</td>
         `;
         tbody.appendChild(row);
     });
