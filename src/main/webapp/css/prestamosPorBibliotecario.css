@@ -2,7 +2,7 @@
     margin-bottom: 12px;
     font-size: 1.6rem;
     font-weight: 700;
-    color: var(--text, #053936);
+    color: var(--text, black);
 }
 
 #prestamosForm {
@@ -46,7 +46,7 @@
 }
 
 .table-scroll-container .table thead th {
-    background: #d86e20;
+    background: #db844a !important;
     color: #fff;
     font-weight: 700;
     text-align: center;
