@@ -1,61 +1,119 @@
-/* Estilos específicos para la página agregarMaterial.jsp
-   Siguen la línea visual de common.css y las otras páginas.
-*/
-
-/* Card que contiene el formulario */
 .form-card {
-  max-width: 820px;
+  width: 100%;
+  height: auto;
   margin: 8px auto;
   border-radius: 12px;
   box-shadow: 0 10px 18px -8px rgba(3,53,50,0.12);
   border: 1px solid rgba(3,53,50,0.04);
 }
 
+.container{
+  height: 750px;
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .form-card .card-body {
   padding: 22px;
 }
 
-/* Alineado y espaciado del formulario */
+.form-card h1 {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
 #agregarMaterialForm .form-label {
   font-weight: 600;
+  font-size: .85rem;
   color: var(--text);
 }
 
 #agregarMaterialForm .form-control,
 #agregarMaterialForm .form-select {
   border-radius: 8px;
-  padding: 10px 12px;
+  padding: 8px 10px;
+  font-size: .9rem;
   border: 1px solid rgba(3,53,50,0.08);
 }
 
-/* Botones */
 #agregarMaterialForm .btn-primary {
   background: var(--accent);
   border-color: var(--accent);
   box-shadow: 0 6px 12px -6px rgba(72,166,167,0.3);
   border-radius: 10px;
-  padding: 8px 16px;
+  padding: 8px 14px;
+  font-size: .85rem;
 }
 
 #agregarMaterialForm .btn-secondary {
   border-radius: 10px;
+  font-size: .85rem;
+  padding: 8px 14px;
+  background: #636b73;
+  border: none;
+  color: white;
 }
 
-/* Mensajes de resultado y error */
 .error { display: none; }
 
-/* Loading - similar to listarLectores */
 .loading {
   display: none;
   text-align: center;
   padding: 24px 0;
 }
 
-/* Mostrar el estado cuando se añade la clase .is-loading al body */
 body.is-loading .loading { display: block; }
 body.is-loading .form-card { display: none; }
 
-/* Responsive */
 @media (max-width: 720px) {
-  .form-card { margin: 12px 8px; }
+  .form-card {
+    margin: 12px 8px;
+    width: 90%;
+  }
+
+  .container {
+    width: 100%;
+    justify-content: center;
+    height: calc(100vh - 100px);
+  }
+
+  .inner {
+    justify-content: center;
+    position: relative;
+  }
+
+  .brand {
+    font-size: .9rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .profile {
+    display: none;
+  }
+
+  .logoutBtn {
+    display: block;
+    width: 100%;
+  }
+
+  #agregarMaterialForm .btn {
+    width: 100%;
+  }
+
+  #agregarMaterialForm .form-control,
+  #agregarMaterialForm .form-select {
+    font-size: .85rem;
+    padding: 6px 8px;
+  }
+
+  .form-card h1 {
+    font-size: 1.4rem;
+  }
 }
