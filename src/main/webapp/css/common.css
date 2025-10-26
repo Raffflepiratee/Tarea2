@@ -171,3 +171,46 @@ footer {
 body.no-page-scroll {
   overflow-y: hidden !important;
 }
+
+/* Header profile pill */
+.topbar .profile {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.topbar .profile .profile-pill {
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.topbar .profile .profile-pill #nombre_usuario {
+  color: #222;
+  font-weight: 600;
+  padding-left: 6px;
+}
+
+/* logout button inside pill */
+.topbar .profile .profile-pill .logoutBtn {
+  background: #c72e3a;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.topbar .profile .profile-pill .logoutBtn:hover {
+  transform: translateY(-1px);
+}
+
+/* Ensure the brand stays centered even with the pill at right */
+.topbar .inner { position: relative; }
+.topbar .brand { position: absolute; left: 50%; transform: translateX(-50%); }
+

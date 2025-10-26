@@ -11,6 +11,16 @@ body{
     padding: 50px;
 }
 
+
+/* Table header color for the prestamos table */
+.table.table-striped.table-hover thead,
+.table.table-striped.table-hover thead th,
+.table.table-dark thead,
+.table.table-dark thead th {
+    background-color: #db844a !important;
+    color: #fff !important;
+}
+
 @media (max-width: 425px) {
 
         h1{
