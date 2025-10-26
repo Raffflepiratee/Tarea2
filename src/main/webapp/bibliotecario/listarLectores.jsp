@@ -39,7 +39,7 @@
                             <tr>
                                 <th>Nombre</th>
                                 <th>Correo</th>
-                                <th>Tipo</th>
+                                <th>Estado</th>
                                 <th>Detalles</th>
                                 <th>Acciones</th>
                             </tr>
@@ -83,8 +83,8 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="modificarUsuarioForm">Save changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="modificarUsuarioForm">Guardar cambios</button>
                         </div>
                     </div>
                 </div>

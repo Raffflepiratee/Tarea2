@@ -60,7 +60,7 @@ function mostrarUsuarios(usuarios) {
         row.innerHTML = `
             <td data-label="Nombre:">${usuario.nombre || 'N/A'}</td>
             <td data-label="Correo:">${usuario.correo || 'N/A'}</td>
-            <td data-label="Tipo:">${usuario.tipo || 'N/A'}</td>
+            <td data-label="Estado:">${usuario.estado || 'N/A'}</td>
             <td data-label="Detalles:">${usuario.detalles || 'N/A'}</td>
             <td><button type="button" class="btn btn-primary" onclick="asignarCorreo('${usuario.correo}','${zonaVal}','${estadoVal}')">Modificar</button></td>
         `;
@@ -73,6 +73,18 @@ function mostrarUsuarios(usuarios) {
 function showLoading(show) {
     const loadingEl = document.querySelector('.loading');
     if (loadingEl) loadingEl.style.display = show ? 'block' : 'none';
+}
+
+function showSuccess(message){
+    const successDiv = document.createElement('div');
+    successDiv.className = 'alert alert-success mt-3';
+    successDiv.textContent = message;
+
+    const container = document.querySelector('.container');
+    if (container) {
+        container.insertBefore(successDiv, container.firstChild);
+        setTimeout(() => successDiv.remove(), 4000);
+    }
 }
 
 function showError(message) {
@@ -130,6 +142,7 @@ document.getElementById('modificarUsuarioForm').addEventListener('click', functi
     .then(data => {
         console.log('Usuario actualizado:', data);
         bootstrap.Modal.getInstance(document.getElementById('exampleModal')).hide();
+        showSuccess('Usuario actualizado correctamente');
         cargarUsuarios();
     })
     .catch(error => {
