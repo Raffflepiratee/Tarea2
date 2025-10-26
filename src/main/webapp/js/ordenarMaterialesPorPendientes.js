@@ -42,9 +42,9 @@ function mostrarMaterialesConPendientes(materiales){
 
         // Crear celda de datos
         const html = `
-            <td>${indice}</td>
-            <td>${idMaterial}</td>
-            <td>${prestamosPendientes}</td>
+            <td data-label="Indice:">${indice}</td>
+            <td data-label="Material:">${idMaterial}</td>
+            <td data-label="Prestamos:">${prestamosPendientes}</td>
         `;
         row.innerHTML = html;
 

@@ -116,13 +116,6 @@ tbody, td, tfoot, th, thead, tr {
     }
 }
 
-@media (max-width: 580px) {
-    table thead tr th:nth-child(3),
-    table tbody tr td:nth-child(3) {
-        display: none;
-    }
-}
-
 @media (max-width: 520px) {
     .btn { width: 100%; }
     .page-wrapper > .container {
